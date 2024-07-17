@@ -14,7 +14,7 @@ public class EventService {
     private final IdService idService;
     private final EventRepository eventRepository;
 
-    public Event saveEvent(EventDTO eventDTO) {
+    public Event createEvent(EventDTO eventDTO) {
         Event newEvent = new Event(idService.generateId(), eventDTO.description(),eventDTO.startTime(),eventDTO.endTime());
         return eventRepository.save(newEvent);
     }
