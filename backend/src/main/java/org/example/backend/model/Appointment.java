@@ -6,9 +6,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 
 @With
-@Document(collection = "events")
+@Document(collection = "appointments")
 
-public record Event(String id,
+public record Appointment (String id,
                     String description,
                     Instant startTime,
                     Instant endTime

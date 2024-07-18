@@ -14,12 +14,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 
-class EventControllerTest {
+class AppointmentControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    void createEvent_ShouldReturnEvent_WhenCalledWithEventDTO() throws Exception {
+    void createAppointment_ShouldReturnAppointment_WhenCalledWithAppointmentDTO() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/calender/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
