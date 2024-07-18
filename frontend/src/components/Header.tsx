@@ -1,5 +1,6 @@
 import AppointmentForm from "./AppointmentForm.tsx";
 import {Appointment} from "../types/Appointment.ts";
+import "../styles/Header.css"
 
 type HeaderProps = {
     createAppointment: (newAppointment:Appointment) => void,

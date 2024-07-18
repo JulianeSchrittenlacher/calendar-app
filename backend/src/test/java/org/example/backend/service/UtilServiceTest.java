@@ -7,15 +7,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class IdServiceTest {
+class UtilServiceTest {
 
     @Autowired
-    private IdService idService;
+    private UtilService utilService;
 
     @Test
     void idGenerator_shouldReturnUniqueString_whenCalled() {
         // Generiere eine neue ID
-        String id = idService.generateId();
+        String id = utilService.generateId();
 
         // Überprüfen, dass die ID nicht leer ist
         assertFalse(id.isEmpty(), "Die generierte ID sollte nicht leer sein");

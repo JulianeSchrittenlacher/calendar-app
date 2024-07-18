@@ -1,27 +1,42 @@
-import { useState } from "react";
-import { Appointment } from "../types/Appointment.ts";
+import React, { useState } from "react";
+import { Appointment } from "../types/Appointment";
+import { format, parseISO } from 'date-fns';
+import { toZonedTime} from 'date-fns-tz';
 
 type AppointmentFormProps = {
     createAppointment: (newAppointment: Appointment) => void,
-}
+};
 
-export default function AppointmentForm(props: Readonly<AppointmentFormProps>)  {
+export default function AppointmentForm(props: AppointmentFormProps) {
     const [description, setDescription] = useState<string>("");
-    const [startTime, setStartTime] = useState<Date>(new Date());
-    const [endTime, setEndTime] = useState<Date>(new Date());
+    const [startTime, setStartTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
+    const [endTime, setEndTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const startDate = parseISO(startTime);
+        const endDate = parseISO(endTime);
+
+        const zonedStartTime = toZonedTime(startDate, timeZone);
+        const zonedEndTime = toZonedTime(endDate, timeZone);
+
+        // Validierung: Endzeit muss nach Startzeit liegen
+        if (zonedStartTime >= zonedEndTime) {
+            alert("Die Endzeit muss nach der Startzeit liegen!");
+            return;
+        }
+
         const newAppointment: Appointment = {
             id: "",
             description,
-            startTime,
-            endTime,
+            startTime: zonedStartTime,
+            endTime: zonedEndTime,
         };
 
         props.createAppointment(newAppointment);
-    }
+    };
 
     return (
         <form className="appointment-form" onSubmit={handleSubmit}>
@@ -38,8 +53,8 @@ export default function AppointmentForm(props: Readonly<AppointmentFormProps>)  
                 Start:
                 <input
                     type="datetime-local"
-                    value={startTime.toISOString().slice(0, 16)}
-                    onChange={(e) => setStartTime(new Date(e.target.value))}
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
                 />
             </label>
             <br />
@@ -47,12 +62,12 @@ export default function AppointmentForm(props: Readonly<AppointmentFormProps>)  
                 Ende:
                 <input
                     type="datetime-local"
-                    value={endTime.toISOString().slice(0, 16)}
-                    onChange={(e) => setEndTime(new Date(e.target.value))}
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
                 />
             </label>
             <br />
-            <button type="submit">Submit</button>
+            <button type="submit">Hinzufügen</button>
         </form>
     );
 }
