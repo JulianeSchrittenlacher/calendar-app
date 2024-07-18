@@ -19,7 +19,7 @@ class EventControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void createEvent() throws Exception {
+    void createEvent_ShouldReturnEvent_WhenCalledWithEventDTO() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/calender/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
