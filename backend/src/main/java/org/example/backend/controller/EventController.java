@@ -20,3 +20,4 @@ public class EventController {
         return eventService.createEvent(eventDTO);
     }
 }
+
