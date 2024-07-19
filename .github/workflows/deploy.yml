@@ -3,7 +3,7 @@ name: "Deploy App"
 on:
   push:
     branches:
-      - main
+      - deploy-with-render
 
 jobs:
   build-frontend:
