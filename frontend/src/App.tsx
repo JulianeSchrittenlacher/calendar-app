@@ -1,4 +1,3 @@
-import './App.css'
 import axios from "axios";
 import Header from "./components/Header.tsx";
 import {Appointment} from "./types/Appointment.ts";
