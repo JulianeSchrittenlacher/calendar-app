@@ -1,5 +1,6 @@
 import {Appointment} from "../types/Appointment.ts";
 import {DateOptions} from "../types/DateOptions.ts";
+import "../styles/AppointmentCard.css"
 
 function isIsoDateString(value: string): boolean {
     const isoDatePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))?$/;
@@ -28,7 +29,7 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
     return (
         <>
             <article className="appointment-card">
-                <p>{description}</p>
+                <p className="appointment-description">{description}</p>
                 <p>Beginn: {formatDate(startDate)}</p>
                 <p>Ende: {formatDate(endDate)}</p>
             </article>

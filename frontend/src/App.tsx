@@ -3,6 +3,7 @@ import Header from "./components/Header.tsx";
 import {Appointment} from "./types/Appointment.ts";
 import Gallery from "./components/Gallery.tsx";
 import {useEffect, useState} from "react";
+import "./App.css"
 
 export default function App() {
     const [appointments, setAppointments] = useState<Appointment[]>([]);

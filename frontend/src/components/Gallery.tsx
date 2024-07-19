@@ -1,5 +1,6 @@
 import {Appointment} from "../types/Appointment.ts";
 import AppointmentCard from "./AppointmentCard.tsx";
+import "../styles/Gallery.css"
 
 type GalleryProps = {
     appointments: Appointment[];
