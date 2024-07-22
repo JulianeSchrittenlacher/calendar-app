@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - prototyp
 
 jobs:
   build-frontend:
