@@ -64,4 +64,11 @@ class AppointmentControllerTest {
                         }]
                         """));
     }
+
+    @Test
+    void deleteAppointment_ShouldReturnHttpOK_WhenCalledWithId() throws Exception {
+        appointmentRepository.save(new Appointment("1","test", Instant.parse("2024-07-16T09:00:00Z"),Instant.parse("2024-07-16T10:00:00Z")));
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/calender/{id}","1"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }
