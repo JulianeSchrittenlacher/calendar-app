@@ -25,14 +25,24 @@ export default function App() {
             .catch(error => console.log(error));
     }
 
-  useEffect(() => {
+    function deleteAppointment(id:string) {
+        axios.delete(`/api/calender/${id}`)
+            .then(() => {
+                alert("Termin gelöscht!");
+                getAppointments();
+            })
+            .catch(error => console.log(error));
+    }
+
+
+    useEffect(() => {
     getAppointments()
   }, []);
 
     return (
         <>
             <Header createAppointment={createAppointment}></Header>
-            <Gallery appointments={appointments}></Gallery>
+            <Gallery appointments={appointments} deleteAppointment={deleteAppointment}></Gallery>
         </>
     )
 

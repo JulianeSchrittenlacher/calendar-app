@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.model.Appointment;
 import org.example.backend.model.AppointmentDTO;
 import org.example.backend.repository.AppointmentRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Repository
-
 
 public class AppointmentService {
     private final UtilService utilService;
