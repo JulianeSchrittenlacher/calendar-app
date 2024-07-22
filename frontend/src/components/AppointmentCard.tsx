@@ -1,6 +1,6 @@
-import {Appointment} from "../types/Appointment.ts";
-import {DateOptions} from "../types/DateOptions.ts";
-import "../styles/AppointmentCard.css"
+import { Appointment } from "../types/Appointment";
+import { DateOptions } from "../types/DateOptions";
+import "../styles/AppointmentCard.css";
 
 function isIsoDateString(value: string): boolean {
     const isoDatePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))?$/;
@@ -8,34 +8,28 @@ function isIsoDateString(value: string): boolean {
 }
 
 type AppointmentCardProps = {
-    appointment: Appointment
+    appointment: Appointment;
 }
 
-export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
-    const { startTime, endTime, description } = props.appointment;
+export default function AppointmentCard({ appointment }: Readonly<AppointmentCardProps>) {
+    const { startTime, endTime, description } = appointment;
 
-    //Hier will ich überarbeiten
-    const startDate = isIsoDateString(startTime.toLocaleString()) ? new Date(startTime) : startTime;
-    const endDate = isIsoDateString(endTime.toLocaleString()) ? new Date(endTime) : endTime;
+    const parseDate = (date: string | Date): Date => {
+        return typeof date === 'string' && isIsoDateString(date) ? new Date(date) : new Date(date.toString());
+    };
 
-    const formatDate = (date: Date | string): string => {
-        if (date instanceof Date) {
-            return date.toLocaleString('de-DE', DateOptions);
-        } else {
-            return new Date(date).toLocaleString('de-DE', DateOptions);
-        }
-    }
+    const formatDate = (date: Date): string => {
+        return date.toLocaleString('de-DE', DateOptions);
+    };
+
+    const startDate = parseDate(startTime);
+    const endDate = parseDate(endTime);
 
     return (
-        <>
-            <article className="appointment-card">
-                <p className="appointment-description">{description}</p>
-                <p>Beginn: {formatDate(startDate)}</p>
-                <p>Ende: {formatDate(endDate)}</p>
-            </article>
-        </>
+        <article className="appointment-card">
+            <p className="appointment-description">{description}</p>
+            <p>Beginn: {formatDate(startDate)}</p>
+            <p>Ende: {formatDate(endDate)}</p>
+        </article>
     );
 }
-
-
-

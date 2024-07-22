@@ -1,7 +1,7 @@
     export const DateOptions: Intl.DateTimeFormatOptions = {
-    weekday: 'long',
+    weekday: 'short',
     day: '2-digit',
-    month: 'long',
+    month: '2-digit',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',

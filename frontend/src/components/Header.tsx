@@ -10,9 +10,14 @@ type HeaderProps = {
 export default function Header(props: Readonly<HeaderProps>) {
     return (
         <div className="header-container">
-            <h1 className="app-header">Familienkalender</h1>
-            <AppointmentForm createAppointment={props.createAppointment}/>
-
+            <div className="app-header">
+                <h1>Familienkalender</h1>
+                <h2>Mit Liebe geplant, mit Freude gelebt</h2>
+                <h2>Termine für Herz und Seele</h2>
+            </div>
+            <div>
+                <AppointmentForm createAppointment={props.createAppointment}/>
+            </div>
         </div>
     );
 }
