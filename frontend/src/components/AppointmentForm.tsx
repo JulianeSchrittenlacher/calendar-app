@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Appointment } from "../types/Appointment";
 import { format, parseISO } from 'date-fns';
 import { toZonedTime} from 'date-fns-tz';
+import "../styles/AppointmentForm.css"
 
 type AppointmentFormProps = {
     createAppointment: (newAppointment: Appointment) => void,
@@ -22,7 +23,6 @@ export default function AppointmentForm(props: Readonly<AppointmentFormProps>) {
         const zonedStartTime = toZonedTime(startDate, timeZone);
         const zonedEndTime = toZonedTime(endDate, timeZone);
 
-        // Validierung: Endzeit muss nach Startzeit liegen
         if (zonedStartTime >= zonedEndTime) {
             alert("Die Endzeit muss nach der Startzeit liegen!");
             return;
@@ -33,6 +33,7 @@ export default function AppointmentForm(props: Readonly<AppointmentFormProps>) {
             description,
             startTime: zonedStartTime,
             endTime: zonedEndTime,
+
         };
 
         props.createAppointment(newAppointment);
@@ -40,33 +41,30 @@ export default function AppointmentForm(props: Readonly<AppointmentFormProps>) {
 
     return (
         <form className="appointment-form" onSubmit={handleSubmit}>
-            <label>
-                Termin:
+            <label className="form-entries">
+                <p>Termin:</p>
                 <input
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
             </label>
-            <br />
-            <label>
-                Start:
+            <label className="form-entries">
+                <p>Start:</p>
                 <input
                     type="datetime-local"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
                 />
             </label>
-            <br />
-            <label>
-                Ende:
+            <label className="form-entries">
+                <p> Ende:</p>
                 <input
                     type="datetime-local"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
                 />
             </label>
-            <br />
             <button type="submit">Hinzufügen</button>
         </form>
     );

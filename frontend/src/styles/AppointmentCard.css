@@ -1,0 +1,20 @@
+.appointment-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 200px;
+    border: 1px solid #1a1a1a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    background-color: white;
+    color: #1a1a1a;
+    border-radius: 8px;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.appointment-description {
+    font-size: 1.6rem;
+    font-weight: bold;
+    flex-grow: 1;
+}

@@ -7,6 +7,8 @@ import org.example.backend.repository.AppointmentRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Repository
@@ -19,5 +21,9 @@ public class AppointmentService {
     public Appointment createAppointment(AppointmentDTO appointmentDTO) {
         Appointment newAppointment = new Appointment(utilService.generateId(), appointmentDTO.description(),appointmentDTO.startTime(),appointmentDTO.endTime());
         return appointmentRepository.save(newAppointment);
+    }
+
+    public List<Appointment> getAllAppointments() {
+        return appointmentRepository.findAll();
     }
 }

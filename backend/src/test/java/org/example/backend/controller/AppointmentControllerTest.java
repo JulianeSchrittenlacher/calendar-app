@@ -1,5 +1,7 @@
 package org.example.backend.controller;
 
+import org.example.backend.model.Appointment;
+import org.example.backend.repository.AppointmentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.Instant;
+import java.util.List;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -17,6 +22,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 class AppointmentControllerTest {
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     @Test
     void createAppointment_ShouldReturnAppointment_WhenCalledWithAppointmentDTO() throws Exception {
@@ -39,5 +46,27 @@ class AppointmentControllerTest {
                         }
                         """))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+    }
+
+    @Test
+    void getAllAppointments_ShouldReturnAppointmentList_whenCalledInitially() {
+        appointmentRepository.saveAll(List.of(
+                (new Appointment("1","test", Instant.parse("2024-07-16T09:00:00Z"),Instant.parse("2024-07-16T10:00:00Z")))
+        ));
+
+        try {
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/calender"))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().json("""
+                            [{
+                          "id": "1",
+                          "description": "test",
+                          "startTime": "2024-07-16T09:00:00Z",
+                          "endTime": "2024-07-16T10:00:00Z"
+                        }]
+                        """));
+        } catch (Exception e ){
+            throw new NullPointerException(e.getMessage());
+        }
     }
 }

@@ -7,6 +7,8 @@ import org.example.backend.service.AppointmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/calender")
 @RequiredArgsConstructor
@@ -18,6 +20,12 @@ public class AppointmentController {
     @PostMapping("/create")
     public Appointment createAppointment(@RequestBody AppointmentDTO appointmentDTO) {
         return appointmentService.createAppointment(appointmentDTO);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public List<Appointment> getAllAppointments() {
+        return appointmentService.getAllAppointments();
     }
 
 
