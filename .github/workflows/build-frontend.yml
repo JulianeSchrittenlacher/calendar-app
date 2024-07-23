@@ -2,7 +2,7 @@ name: sonarcloud-setup-frontend
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "prototyp" ]
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:

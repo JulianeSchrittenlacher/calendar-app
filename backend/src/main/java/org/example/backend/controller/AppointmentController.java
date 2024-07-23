@@ -28,6 +28,12 @@ public class AppointmentController {
         return appointmentService.getAllAppointments();
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{id}")
+    public void deleteAppointment(@PathVariable String id) {
+        appointmentService.deleteAppointment(id);
+    }
+
 
 
 }

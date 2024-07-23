@@ -69,4 +69,12 @@ class AppointmentServiceTest {
         assertEquals(testAppointments, actual);
 
     }
+
+    @Test
+    void deleteAppointment_shouldDeleteAppointment_whenCalledWithId() {
+        //WHEN
+        appointmentService.deleteAppointment("1");
+        //THEN
+        verify(mockAppointmentRepository, times(1)).deleteById(anyString());
+    }
 }

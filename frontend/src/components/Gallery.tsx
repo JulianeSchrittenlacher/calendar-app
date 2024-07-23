@@ -4,19 +4,25 @@ import "../styles/Gallery.css";
 
 type GalleryProps = {
     appointments: Appointment[];
+    deleteAppointment: (id: string) => void;
 };
 
-export default function Gallery(props: Readonly<GalleryProps>) {
+export default function Gallery({appointments, deleteAppointment}: Readonly<GalleryProps>) {
     return (
         <div className="gallery">
-            {props.appointments
+            {appointments
                 .sort((a, b) => {
                     const dateA = new Date(a.startTime).getTime();
                     const dateB = new Date(b.startTime).getTime();
                     return dateA - dateB;
                 })
                 .map(appointment => (
-                    <AppointmentCard key={appointment.id} appointment={appointment} />
+                    <AppointmentCard key={appointment.id}
+                                     id={appointment.id}
+                                    description={appointment.description}
+                                    startTime={appointment.startTime}
+                                    endTime={appointment.endTime}
+                                    deleteAppointment={deleteAppointment}/>
                 ))
             }
         </div>

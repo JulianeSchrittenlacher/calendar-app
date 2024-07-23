@@ -7,12 +7,11 @@ function isIsoDateString(value: string): boolean {
     return isoDatePattern.test(value);
 }
 
-type AppointmentCardProps = {
-    appointment: Appointment;
+type AppointmentCardProps = Appointment & {
+    deleteAppointment: (id:string) => void;
 }
 
-export default function AppointmentCard({ appointment }: Readonly<AppointmentCardProps>) {
-    const { startTime, endTime, description } = appointment;
+export default function AppointmentCard({ id, description, startTime, endTime, deleteAppointment}: Readonly<AppointmentCardProps>) {
 
     const parseDate = (date: string | Date): Date => {
         return typeof date === 'string' && isIsoDateString(date) ? new Date(date) : new Date(date.toString());
@@ -30,6 +29,7 @@ export default function AppointmentCard({ appointment }: Readonly<AppointmentCar
             <p className="appointment-description">{description}</p>
             <p>Beginn: {formatDate(startDate)}</p>
             <p>Ende: {formatDate(endDate)}</p>
+            <button onClick={() => deleteAppointment(id)}>Löschen</button>
         </article>
     );
 }

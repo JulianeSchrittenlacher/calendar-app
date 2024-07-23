@@ -49,12 +49,10 @@ class AppointmentControllerTest {
     }
 
     @Test
-    void getAllAppointments_ShouldReturnAppointmentList_whenCalledInitially() {
+    void getAllAppointments_ShouldReturnAppointmentList_whenCalledInitially() throws Exception {
         appointmentRepository.saveAll(List.of(
                 (new Appointment("1","test", Instant.parse("2024-07-16T09:00:00Z"),Instant.parse("2024-07-16T10:00:00Z")))
         ));
-
-        try {
             mockMvc.perform(MockMvcRequestBuilders.get("/api/calender"))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.content().json("""
@@ -65,8 +63,12 @@ class AppointmentControllerTest {
                           "endTime": "2024-07-16T10:00:00Z"
                         }]
                         """));
-        } catch (Exception e ){
-            throw new NullPointerException(e.getMessage());
-        }
+    }
+
+    @Test
+    void deleteAppointment_ShouldReturnHttpOK_WhenCalledWithId() throws Exception {
+        appointmentRepository.save(new Appointment("1","test", Instant.parse("2024-07-16T09:00:00Z"),Instant.parse("2024-07-16T10:00:00Z")));
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/calender/{id}","1"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
