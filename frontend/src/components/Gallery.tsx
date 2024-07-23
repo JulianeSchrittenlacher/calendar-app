@@ -5,9 +5,10 @@ import "../styles/Gallery.css";
 type GalleryProps = {
     appointments: Appointment[];
     deleteAppointment: (id: string) => void;
+    updateAppointment: (id: string, updatedAppointment: Appointment) => void;
 };
 
-export default function Gallery({appointments, deleteAppointment}: Readonly<GalleryProps>) {
+export default function Gallery({appointments, deleteAppointment, updateAppointment}: Readonly<GalleryProps>) {
     return (
         <div className="gallery">
             {appointments
@@ -22,7 +23,8 @@ export default function Gallery({appointments, deleteAppointment}: Readonly<Gall
                                     description={appointment.description}
                                     startTime={appointment.startTime}
                                     endTime={appointment.endTime}
-                                    deleteAppointment={deleteAppointment}/>
+                                    deleteAppointment={deleteAppointment}
+                                    updateAppointment={updateAppointment}/>
                 ))
             }
         </div>

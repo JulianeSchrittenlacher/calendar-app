@@ -4,6 +4,8 @@ import {Appointment} from "./types/Appointment.ts";
 import Gallery from "./components/Gallery.tsx";
 import {useEffect, useState} from "react";
 import "./App.css"
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 export default function App() {
     const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -34,6 +36,12 @@ export default function App() {
             .catch(error => console.log(error));
     }
 
+    function updateAppointment(id:string, updatedAppointment:Appointment) {
+        axios.put("api/calender/" + id, updatedAppointment)
+            .then(getAppointments)
+            .catch(error => console.log("Error updating Appointment " + error))
+    }
+
 
     useEffect(() => {
     getAppointments()
@@ -42,7 +50,7 @@ export default function App() {
     return (
         <>
             <Header createAppointment={createAppointment}></Header>
-            <Gallery appointments={appointments} deleteAppointment={deleteAppointment}></Gallery>
+            <Gallery appointments={appointments} deleteAppointment={deleteAppointment} updateAppointment={updateAppointment}></Gallery>
         </>
     )
 
