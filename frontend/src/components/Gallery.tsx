@@ -22,7 +22,8 @@ export default function Gallery({appointments, deleteAppointment}: Readonly<Gall
                                     description={appointment.description}
                                     startTime={appointment.startTime}
                                     endTime={appointment.endTime}
-                                    deleteAppointment={deleteAppointment}/>
+                                    deleteAppointment={deleteAppointment}
+                                    />
                 ))
             }
         </div>

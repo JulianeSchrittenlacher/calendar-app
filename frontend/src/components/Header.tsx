@@ -4,11 +4,14 @@ import "../styles/Header.css"
 
 type HeaderProps = {
     createAppointment: (newAppointment:Appointment) => void,
+    updateAppointment: (id:string, updatedAppointment:Appointment) => void,
 }
 
 
 export default function Header(props: Readonly<HeaderProps>) {
+
     return (
+        <>
         <div className="header-container">
             <div className="app-header">
                 <h1>Familienkalender</h1>
@@ -16,8 +19,9 @@ export default function Header(props: Readonly<HeaderProps>) {
                 <h2>Termine für Herz und Seele</h2>
             </div>
             <div>
-                <AppointmentForm createAppointment={props.createAppointment}/>
+                <AppointmentForm createAppointment={props.createAppointment} updateAppointment={props.updateAppointment}/>
             </div>
         </div>
+        </>
     );
 }

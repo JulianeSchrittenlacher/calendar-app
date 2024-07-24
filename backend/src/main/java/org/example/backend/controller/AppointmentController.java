@@ -1,6 +1,7 @@
 package org.example.backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.exceptions.AppointmentNotFoundException;
 import org.example.backend.model.Appointment;
 import org.example.backend.model.AppointmentDTO;
 import org.example.backend.service.AppointmentService;
@@ -32,6 +33,12 @@ public class AppointmentController {
     @DeleteMapping("/{id}")
     public void deleteAppointment(@PathVariable String id) {
         appointmentService.deleteAppointment(id);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public Appointment updateAppointment(@PathVariable String id, @RequestBody AppointmentDTO appointmentDTO) throws AppointmentNotFoundException {
+        return appointmentService.updateAppointment(id, appointmentDTO);
     }
 
 
