@@ -30,7 +30,14 @@ public class GlobalExceptionHandlerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/calender/123")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"description\":\"New Description\",\"startTime\":\"2023-07-22T10:00:00\",\"endTime\":\"2023-07-22T11:00:00\"}"))
+                .content("""
+                        {
+                          "description": "Meeting with team",
+                          "startTime": "2024-07-16T09:00:00Z",
+                          "endTime": "2024-07-16T10:00:00Z"
+                        }
+                    
+                        """))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("This is a AppointmentNotFoundException"));
     }
