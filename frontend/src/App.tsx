@@ -5,9 +5,10 @@ import Gallery from "./components/Gallery.tsx";
 import {useEffect, useState} from "react";
 import "./App.css"
 import {Route, Routes} from "react-router-dom";
-import AppointmentForm from "./components/AppointmentForm.tsx";
+import AppointmentEditForm from "./components/AppointmentEditForm.tsx";
 
 export default function App() {
+
     const [appointments, setAppointments] = useState<Appointment[]>([]);
 
     function getAppointments() {
@@ -37,7 +38,8 @@ export default function App() {
     }
 
     function updateAppointment(id:string, updatedAppointment:Appointment) {
-        axios.put("api/calender/" + id, updatedAppointment)
+        console.log("starte update");
+        axios.put("/api/calender/" + id, updatedAppointment)
             .then(getAppointments)
             .catch(error => console.log("Error updating Appointment " + error))
     }
@@ -53,15 +55,12 @@ export default function App() {
                 <Header createAppointment={createAppointment} updateAppointment={updateAppointment}></Header>
                 <Gallery appointments={appointments} deleteAppointment={deleteAppointment}></Gallery>
             </div>
-
-            {/*
             <div>
                 <Routes>
-                    <Route path="/todo/edit/:id" element={<AppointmentForm createAppointment={createAppointment} updateAppointment={updateAppointment}/>}/>
+                    <Route path="/edit/:id" element={<AppointmentEditForm appointments={appointments} updateAppointment={updateAppointment}/>}/>
                 </Routes>
-
             </div>
-            */}
+
 
 
         </>
