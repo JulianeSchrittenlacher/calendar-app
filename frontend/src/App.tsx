@@ -4,8 +4,8 @@ import {Appointment} from "./types/Appointment.ts";
 import Gallery from "./components/Gallery.tsx";
 import {useEffect, useState} from "react";
 import "./App.css"
-import {Simulate} from "react-dom/test-utils";
-import error = Simulate.error;
+import {Route, Routes} from "react-router-dom";
+import AppointmentForm from "./components/AppointmentForm.tsx";
 
 export default function App() {
     const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -49,9 +49,23 @@ export default function App() {
 
     return (
         <>
-            <Header createAppointment={createAppointment}></Header>
-            <Gallery appointments={appointments} deleteAppointment={deleteAppointment} updateAppointment={updateAppointment}></Gallery>
+            <div>
+                <Header createAppointment={createAppointment} updateAppointment={updateAppointment}></Header>
+                <Gallery appointments={appointments} deleteAppointment={deleteAppointment}></Gallery>
+            </div>
+
+            {/*
+            <div>
+                <Routes>
+                    <Route path="/todo/edit/:id" element={<AppointmentForm createAppointment={createAppointment} updateAppointment={updateAppointment}/>}/>
+                </Routes>
+
+            </div>
+            */}
+
+
         </>
+
     )
 
 }

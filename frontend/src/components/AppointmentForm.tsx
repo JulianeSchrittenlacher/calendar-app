@@ -6,6 +6,7 @@ import "../styles/AppointmentForm.css"
 
 type AppointmentFormProps = {
     createAppointment: (newAppointment: Appointment) => void,
+    updateAppointment: (id:string, updatedAppointment:Appointment) => void,
 };
 
 export default function AppointmentForm(props: Readonly<AppointmentFormProps>) {
