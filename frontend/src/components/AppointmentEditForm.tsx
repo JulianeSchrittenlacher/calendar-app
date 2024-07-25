@@ -2,62 +2,59 @@ import React, { useState } from "react";
 import { Appointment } from "../types/Appointment";
 import { toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
-import {Params, useNavigate, useParams} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {format, parseISO} from "date-fns";
 
 type AppointmentEditFormProps = {
-    appointments: Appointment[];
-    updateAppointment: (id:string, updatedAppointment:Appointment) => void,
+    appointment: Appointment;
+    updateAppointment: (id: string, updatedAppointment: Appointment) => void;
+    onClose: () => void;
 };
-
 export default function AppointmentEditForm(props: Readonly<AppointmentEditFormProps>) {
 
-    const { updateAppointment, appointments } = props;
-    const urlParams: Readonly<Params> =useParams();
-    const urlId: string = urlParams.id || "";
-    const currentAppointment: Appointment | undefined = appointments.find(appointment => appointment.id === urlId);
+    const { appointment, updateAppointment, onClose } = props;
     const navigate = useNavigate();
 
-    if (!currentAppointment) {
-        return <div>Warnung: Termin nicht gefunden!</div>;
+    function formatDate(inputDate?: Date): string {
+        if (!inputDate) {
+            inputDate = new Date();
+        }
+        return format(inputDate, "yyyy-MM-dd'T'HH:mm");
     }
 
-
-    const [newDescription, setNewDescription] = useState<string>(currentAppointment.description);
-    const [newStartTime, setNewStartTime] = useState<Date>(new Date(currentAppointment.startTime));
-    const [newEndTime, setNewEndTime] = useState<Date>(new Date(currentAppointment.endTime));
-
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const zonedStartTime = toZonedTime(newStartTime, timeZone);
-    const zonedEndTime = toZonedTime(newEndTime, timeZone);
+    const [newDescription, setNewDescription] = useState<string>(appointment ? appointment.description : "");
+    const [newStartTime, setNewStartTime] = useState<string>(appointment ? formatDate(appointment.startTime): formatDate(new Date()));
+    const [newEndTime, setNewEndTime] = useState<string>(appointment ? formatDate(appointment.endTime): formatDate(new Date()));
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log("bin im handleSubmit");
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const startDate = parseISO(newStartTime);
+        const endDate = parseISO(newEndTime);
+        const zonedStartTime = toZonedTime(startDate, timeZone);
+        const zonedEndTime = toZonedTime(endDate, timeZone);
 
-        if (zonedStartTime >= zonedEndTime) {
+        if (newStartTime >= newEndTime) {
             alert("Die Endzeit muss nach der Startzeit liegen!");
             return;
         }
 
         const updatedAppointment: Appointment = {
-            id: urlId,
+            id: appointment.id,
             description: newDescription,
-            startTime: newStartTime,
-            endTime: newEndTime,
+            startTime: zonedStartTime,
+            endTime: zonedEndTime,
         };
 
-        updateAppointment(urlId, updatedAppointment);
-    };
-
-    function handleCancel() {
-        console.log("habe gecancled");
+        updateAppointment(appointment.id, updatedAppointment);
+        onClose();
         navigate("/");
-    }
-
-    const formatDate = (date: Date) => {
-        return date.toISOString().slice(0, 16);
     };
+
+    if (!appointment) {
+        return <div>Warnung: Termin nicht gefunden!</div>;
+    }
 
     return (
 
@@ -66,7 +63,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                 <p>Termin:</p>
                 <input
                     type="text"
-                    placeholder={currentAppointment.description}
+                    placeholder={appointment.description}
                     value={newDescription}
                     onChange={(e) => setNewDescription(e.target.value)}
                 />
@@ -76,22 +73,26 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                 <p>Start:</p>
                 <input
                     type="datetime-local"
-                    value={formatDate(zonedStartTime)}
-                    onChange={(e) => setNewStartTime(new Date(e.target.value))}
+                    value={newStartTime}
+                    onChange={(e) => setNewStartTime(e.target.value)}
                 />
             </label>
             <label className="form-entries">
                 <p> Ende:</p>
                 <input
                     type="datetime-local"
-                    value={formatDate(zonedEndTime)}
-                    onChange={(e) => setNewEndTime(new Date(e.target.value))}
+                    value={newEndTime}
+                    onChange={(e) => setNewEndTime(e.target.value)}
                 />
             </label>
 
-            <button type="submit">Fertig</button>
-            <button onClick={handleCancel}>Abbrechen</button>
+            <div className="button-container">
+                <button onClick={onClose}>Abbrechen</button>
+                <button type="submit">Fertig</button>
+            </div>
+
+
         </form>
-)
+    )
 
 }

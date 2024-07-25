@@ -4,8 +4,6 @@ import {Appointment} from "./types/Appointment.ts";
 import Gallery from "./components/Gallery.tsx";
 import {useEffect, useState} from "react";
 import "./App.css"
-import {Route, Routes} from "react-router-dom";
-import AppointmentEditForm from "./components/AppointmentEditForm.tsx";
 
 export default function App() {
 
@@ -19,10 +17,9 @@ export default function App() {
     }
 
     function createAppointment(newAppointment: Appointment) {
-
         axios.post("/api/calender/create", newAppointment)
             .then(() => {
-                alert("Termin erfolgreich erstellt!");
+                alert("Termin erfolgreich erstellt.");
                 getAppointments();
             })
             .catch(error => console.log(error));
@@ -31,16 +28,18 @@ export default function App() {
     function deleteAppointment(id:string) {
         axios.delete(`/api/calender/${id}`)
             .then(() => {
-                alert("Termin gelöscht!");
+                alert("Termin gelöscht.")
                 getAppointments();
             })
             .catch(error => console.log(error));
     }
 
     function updateAppointment(id:string, updatedAppointment:Appointment) {
-        console.log("starte update");
         axios.put("/api/calender/" + id, updatedAppointment)
-            .then(getAppointments)
+            .then(() => {
+                alert("Termin geändert!");
+                getAppointments();
+            })
             .catch(error => console.log("Error updating Appointment " + error))
     }
 
@@ -53,13 +52,9 @@ export default function App() {
         <>
             <div>
                 <Header createAppointment={createAppointment} updateAppointment={updateAppointment}></Header>
-                <Gallery appointments={appointments} deleteAppointment={deleteAppointment}></Gallery>
+                <Gallery appointments={appointments} deleteAppointment={deleteAppointment} updateAppointment={updateAppointment}></Gallery>
             </div>
-            <div>
-                <Routes>
-                    <Route path="/edit/:id" element={<AppointmentEditForm appointments={appointments} updateAppointment={updateAppointment}/>}/>
-                </Routes>
-            </div>
+
 
 
 
