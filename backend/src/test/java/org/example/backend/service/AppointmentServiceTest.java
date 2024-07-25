@@ -1,6 +1,7 @@
 package org.example.backend.service;
 
 
+import org.example.backend.exceptions.AppointmentNotFoundException;
 import org.example.backend.model.Appointment;
 import org.example.backend.model.AppointmentDTO;
 import org.example.backend.repository.AppointmentRepository;
@@ -11,8 +12,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -76,5 +79,21 @@ class AppointmentServiceTest {
         appointmentService.deleteAppointment("1");
         //THEN
         verify(mockAppointmentRepository, times(1)).deleteById(anyString());
+    }
+
+    @Test
+    void updateAppointment_shouldUpdateAppointment_whenCalledWithId() throws AppointmentNotFoundException {
+        //WHEN
+        when(mockAppointmentRepository.findById("3")).thenReturn(Optional.of(testAppointments.get(2)));
+        Appointment actual = appointmentService.updateAppointment("3",
+                new AppointmentDTO("TestAppointment",
+                Instant.parse("2024-07-17T10:00:00Z"),
+                Instant.parse("2024-07-17T11:00:00Z")));
+        when(mockAppointmentRepository.save(any(Appointment.class))).thenReturn(actual);
+        //THEN
+        verify(mockAppointmentRepository).findById("3");
+        verify(mockAppointmentRepository).save(any(Appointment.class));
+        assertNotEquals(testAppointments.get(2), actual);
+
     }
 }
