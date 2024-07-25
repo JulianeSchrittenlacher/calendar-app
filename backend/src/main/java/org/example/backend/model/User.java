@@ -4,15 +4,13 @@ import lombok.With;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.Instant;
-
 @With
-@Document(collection = "appointments")
+@Document(collection = "user")
 
-public record Appointment(
+public record User(
         @Id String id,
-        String description,
-        Instant startTime,
-        Instant endTime
+        String name,
+        Role role,
+        String familyId
 ) {
 }
