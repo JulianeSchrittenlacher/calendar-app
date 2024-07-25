@@ -3,6 +3,7 @@ import { Appointment } from "../types/Appointment";
 import { toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
 import {Params, useNavigate, useParams} from "react-router-dom";
+import {format, parseISO} from "date-fns";
 
 type AppointmentEditFormProps = {
     appointments: Appointment[];
@@ -17,25 +18,27 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
     const currentAppointment: Appointment | undefined = appointments.find(appointment => appointment.id === urlId);
     const navigate = useNavigate();
 
-    if (!currentAppointment) {
-        return <div>Warnung: Termin nicht gefunden!</div>;
+    function formatDate(inputDate?: Date): string {
+        if (!inputDate) {
+            inputDate = new Date();
+        }
+        return format(inputDate, "yyyy-MM-dd'T'HH:mm");
     }
 
-
-    const [newDescription, setNewDescription] = useState<string>(currentAppointment.description);
-    const [newStartTime, setNewStartTime] = useState<Date>(new Date(currentAppointment.startTime));
-    const [newEndTime, setNewEndTime] = useState<Date>(new Date(currentAppointment.endTime));
-
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const zonedStartTime = toZonedTime(newStartTime, timeZone);
-    const zonedEndTime = toZonedTime(newEndTime, timeZone);
+    const [newDescription, setNewDescription] = useState<string>(currentAppointment ? currentAppointment.description : "");
+    const [newStartTime, setNewStartTime] = useState<string>(currentAppointment ? formatDate(currentAppointment.startTime): formatDate(new Date()));
+    const [newEndTime, setNewEndTime] = useState<string>(currentAppointment ? formatDate(currentAppointment.endTime): formatDate(new Date()));
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log("bin im handleSubmit");
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const startDate = parseISO(newStartTime);
+        const endDate = parseISO(newEndTime);
+        const zonedStartTime = toZonedTime(startDate, timeZone);
+        const zonedEndTime = toZonedTime(endDate, timeZone);
 
-        if (zonedStartTime >= zonedEndTime) {
+        if (newStartTime >= newEndTime) {
             alert("Die Endzeit muss nach der Startzeit liegen!");
             return;
         }
@@ -43,21 +46,21 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
         const updatedAppointment: Appointment = {
             id: urlId,
             description: newDescription,
-            startTime: newStartTime,
-            endTime: newEndTime,
+            startTime: zonedStartTime,
+            endTime: zonedEndTime,
         };
 
         updateAppointment(urlId, updatedAppointment);
+        navigate("/");
     };
 
     function handleCancel() {
-        console.log("habe gecancled");
         navigate("/");
     }
 
-    const formatDate = (date: Date) => {
-        return date.toISOString().slice(0, 16);
-    };
+    if (!currentAppointment) {
+        return <div>Warnung: Termin nicht gefunden!</div>;
+    }
 
     return (
 
@@ -76,22 +79,26 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                 <p>Start:</p>
                 <input
                     type="datetime-local"
-                    value={formatDate(zonedStartTime)}
-                    onChange={(e) => setNewStartTime(new Date(e.target.value))}
+                    value={newStartTime}
+                    onChange={(e) => setNewStartTime(e.target.value)}
                 />
             </label>
             <label className="form-entries">
                 <p> Ende:</p>
                 <input
                     type="datetime-local"
-                    value={formatDate(zonedEndTime)}
-                    onChange={(e) => setNewEndTime(new Date(e.target.value))}
+                    value={newEndTime}
+                    onChange={(e) => setNewEndTime(e.target.value)}
                 />
             </label>
 
-            <button type="submit">Fertig</button>
-            <button onClick={handleCancel}>Abbrechen</button>
+            <div className="button-container">
+                <button onClick={handleCancel}>Abbrechen</button>
+                <button type="submit">Fertig</button>
+            </div>
+
+
         </form>
-)
+    )
 
 }

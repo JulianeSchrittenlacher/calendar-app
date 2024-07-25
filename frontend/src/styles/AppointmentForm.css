@@ -55,3 +55,10 @@ button:hover {
     background-color: hotpink;
     color: #ffffff;
 }
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    font-size: 1.2rem;
+    gap: 30px;
+}

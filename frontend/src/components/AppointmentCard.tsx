@@ -30,10 +30,9 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
     return (
         <article className="appointment-card">
             <p className="appointment-description">{description}</p>
-            <p className="appointment-description">{id}</p>
             <p>Beginn: {formatDate(startDate)}</p>
             <p>Ende: {formatDate(endDate)}</p>
-            <div className="button-container">
+            <div className="card-button-container">
                 <button onClick={() => deleteAppointment(id)}>Löschen</button>
                 <Link className="button-link" to={"/edit/" + id}>Bearbeiten</Link>
             </div>

@@ -45,6 +45,7 @@ export default function AppointmentForm(props: Readonly<AppointmentFormProps>) {
             <label className="form-entries">
                 <p>Termin:</p>
                 <input
+                    placeholder={""}
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
