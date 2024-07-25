@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Appointment } from "../types/Appointment";
-import { format, parseISO } from 'date-fns';
-import { toZonedTime} from 'date-fns-tz';
+import React, {useState} from "react";
+import {Appointment} from "../types/Appointment";
+import {format, parseISO} from 'date-fns';
+import {toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
 
 type AppointmentFormProps = {
     createAppointment: (newAppointment: Appointment) => void,
-    updateAppointment: (id:string, updatedAppointment:Appointment) => void,
+    updateAppointment: (id: string, updatedAppointment: Appointment) => void,
 };
 
 export default function AppointmentAddForm(props: Readonly<AppointmentFormProps>) {
@@ -34,7 +34,6 @@ export default function AppointmentAddForm(props: Readonly<AppointmentFormProps>
             description,
             startTime: zonedStartTime,
             endTime: zonedEndTime,
-
         };
 
         props.createAppointment(newAppointment);
