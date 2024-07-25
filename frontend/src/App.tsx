@@ -4,8 +4,6 @@ import {Appointment} from "./types/Appointment.ts";
 import Gallery from "./components/Gallery.tsx";
 import {useEffect, useState} from "react";
 import "./App.css"
-import {Route, Routes} from "react-router-dom";
-import AppointmentEditForm from "./components/AppointmentEditForm.tsx";
 
 export default function App() {
 
@@ -54,13 +52,9 @@ export default function App() {
         <>
             <div>
                 <Header createAppointment={createAppointment} updateAppointment={updateAppointment}></Header>
-                <Gallery appointments={appointments} deleteAppointment={deleteAppointment}></Gallery>
+                <Gallery appointments={appointments} deleteAppointment={deleteAppointment} updateAppointment={updateAppointment}></Gallery>
             </div>
-            <div>
-                <Routes>
-                    <Route path="/edit/:id" element={<AppointmentEditForm appointments={appointments} updateAppointment={updateAppointment}/>}/>
-                </Routes>
-            </div>
+
 
 
 

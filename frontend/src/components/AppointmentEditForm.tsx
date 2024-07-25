@@ -2,20 +2,17 @@ import React, { useState } from "react";
 import { Appointment } from "../types/Appointment";
 import { toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
-import {Params, useNavigate, useParams} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {format, parseISO} from "date-fns";
 
 type AppointmentEditFormProps = {
-    appointments: Appointment[];
-    updateAppointment: (id:string, updatedAppointment:Appointment) => void,
+    appointment: Appointment;
+    updateAppointment: (id: string, updatedAppointment: Appointment) => void;
+    onClose: () => void;
 };
-
 export default function AppointmentEditForm(props: Readonly<AppointmentEditFormProps>) {
 
-    const { updateAppointment, appointments } = props;
-    const urlParams: Readonly<Params> =useParams();
-    const urlId: string = urlParams.id || "";
-    const currentAppointment: Appointment | undefined = appointments.find(appointment => appointment.id === urlId);
+    const { appointment, updateAppointment, onClose } = props;
     const navigate = useNavigate();
 
     function formatDate(inputDate?: Date): string {
@@ -25,9 +22,9 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
         return format(inputDate, "yyyy-MM-dd'T'HH:mm");
     }
 
-    const [newDescription, setNewDescription] = useState<string>(currentAppointment ? currentAppointment.description : "");
-    const [newStartTime, setNewStartTime] = useState<string>(currentAppointment ? formatDate(currentAppointment.startTime): formatDate(new Date()));
-    const [newEndTime, setNewEndTime] = useState<string>(currentAppointment ? formatDate(currentAppointment.endTime): formatDate(new Date()));
+    const [newDescription, setNewDescription] = useState<string>(appointment ? appointment.description : "");
+    const [newStartTime, setNewStartTime] = useState<string>(appointment ? formatDate(appointment.startTime): formatDate(new Date()));
+    const [newEndTime, setNewEndTime] = useState<string>(appointment ? formatDate(appointment.endTime): formatDate(new Date()));
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -44,21 +41,18 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
         }
 
         const updatedAppointment: Appointment = {
-            id: urlId,
+            id: appointment.id,
             description: newDescription,
             startTime: zonedStartTime,
             endTime: zonedEndTime,
         };
 
-        updateAppointment(urlId, updatedAppointment);
+        updateAppointment(appointment.id, updatedAppointment);
+        onClose();
         navigate("/");
     };
 
-    function handleCancel() {
-        navigate("/");
-    }
-
-    if (!currentAppointment) {
+    if (!appointment) {
         return <div>Warnung: Termin nicht gefunden!</div>;
     }
 
@@ -69,7 +63,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                 <p>Termin:</p>
                 <input
                     type="text"
-                    placeholder={currentAppointment.description}
+                    placeholder={appointment.description}
                     value={newDescription}
                     onChange={(e) => setNewDescription(e.target.value)}
                 />
@@ -93,7 +87,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
             </label>
 
             <div className="button-container">
-                <button onClick={handleCancel}>Abbrechen</button>
+                <button onClick={onClose}>Abbrechen</button>
                 <button type="submit">Fertig</button>
             </div>
 
