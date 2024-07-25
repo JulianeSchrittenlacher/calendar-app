@@ -9,7 +9,7 @@ type AppointmentFormProps = {
     updateAppointment: (id:string, updatedAppointment:Appointment) => void,
 };
 
-export default function AppointmentForm(props: Readonly<AppointmentFormProps>) {
+export default function AppointmentAddForm(props: Readonly<AppointmentFormProps>) {
     const [description, setDescription] = useState<string>("");
     const [startTime, setStartTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
     const [endTime, setEndTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
