@@ -3,15 +3,17 @@ import {Appointment} from "../types/Appointment";
 import {toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
 import {format, parseISO} from "date-fns";
+import useAppointmentStore from "../stores/useAppointmentStore.ts";
 
 type AppointmentEditFormProps = {
     appointment: Appointment;
-    updateAppointment: (id: string, updatedAppointment: Appointment) => void;
     onClose: () => void;
 };
 export default function AppointmentEditForm(props: Readonly<AppointmentEditFormProps>) {
 
-    const {appointment, updateAppointment, onClose} = props;
+    const {appointment, onClose} = props;
+
+    const updateAppointment: (id: string, updatedAppointment: Appointment) => void = useAppointmentStore(state => state.updateAppointment);
 
     function formatDate(inputDate?: Date): string {
         if (!inputDate) {
@@ -65,7 +67,6 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                     onChange={(e) => setNewDescription(e.target.value)}
                 />
             </label>
-
             <label className="form-entries">
                 <p>Start:</p>
                 <input
@@ -82,13 +83,10 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                     onChange={(e) => setNewEndTime(e.target.value)}
                 />
             </label>
-
             <div className="button-container">
                 <button onClick={onClose}>Abbrechen</button>
                 <button type="submit">Fertig</button>
             </div>
-
-
         </form>
     )
 

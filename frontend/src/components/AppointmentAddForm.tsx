@@ -3,16 +3,16 @@ import {Appointment} from "../types/Appointment";
 import {format, parseISO} from 'date-fns';
 import {toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
+import useAppointmentStore from "../stores/useAppointmentStore.ts";
 
-type AppointmentFormProps = {
-    createAppointment: (newAppointment: Appointment) => void,
-    updateAppointment: (id: string, updatedAppointment: Appointment) => void,
-};
+export default function AppointmentAddForm() {
 
-export default function AppointmentAddForm(props: Readonly<AppointmentFormProps>) {
+    const createAppointment: (newAppointment: Appointment) => void = useAppointmentStore(state => state.createAppointment);
+
     const [description, setDescription] = useState<string>("");
     const [startTime, setStartTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
     const [endTime, setEndTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
+
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -36,8 +36,9 @@ export default function AppointmentAddForm(props: Readonly<AppointmentFormProps>
             endTime: zonedEndTime,
         };
 
-        props.createAppointment(newAppointment);
+        createAppointment(newAppointment);
     };
+
 
     return (
         <form className="appointment-form" onSubmit={handleSubmit}>

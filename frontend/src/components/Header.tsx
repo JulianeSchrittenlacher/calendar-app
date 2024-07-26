@@ -1,14 +1,7 @@
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
-import {Appointment} from "../types/Appointment.ts";
 import "../styles/Header.css"
 
-type HeaderProps = {
-    createAppointment: (newAppointment: Appointment) => void,
-    updateAppointment: (id: string, updatedAppointment: Appointment) => void,
-}
-
-
-export default function Header(props: Readonly<HeaderProps>) {
+export default function Header() {
 
     return (
         <>
@@ -19,9 +12,7 @@ export default function Header(props: Readonly<HeaderProps>) {
                     <h2>Termine für Herz und Seele</h2>
                 </div>
                 <div>
-                    {}
-                    <AppointmentAddForm createAppointment={props.createAppointment}
-                                        updateAppointment={props.updateAppointment}/>
+                    <AppointmentAddForm/>
                 </div>
             </div>
         </>

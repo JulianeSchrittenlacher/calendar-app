@@ -1,14 +1,17 @@
 import {User} from "../types/User.ts";
 import React, {useState} from "react";
 import {Role} from "../types/Role.ts";
+import useUserStore from "../stores/useUserStore.ts";
 
 type UserAddFormProps = {
-    createUser: (newUser: User) => void;
     onClose: () => void;
 }
 
 export default function UserAddForm(props: Readonly<UserAddFormProps>) {
-    const {createUser, onClose} = props;
+    const {onClose} = props;
+
+    const createUser: (newUser: User) => void = useUserStore(state => state.createUser);
+
     const [name, setName] = useState<string>("");
     const [role, setRole] = useState<Role>(Role.CHILD);
     const [familyId, setFamilyId] = useState<string>("");
