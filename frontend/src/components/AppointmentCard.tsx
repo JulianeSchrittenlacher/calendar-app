@@ -1,5 +1,5 @@
-import { Appointment } from "../types/Appointment";
-import { DateOptions } from "../types/DateOptions";
+import {Appointment} from "../types/Appointment";
+import {DateOptions} from "../types/DateOptions";
 import "../styles/AppointmentCard.css";
 import Modal from './Modal';
 import AppointmentEditForm from './AppointmentEditForm';
@@ -17,7 +17,7 @@ type AppointmentCardProps = Appointment & {
 }
 
 export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
-    const { id, description, startTime, endTime, deleteAppointment, updateAppointment } = props;
+    const {id, description, startTime, endTime, deleteAppointment, updateAppointment} = props;
 
     const [modalOpen, setModalOpen] = useState(false);
     const navigate = useNavigate();
@@ -35,7 +35,6 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
 
     const handleEdit = () => {
         setModalOpen(true);
-        navigate(`/edit/${id}`);
     };
 
     const handleCloseModal = () => {

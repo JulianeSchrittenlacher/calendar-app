@@ -1,4 +1,4 @@
-import { Appointment } from "../types/Appointment";
+import {Appointment} from "../types/Appointment";
 import AppointmentCard from "./AppointmentCard";
 import "../styles/Gallery.css";
 
@@ -9,7 +9,11 @@ type GalleryProps = {
 
 };
 
-export default function Gallery({appointments, deleteAppointment, updateAppointment}: Readonly<GalleryProps>) {
+export default function AppointmentGallery({
+                                               appointments,
+                                               deleteAppointment,
+                                               updateAppointment
+                                           }: Readonly<GalleryProps>) {
     return (
         <div className="gallery">
             {appointments
