@@ -31,6 +31,7 @@ const useAppointmentStore = create<AppointmentState>()((set, get) => ({
     deleteAppointment: (id) => {
         axios.delete(`api/calender/${id}`)
             .then(() => {
+                get().getAppointments();
                 alert("Termin gelöscht.")
             })
             .catch(error => console.log(error));
