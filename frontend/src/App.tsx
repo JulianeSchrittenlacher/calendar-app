@@ -17,15 +17,13 @@ export default function App() {
         <>
             <Routes>
                 <Route path="/welcome" element={<WelcomePage/>}></Route>
-                <Route path="/" element={
+                <Route path="/shared-calendar" element={
                     <>
                         <Header/>
                         <AppointmentGallery/>
                     </>
                 }>
                 </Route>
-                {/*<Route path="/mama/mamas-calendar/edit/:id" element={<AppointmentCard appointment={a} updateAppointment={} onClose={}} deleteAppointment={}></AppointmentCard></Route>
-                */}
             </Routes>
         </>
     )

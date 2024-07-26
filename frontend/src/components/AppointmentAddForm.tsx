@@ -5,7 +5,11 @@ import {toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
 
-export default function AppointmentAddForm() {
+type AppointmentAddFormProps = {
+    onClose: () => void;
+}
+
+export default function AppointmentAddForm(props: Readonly<AppointmentAddFormProps>) {
 
     const createAppointment: (newAppointment: Appointment) => void = useAppointmentStore(state => state.createAppointment);
 
@@ -37,6 +41,7 @@ export default function AppointmentAddForm() {
         };
 
         createAppointment(newAppointment);
+        props.onClose();
     };
 
 
@@ -67,7 +72,11 @@ export default function AppointmentAddForm() {
                     onChange={(e) => setEndTime(e.target.value)}
                 />
             </label>
-            <button type="submit">Hinzufügen</button>
+            <div className="button-container">
+                <button onClick={props.onClose}>Abbrechen</button>
+                <button type="submit">Hinzufügen</button>
+            </div>
+
         </form>
     );
 }

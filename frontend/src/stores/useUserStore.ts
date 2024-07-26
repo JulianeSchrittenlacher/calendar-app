@@ -16,7 +16,7 @@ const useUserStore = create<UserState>()((set) => ({
             }));
         })
             .then(() => {
-                alert("Termin erfolgreich erstellt.");
+                alert("User erfolgreich erstellt.");
             }).catch(error => console.log(error))
     }
 }))

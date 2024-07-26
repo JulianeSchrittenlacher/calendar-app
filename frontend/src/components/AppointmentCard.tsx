@@ -4,7 +4,6 @@ import "../styles/AppointmentCard.css";
 import Modal from './Modal';
 import AppointmentEditForm from './AppointmentEditForm';
 import {useState} from "react";
-import {useNavigate} from "react-router-dom";
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
 
 function isIsoDateString(value: string): boolean {
@@ -21,7 +20,6 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
 
 
     const [modalOpen, setModalOpen] = useState(false);
-    const navigate = useNavigate();
 
     const parseDate = (date: string | Date): Date => {
         return typeof date === 'string' && isIsoDateString(date) ? new Date(date) : new Date(date.toString());
@@ -40,7 +38,6 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
 
     const handleCloseModal = () => {
         setModalOpen(false);
-        navigate('/');
     };
 
     return (
