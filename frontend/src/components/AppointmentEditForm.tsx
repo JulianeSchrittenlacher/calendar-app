@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { Appointment } from "../types/Appointment";
-import { toZonedTime} from 'date-fns-tz';
+import React, {useState} from "react";
+import {Appointment} from "../types/Appointment";
+import {toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
-import { useNavigate } from "react-router-dom";
 import {format, parseISO} from "date-fns";
+import useAppointmentStore from "../stores/useAppointmentStore.ts";
 
 type AppointmentEditFormProps = {
     appointment: Appointment;
-    updateAppointment: (id: string, updatedAppointment: Appointment) => void;
     onClose: () => void;
 };
 export default function AppointmentEditForm(props: Readonly<AppointmentEditFormProps>) {
 
-    const { appointment, updateAppointment, onClose } = props;
-    const navigate = useNavigate();
+    const {appointment, onClose} = props;
+
+    const updateAppointment: (id: string, updatedAppointment: Appointment) => void = useAppointmentStore(state => state.updateAppointment);
 
     function formatDate(inputDate?: Date): string {
         if (!inputDate) {
@@ -23,8 +23,8 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
     }
 
     const [newDescription, setNewDescription] = useState<string>(appointment ? appointment.description : "");
-    const [newStartTime, setNewStartTime] = useState<string>(appointment ? formatDate(appointment.startTime): formatDate(new Date()));
-    const [newEndTime, setNewEndTime] = useState<string>(appointment ? formatDate(appointment.endTime): formatDate(new Date()));
+    const [newStartTime, setNewStartTime] = useState<string>(appointment ? formatDate(appointment.startTime) : formatDate(new Date()));
+    const [newEndTime, setNewEndTime] = useState<string>(appointment ? formatDate(appointment.endTime) : formatDate(new Date()));
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -49,7 +49,6 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
 
         updateAppointment(appointment.id, updatedAppointment);
         onClose();
-        navigate("/");
     };
 
     if (!appointment) {
@@ -68,7 +67,6 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                     onChange={(e) => setNewDescription(e.target.value)}
                 />
             </label>
-
             <label className="form-entries">
                 <p>Start:</p>
                 <input
@@ -85,13 +83,10 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                     onChange={(e) => setNewEndTime(e.target.value)}
                 />
             </label>
-
             <div className="button-container">
                 <button onClick={onClose}>Abbrechen</button>
                 <button type="submit">Fertig</button>
             </div>
-
-
         </form>
     )
 

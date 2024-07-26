@@ -9,3 +9,35 @@ h1 {
     font-size: 3rem;
 }
 
+.plus-button {
+    width: 20rem;
+}
+
+
+.App-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.App-nav li {
+    margin: 0 15px;
+    margin-bottom: 2rem;
+}
+
+.App-nav a {
+    text-decoration: none;
+    color: #1a1a1a;
+    padding: 8px 20px;
+    border-radius: 40px;
+    transition: background-color 0.3s ease;
+}
+
+.App-nav a.active-link,
+.App-nav a:hover {
+    background-color: hotpink;
+}
+
+

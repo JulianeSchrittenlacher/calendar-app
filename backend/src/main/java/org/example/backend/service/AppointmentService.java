@@ -17,10 +17,10 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
 
     public Appointment createAppointment(AppointmentDTO appointmentDTO) {
-        Appointment newAppointment = new Appointment(utilService.generateId(), appointmentDTO.description(),appointmentDTO.startTime(),appointmentDTO.endTime());
+        Appointment newAppointment = new Appointment(utilService.generateId(), appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime());
         return appointmentRepository.save(newAppointment);
     }
-
+    
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
     }
