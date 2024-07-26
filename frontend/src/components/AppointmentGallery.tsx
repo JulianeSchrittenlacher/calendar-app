@@ -1,19 +1,11 @@
-import {Appointment} from "../types/Appointment";
 import AppointmentCard from "./AppointmentCard";
 import "../styles/Gallery.css";
+import {Appointment} from "../types/Appointment.ts";
+import useAppointmentStore from "../stores/useAppointmentStore.ts";
 
-type GalleryProps = {
-    appointments: Appointment[];
-    deleteAppointment: (id: string) => void;
-    updateAppointment: (id: string, updatedAppointment: Appointment) => void;
+export default function AppointmentGallery() {
+    const appointments: Appointment[] = useAppointmentStore(state => state.appointments);
 
-};
-
-export default function AppointmentGallery({
-                                               appointments,
-                                               deleteAppointment,
-                                               updateAppointment
-                                           }: Readonly<GalleryProps>) {
     return (
         <div className="gallery">
             {appointments
@@ -23,15 +15,7 @@ export default function AppointmentGallery({
                     return dateA - dateB;
                 })
                 .map(appointment => (
-                    <AppointmentCard
-                        key={appointment.id}
-                        id={appointment.id}
-                        description={appointment.description}
-                        startTime={appointment.startTime}
-                        endTime={appointment.endTime}
-                        deleteAppointment={deleteAppointment}
-                        updateAppointment={updateAppointment}
-                    />
+                    <AppointmentCard key={appointment.id} appointment={appointment}/>
                 ))
             }
         </div>
