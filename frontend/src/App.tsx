@@ -19,7 +19,7 @@ export default function App() {
     return (
         <>
             <Routes>
-                <Route path="/welcome" element={<WelcomePage/>}></Route>
+                <Route path="/" element={<WelcomePage/>}></Route>
                 <Route path="/shared-calendar" element={
                     <>
                         <Header/>
