@@ -51,4 +51,12 @@ class UserServiceTest {
         verify(mockUtilService).generateId();
     }
 
+    @Test
+    void getAllUsers_shouldReturnAllUsers_whenCalledWith() {
+        when(mockUserRepository.findAll()).thenReturn(testUser);
+        List<User> actual = userService.getAllUsers();
+        verify(mockUserRepository).findAll();
+        assertEquals(testUser, actual);
+    }
+
 }
