@@ -5,12 +5,15 @@ import {Route, Routes} from "react-router-dom";
 import WelcomePage from "./pages/WelcomePage.tsx";
 import useAppointmentStore from "./stores/useAppointmentStore.ts";
 import {useEffect} from "react";
+import useUserStore from "./stores/useUserStore.ts";
 
 export default function App() {
     const getAppointments: () => void = useAppointmentStore(state => state.getAppointments);
+    const getUsers: () => void = useUserStore(state => state.getUsers);
 
     useEffect(() => {
         getAppointments();
+        getUsers();
     }, []);
 
     return (

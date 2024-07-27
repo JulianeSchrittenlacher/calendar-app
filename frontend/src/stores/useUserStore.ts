@@ -4,11 +4,17 @@ import {User} from "../types/User.ts";
 
 interface UserState {
     users: User[];
+    getUsers: () => void;
     createUser: (newUser: User) => void;
 }
 
-const useUserStore = create<UserState>()((set) => ({
+const useUserStore = create<UserState>()((set, get) => ({
     users: [],
+    getUsers: () => {
+        axios.get("api/user").then(response => {
+            set(({users: response.data}))
+        }).catch(error => console.log(error))
+    },
     createUser: (newUser) => {
         axios.post("api/user/create", newUser).then(response => {
             set(state => ({
@@ -16,6 +22,7 @@ const useUserStore = create<UserState>()((set) => ({
             }));
         })
             .then(() => {
+                get().getUsers();
                 alert("User erfolgreich erstellt.");
             }).catch(error => console.log(error))
     }
