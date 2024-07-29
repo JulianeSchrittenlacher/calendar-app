@@ -52,20 +52,16 @@ public class UserControllerTest {
         userRepository.saveAll(List.of(
                 new User("1", "John Doe", Role.ADULT, "1")));
 
-        try {
-            mockMvc.perform(MockMvcRequestBuilders.get("/api/user"))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.content().json("""
-                            [{
-                                    "id": "1",
-                                    "name": "John Doe",
-                                    "role": "ADULT",
-                                    "familyId": "1"
-                            }]
-                            """));
-        } catch (NullPointerException e) {
-            throw new NullPointerException(e.getMessage());
-        }
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/user"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("""
+                        [{
+                                "id": "1",
+                                "name": "John Doe",
+                                "role": "ADULT",
+                                "familyId": "1"
+                        }]
+                        """));
     }
 
     @Test
