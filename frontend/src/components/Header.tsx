@@ -18,7 +18,7 @@ export default function Header() {
     };
 
     const renderForm = () => {
-        if (location.pathname === '/welcome') {
+        if (location.pathname === '/') {
             return <UserAddForm onClose={handleCloseModal}/>;
         } else if (location.pathname === '/shared-calendar') {
             return <AppointmentAddForm onClose={handleCloseModal}/>;
@@ -40,7 +40,7 @@ export default function Header() {
             <nav className="App-nav">
                 <ul>
                     <li>
-                        <NavLink to="/welcome" className={({isActive}) => (isActive ? "active-link" : "")}>
+                        <NavLink to="/" className={({isActive}) => (isActive ? "active-link" : "")}>
                             Home
                         </NavLink>
                     </li>
@@ -52,12 +52,10 @@ export default function Header() {
                 </ul>
             </nav>
 
-
             <Modal show={modalOpen} onClose={handleCloseModal}>
                 <>
                     {renderForm()}
                 </>
-
             </Modal>
         </>
     );

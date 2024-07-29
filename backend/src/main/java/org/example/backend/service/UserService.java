@@ -6,6 +6,8 @@ import org.example.backend.model.UserDTO;
 import org.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 
@@ -16,5 +18,13 @@ public class UserService {
     public User createUser(UserDTO userDTO) {
         User newUser = new User(utilService.generateId(), userDTO.name(), userDTO.role(), userDTO.familyId());
         return userRepository.save(newUser);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public void deleteUser(String id) {
+        userRepository.deleteById(id);
     }
 }

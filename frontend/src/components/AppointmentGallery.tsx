@@ -15,7 +15,7 @@ export default function AppointmentGallery() {
                     return dateA - dateB;
                 })
                 .map(appointment => (
-                    <AppointmentCard key={appointment.id} appointment={appointment}/>
+                    <AppointmentCard appointment={appointment}/>
                 ))
             }
         </div>
