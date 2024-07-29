@@ -67,4 +67,11 @@ public class UserControllerTest {
             throw new NullPointerException(e.getMessage());
         }
     }
+
+    @Test
+    void deleteUser_shouldDeleteUser_whenCalled() throws Exception {
+        userRepository.save(new User("1", "Name", Role.CHILD, "1"));
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/1"))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
 }

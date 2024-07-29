@@ -27,4 +27,10 @@ public class UserController {
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable String id) {
+        userService.deleteUser(id);
+    }
 }
