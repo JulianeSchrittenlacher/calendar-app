@@ -7,6 +7,8 @@ import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/user")
 @RequiredArgsConstructor
@@ -18,5 +20,11 @@ public class UserController {
     @PostMapping("/create")
     public User createUser(@RequestBody UserDTO userDTO) {
         return userService.createUser(userDTO);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 }
