@@ -6,6 +6,7 @@ interface UserState {
     users: User[];
     getUsers: () => void;
     createUser: (newUser: User) => void;
+    deleteUser: (id: string) => void;
 }
 
 const useUserStore = create<UserState>()((set, get) => ({
@@ -25,6 +26,14 @@ const useUserStore = create<UserState>()((set, get) => ({
                 get().getUsers();
                 alert("User erfolgreich erstellt.");
             }).catch(error => console.log(error))
+    },
+    deleteUser: (id: string) => {
+        axios.delete(`api/user/${id}`)
+            .then(() => {
+                get().getUsers();
+                alert("User gelöscht.")
+            })
+            .catch(error => console.log(error));
     }
 }))
 export default useUserStore;
