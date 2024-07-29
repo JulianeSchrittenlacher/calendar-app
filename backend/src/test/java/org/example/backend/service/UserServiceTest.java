@@ -59,4 +59,20 @@ class UserServiceTest {
         assertEquals(testUser, actual);
     }
 
+    @Test
+    void deleteUser_shouldDeleteUser_whenCalledWithValidId() {
+        //GIVEN
+        when(mockUserRepository.save(any(User.class))).thenReturn(testUser.getFirst());
+        mockUserRepository.save(testUser.getFirst());
+        String id = testUser.getFirst().id();
+        when(mockUserRepository.existsById(id)).thenReturn(true);
+
+        //WHEN
+        userService.deleteUser(id);
+
+        //THEN
+        verify(mockUserRepository).deleteById(id);
+        when(mockUserRepository.existsById(id)).thenReturn(false);
+        assertFalse(mockUserRepository.existsById(id));
+    }
 }
