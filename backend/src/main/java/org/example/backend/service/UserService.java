@@ -7,6 +7,7 @@ import org.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -26,5 +27,13 @@ public class UserService {
 
     public void deleteUser(String id) {
         userRepository.deleteById(id);
+    }
+
+    public User updateUser(String id, UserDTO userDTO) {
+        User userToUpdate = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
+        return userRepository.save(userToUpdate
+                .withName(userDTO.name())
+                .withRole(userDTO.role())
+                .withFamilyId(userDTO.familyId()));
     }
 }

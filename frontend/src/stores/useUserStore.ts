@@ -7,6 +7,7 @@ interface UserState {
     getUsers: () => void;
     createUser: (newUser: User) => void;
     deleteUser: (id: string) => void;
+    updateUser: (id: string, updatedUser: User) => void;
 }
 
 const useUserStore = create<UserState>()((set, get) => ({
@@ -34,6 +35,18 @@ const useUserStore = create<UserState>()((set, get) => ({
                 alert("User gelöscht.")
             })
             .catch(error => console.log(error));
+    },
+    updateUser: (id, updatedUser) => {
+        axios.put(`api/user/${id}`, updatedUser).then(response => {
+            set((state) => ({
+                users: state.users.map(user => updatedUser.id === id ? response.data : user)
+            }));
+        })
+            .then(() => {
+                get().getUsers();
+                alert("User geändert!");
+            })
+            .catch(error => console.log("Error updating user " + error))
     }
 }))
 export default useUserStore;
