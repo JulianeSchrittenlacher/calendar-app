@@ -10,11 +10,11 @@ interface AppointmentState {
     updateAppointment: (id: string, updatedAppointment: Appointment) => void;
 }
 
-const useAppointmentStore = create<AppointmentState>()((set, get) => ({
+const useAppointmentStore = create<AppointmentState>()((set) => ({
     appointments: [],
     getAppointments: () => {
         axios.get("api/calender").then(response => {
-            set(({appointments: response.data}))
+            set({appointments: response.data})
         }).catch(error => console.log(error))
     },
     createAppointment: (newAppointment) => {
@@ -22,16 +22,16 @@ const useAppointmentStore = create<AppointmentState>()((set, get) => ({
             set(state => ({
                 appointments: [...state.appointments, response.data]
             }));
+            alert("Termin erfolgreich erstellt.");
         })
-            .then(() => {
-                get().getAppointments();
-                alert("Termin erfolgreich erstellt.");
-            }).catch(error => console.log(error))
+            .catch(error => console.log(error))
     },
     deleteAppointment: (id) => {
         axios.delete(`api/calender/${id}`)
             .then(() => {
-                get().getAppointments();
+                set(state => ({
+                    appointments: state.appointments.filter(appointment => appointment.id !== id)
+                }));
                 alert("Termin gelöscht.")
             })
             .catch(error => console.log(error));
@@ -39,13 +39,10 @@ const useAppointmentStore = create<AppointmentState>()((set, get) => ({
     updateAppointment: (id, updatedAppointment) => {
         axios.put(`api/calender/${id}`, updatedAppointment).then(response => {
             set((state) => ({
-                appointments: state.appointments.map(appointment => updatedAppointment.id === id ? response.data : appointment)
+                appointments: state.appointments.map(appointment => appointment.id === id ? response.data : appointment)
             }));
+            alert("Termin geändert!");
         })
-            .then(() => {
-                get().getAppointments();
-                alert("Termin geändert!");
-            })
             .catch(error => console.log("Error updating Appointment " + error))
     }
 }))
