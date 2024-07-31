@@ -11,6 +11,7 @@
     border-radius: 8px;
     text-align: center;
     flex-grow: 1;
+    position: relative;
 }
 
 .appointment-description {
@@ -26,16 +27,15 @@
     font-size: 1.2rem;
 }
 
-.button-link {
-    padding: 8px 16px;
-    background-color: #333;
+.login-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background-color: #1a1a1a;
     color: white;
-    border: none;
     border-radius: 8px;
-    text-align: center;
-    text-decoration: none;
     cursor: pointer;
-
 }
 
 .button-link:hover {

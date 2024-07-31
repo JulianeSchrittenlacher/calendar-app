@@ -9,6 +9,8 @@ type UserCardProps = {
 }
 export default function UserCard(props: Readonly<UserCardProps>) {
     const deleteUser: (id: string) => void = useUserStore(state => state.deleteUser);
+    const setCurrentUser = useUserStore(state => state.setCurrentUser);
+    const currentUser = useUserStore(state => state.currentUser);
 
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -20,8 +22,13 @@ export default function UserCard(props: Readonly<UserCardProps>) {
         setModalOpen(false);
     };
 
+    const handleLogin = () => {
+        setCurrentUser(props.user);
+    };
+
     return (
         <article className="appointment-card">
+            {!currentUser && <button className="login-button" onClick={handleLogin}>Login</button>}
             <p>{props.user.name}</p>
             <p>{props.user.role}</p>
             <div className="card-button-container">

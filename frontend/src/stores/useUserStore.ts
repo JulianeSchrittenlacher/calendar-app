@@ -4,14 +4,17 @@ import {User} from "../types/User.ts";
 
 interface UserState {
     users: User[];
+    currentUser: User | null;
     getUsers: () => void;
     createUser: (newUser: User) => void;
     deleteUser: (id: string) => void;
     updateUser: (id: string, updatedUser: User) => void;
+    setCurrentUser: (user: User | null) => void;
 }
 
 const useUserStore = create<UserState>()((set) => ({
     users: [],
+    currentUser: null,
     getUsers: () => {
         axios.get("api/user").then(response => {
             set({users: response.data});
@@ -45,6 +48,7 @@ const useUserStore = create<UserState>()((set) => ({
             alert("User geändert!");
         })
             .catch(error => console.log("Error updating user " + error))
-    }
+    },
+    setCurrentUser: (user) => set({currentUser: user}),
 }))
 export default useUserStore;
