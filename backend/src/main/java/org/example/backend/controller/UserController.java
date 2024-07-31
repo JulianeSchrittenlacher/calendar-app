@@ -33,4 +33,10 @@ public class UserController {
     public void deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
     }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable String id, @RequestBody UserDTO userDTO) {
+        return userService.updateUser(id, userDTO);
+    }
 }

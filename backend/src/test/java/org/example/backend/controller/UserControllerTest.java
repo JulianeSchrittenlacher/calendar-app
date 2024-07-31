@@ -70,4 +70,28 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/1"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
+
+    @Test
+    void updateUser_shouldUpdateUser_whenCalled() throws Exception {
+        userRepository.saveAll(List.of(new User("1", "name", Role.CHILD, "1")));
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/user/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                        "name": "newName",
+                                        "role": "CHILD",
+                                        "familyId": "1"
+                                }
+
+                                """))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().json("""
+                        {
+                                "id": "1",
+                                "name": "newName",
+                                "role": "CHILD",
+                                "familyId": "1"
+                        }
+                        """));
+    }
 }

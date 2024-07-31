@@ -10,6 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -74,5 +75,17 @@ class UserServiceTest {
         verify(mockUserRepository).deleteById(id);
         when(mockUserRepository.existsById(id)).thenReturn(false);
         assertFalse(mockUserRepository.existsById(id));
+    }
+
+    @Test
+    void updateUser_shouldUpdateUser_whenCalledWithValidId() {
+        //WHEN
+        when(mockUserRepository.findById("2")).thenReturn(Optional.of(testUser.get(1)));
+        User actual = userService.updateUser("2", new UserDTO("Mama", Role.ADULT, "family123"));
+        when(mockUserRepository.save(any(User.class))).thenReturn(actual);
+        //THEN
+        verify(mockUserRepository).findById("2");
+        verify(mockUserRepository).save(any(User.class));
+        assertNotEquals(testUser.get(1), actual);
     }
 }
