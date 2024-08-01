@@ -18,6 +18,8 @@ export default function App() {
         getUsers();
     }, []);
 
+    console.log(currentUser?.id);
+
     return (
         <>
             <Routes>

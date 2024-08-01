@@ -14,7 +14,7 @@ interface UserState {
 
 const useUserStore = create<UserState>()((set) => ({
     users: [],
-    currentUser: null,
+    currentUser: JSON.parse(localStorage.getItem('currentUser') || 'null'),
     getUsers: () => {
         axios.get("api/user").then(response => {
             set({users: response.data});
@@ -49,6 +49,9 @@ const useUserStore = create<UserState>()((set) => ({
         })
             .catch(error => console.log("Error updating user " + error))
     },
-    setCurrentUser: (user) => set({currentUser: user}),
+    setCurrentUser: (user) => {
+        set({currentUser: user});
+        localStorage.setItem('currentUser', JSON.stringify(user));
+    },
 }))
 export default useUserStore;
