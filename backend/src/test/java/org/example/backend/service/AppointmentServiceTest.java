@@ -30,14 +30,23 @@ class AppointmentServiceTest {
     void setUp() {
         mockAppointmentRepository = mock(AppointmentRepository.class);
         mockUtilService = mock(UtilService.class);
-        appointmentService = new AppointmentService(mockUtilService,mockAppointmentRepository);
-        testAppointments = new ArrayList<>(){{
-            add(new Appointment("1","test1",Instant.parse("2024-07-17T10:00:00Z"),
-                    Instant.parse("2024-07-17T11:00:00Z")));
-            add(new Appointment("2","test2",Instant.parse("2025-07-17T10:00:00Z"),
-                    Instant.parse("2025-07-17T11:00:00Z")));
-            add(new Appointment("3","test3",Instant.parse("2026-07-17T10:00:00Z"),
-                    Instant.parse("2026-07-17T11:00:00Z")));
+        appointmentService = new AppointmentService(mockUtilService, mockAppointmentRepository);
+        testAppointments = new ArrayList<>() {{
+            add(new Appointment("1", "test1", Instant.parse("2024-07-17T10:00:00Z"),
+                    Instant.parse("2024-07-17T11:00:00Z"), new ArrayList<>() {{
+                add("participant1");
+                add("participant2");
+                add("participant3");
+            }}));
+            add(new Appointment("2", "test2", Instant.parse("2025-07-17T10:00:00Z"),
+                    Instant.parse("2025-07-17T11:00:00Z"), new ArrayList<>() {{
+                add("participant3");
+                add("participant4");
+            }}));
+            add(new Appointment("3", "test3", Instant.parse("2026-07-17T10:00:00Z"),
+                    Instant.parse("2026-07-17T11:00:00Z"), new ArrayList<>() {{
+                add("participant1");
+            }}));
         }};
     }
 
@@ -47,9 +56,12 @@ class AppointmentServiceTest {
         AppointmentDTO appointmentDTO = new AppointmentDTO(
                 "TestAppointment",
                 Instant.parse("2024-07-17T10:00:00Z"),
-                Instant.parse("2024-07-17T11:00:00Z")
+                Instant.parse("2024-07-17T11:00:00Z"),
+                new ArrayList<>() {{
+                    add("participant1");
+                }}
         );
-        Appointment expected = new Appointment("Test ID", appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime());
+        Appointment expected = new Appointment("Test ID", appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime(), appointmentDTO.participantIds());
 
         //WHEN
         when(mockAppointmentRepository.save(expected)).thenReturn(expected);
@@ -87,8 +99,11 @@ class AppointmentServiceTest {
         when(mockAppointmentRepository.findById("3")).thenReturn(Optional.of(testAppointments.get(2)));
         Appointment actual = appointmentService.updateAppointment("3",
                 new AppointmentDTO("TestAppointment",
-                Instant.parse("2024-07-17T10:00:00Z"),
-                Instant.parse("2024-07-17T11:00:00Z")));
+                        Instant.parse("2024-07-17T10:00:00Z"),
+                        Instant.parse("2024-07-17T11:00:00Z"),
+                        new ArrayList<>() {{
+                            add("participant1");
+                        }}));
         when(mockAppointmentRepository.save(any(Appointment.class))).thenReturn(actual);
         //THEN
         verify(mockAppointmentRepository).findById("3");

@@ -13,12 +13,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-
 class AppointmentControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -27,22 +27,23 @@ class AppointmentControllerTest {
 
     @Test
     void createAppointment_ShouldReturnAppointment_WhenCalledWithAppointmentDTO() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/calender/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {
-                          "description": "Meeting with team",
-                          "startTime": "2024-07-16T09:00:00Z",
-                          "endTime": "2024-07-16T10:00:00Z"
-                        }
-                    
-                        """))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/calendar/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "description": "Meeting with team",
+                                  "startTime": "2024-07-16T09:00:00Z",
+                                  "endTime": "2024-07-16T10:00:00Z",
+                                  "participantIds": ["participant1", "participant2"]
+                                }
+                                """))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json("""
                         {
                           "description": "Meeting with team",
                           "startTime": "2024-07-16T09:00:00Z",
-                          "endTime": "2024-07-16T10:00:00Z"
+                          "endTime": "2024-07-16T10:00:00Z",
+                          "participantIds": ["participant1", "participant2"]
                         }
                         """))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
@@ -51,47 +52,57 @@ class AppointmentControllerTest {
     @Test
     void getAllAppointments_ShouldReturnAppointmentList_whenCalledInitially() throws Exception {
         appointmentRepository.saveAll(List.of(
-                (new Appointment("1","test", Instant.parse("2024-07-16T09:00:00Z"),Instant.parse("2024-07-16T10:00:00Z")))
+                (new Appointment("1", "test", Instant.parse("2024-07-16T09:00:00Z"), Instant.parse("2024-07-16T10:00:00Z"), new ArrayList<>() {{
+                    add("participant1");
+                    add("participant2");
+                }}))
         ));
-            mockMvc.perform(MockMvcRequestBuilders.get("/api/calender"))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.content().json("""
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/calendar"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("""
                             [{
                           "id": "1",
                           "description": "test",
                           "startTime": "2024-07-16T09:00:00Z",
-                          "endTime": "2024-07-16T10:00:00Z"
+                          "endTime": "2024-07-16T10:00:00Z",
+                          "participantIds": ["participant1", "participant2"]
                         }]
                         """));
     }
 
     @Test
     void deleteAppointment_ShouldReturnHttpOK_WhenCalledWithId() throws Exception {
-        appointmentRepository.save(new Appointment("1","test", Instant.parse("2024-07-16T09:00:00Z"),Instant.parse("2024-07-16T10:00:00Z")));
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/calender/{id}","1"))
+        appointmentRepository.save(new Appointment("1", "test", Instant.parse("2024-07-16T09:00:00Z"), Instant.parse("2024-07-16T10:00:00Z"), new ArrayList<>() {{
+            add("participant1");
+        }}));
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/calendar/{id}", "1"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
     void updateAppointment_ShouldReturnHttpOK_WhenCalledWithId() throws Exception {
-        appointmentRepository.save(new Appointment("1","test", Instant.parse("2024-07-16T09:00:00Z"),Instant.parse("2024-07-16T10:00:00Z")));
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/calender/{id}","1")
-        .contentType(MediaType.APPLICATION_JSON)
-                .content("""
+        appointmentRepository.save(new Appointment("1", "test", Instant.parse("2024-07-16T09:00:00Z"), Instant.parse("2024-07-16T10:00:00Z"), new ArrayList<>() {{
+            add("participant1");
+            add("participant2");
+        }}));
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/calendar/{id}", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                 {
+                                  "description": "test",
+                                  "startTime": "2024-07-16T09:00:00Z",
+                                  "endTime": "2024-07-16T10:00:00Z",
+                                  "participantIds": ["participant1", "participant2"]
+                                }
+                                """))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().json("""
                          {
                           "description": "test",
                           "startTime": "2024-07-16T09:00:00Z",
-                          "endTime": "2024-07-16T10:00:00Z"
+                          "endTime": "2024-07-16T10:00:00Z",
+                          "participantIds": ["participant1", "participant2"]
                         }
-                    
-                        """))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().json("""
-                          {
-                           "description": "test",
-                           "startTime": "2024-07-16T09:00:00Z",
-                           "endTime": "2024-07-16T10:00:00Z"
-                         }
-                         """));
+                        """));
     }
 }
