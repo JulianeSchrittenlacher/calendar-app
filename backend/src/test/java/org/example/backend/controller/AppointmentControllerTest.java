@@ -34,7 +34,7 @@ class AppointmentControllerTest {
                                   "description": "Meeting with team",
                                   "startTime": "2024-07-16T09:00:00Z",
                                   "endTime": "2024-07-16T10:00:00Z",
-                                  "participantIds": ["participant1", "participant2"]
+                                  "userIds": ["participant1", "participant2"]
                                 }
                                 """))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -43,7 +43,7 @@ class AppointmentControllerTest {
                           "description": "Meeting with team",
                           "startTime": "2024-07-16T09:00:00Z",
                           "endTime": "2024-07-16T10:00:00Z",
-                          "participantIds": ["participant1", "participant2"]
+                          "userIds": ["participant1", "participant2"]
                         }
                         """))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
@@ -65,7 +65,7 @@ class AppointmentControllerTest {
                           "description": "test",
                           "startTime": "2024-07-16T09:00:00Z",
                           "endTime": "2024-07-16T10:00:00Z",
-                          "participantIds": ["participant1", "participant2"]
+                          "userIds": ["participant1", "participant2"]
                         }]
                         """));
     }
@@ -92,7 +92,7 @@ class AppointmentControllerTest {
                                   "description": "test",
                                   "startTime": "2024-07-16T09:00:00Z",
                                   "endTime": "2024-07-16T10:00:00Z",
-                                  "participantIds": ["participant1", "participant2"]
+                                  "userIds": ["participant1", "participant2"]
                                 }
                                 """))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -101,7 +101,7 @@ class AppointmentControllerTest {
                           "description": "test",
                           "startTime": "2024-07-16T09:00:00Z",
                           "endTime": "2024-07-16T10:00:00Z",
-                          "participantIds": ["participant1", "participant2"]
+                          "userIds": ["participant1", "participant2"]
                         }
                         """));
     }
