@@ -6,6 +6,7 @@ import {format, parseISO} from "date-fns";
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
 import {User} from "../types/User.ts";
 import useUserStore from "../stores/useUserStore.ts";
+import UserSelector from "./UserSelector.tsx";
 
 type AppointmentEditFormProps = {
     appointment: Appointment;
@@ -88,31 +89,11 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                     onChange={(e) => setNewEndTime(e.target.value)}
                 />
             </label>
-            <label className="form-entries">
-                <p>Teilnehmer:</p>
-                <ul className="no-bullets">
-                    {users.map(user => (
-                        <li key={user.id}>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    value={user.id}
-                                    checked={selectedUserIds.includes(user.id)}
-                                    onChange={(e) => {
-                                        const userId = e.target.value;
-                                        setSelectedUserIds(prev =>
-                                            e.target.checked
-                                                ? [...prev, userId]
-                                                : prev.filter(id => id !== userId)
-                                        );
-                                    }}
-                                />
-                                {user.name}
-                            </label>
-                        </li>
-                    ))}
-                </ul>
-            </label>
+            <UserSelector
+                users={users}
+                selectedUserIds={selectedUserIds}
+                setSelectedUserIds={setSelectedUserIds}
+            />
             <div className="button-container">
                 <button type="button" onClick={onClose}>Abbrechen</button>
                 <button type="submit">Fertig</button>
