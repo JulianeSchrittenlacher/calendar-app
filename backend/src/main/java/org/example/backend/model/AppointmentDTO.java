@@ -11,6 +11,6 @@ public record AppointmentDTO(
         String description,
         Instant startTime,
         Instant endTime,
-        List<String> participantIds
+        List<String> userIds
 ) {
 }

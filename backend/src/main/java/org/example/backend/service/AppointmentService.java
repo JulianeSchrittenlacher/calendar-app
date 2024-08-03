@@ -17,7 +17,7 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
 
     public Appointment createAppointment(AppointmentDTO appointmentDTO) {
-        Appointment newAppointment = new Appointment(utilService.generateId(), appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime(), appointmentDTO.participantIds());
+        Appointment newAppointment = new Appointment(utilService.generateId(), appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime(), appointmentDTO.userIds());
         return appointmentRepository.save(newAppointment);
     }
 
@@ -34,7 +34,8 @@ public class AppointmentService {
         Appointment updatedAppointment = foundAppointment
                 .withDescription(appointmentDTO.description())
                 .withStartTime(appointmentDTO.startTime())
-                .withEndTime(appointmentDTO.endTime());
+                .withEndTime(appointmentDTO.endTime())
+                .withUserIds(appointmentDTO.userIds());
         return appointmentRepository.save(updatedAppointment);
     }
 }

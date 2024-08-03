@@ -4,6 +4,8 @@ import {toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
 import {format, parseISO} from "date-fns";
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
+import {User} from "../types/User.ts";
+import useUserStore from "../stores/useUserStore.ts";
 
 type AppointmentEditFormProps = {
     appointment: Appointment;
@@ -14,6 +16,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
     const {appointment, onClose} = props;
 
     const updateAppointment: (id: string, updatedAppointment: Appointment) => void = useAppointmentStore(state => state.updateAppointment);
+    const users: User[] = useUserStore(state => state.users);
 
     function formatDate(inputDate?: Date): string {
         if (!inputDate) {
@@ -25,6 +28,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
     const [newDescription, setNewDescription] = useState<string>(appointment ? appointment.description : "");
     const [newStartTime, setNewStartTime] = useState<string>(appointment ? formatDate(appointment.startTime) : formatDate(new Date()));
     const [newEndTime, setNewEndTime] = useState<string>(appointment ? formatDate(appointment.endTime) : formatDate(new Date()));
+    const [selectedUserIds, setSelectedUserIds] = useState<string[]>(appointment.userIds);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -45,6 +49,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
             description: newDescription,
             startTime: zonedStartTime,
             endTime: zonedEndTime,
+            userIds: selectedUserIds,
         };
 
         updateAppointment(appointment.id, updatedAppointment);
@@ -83,8 +88,33 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                     onChange={(e) => setNewEndTime(e.target.value)}
                 />
             </label>
+            <label className="form-entries">
+                <p>Teilnehmer:</p>
+                <ul className="no-bullets">
+                    {users.map(user => (
+                        <li key={user.id}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    value={user.id}
+                                    checked={selectedUserIds.includes(user.id)}
+                                    onChange={(e) => {
+                                        const userId = e.target.value;
+                                        setSelectedUserIds(prev =>
+                                            e.target.checked
+                                                ? [...prev, userId]
+                                                : prev.filter(id => id !== userId)
+                                        );
+                                    }}
+                                />
+                                {user.name}
+                            </label>
+                        </li>
+                    ))}
+                </ul>
+            </label>
             <div className="button-container">
-                <button onClick={onClose}>Abbrechen</button>
+                <button type="button" onClick={onClose}>Abbrechen</button>
                 <button type="submit">Fertig</button>
             </div>
         </form>

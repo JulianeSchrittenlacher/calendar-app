@@ -13,12 +13,12 @@ interface AppointmentState {
 const useAppointmentStore = create<AppointmentState>()((set) => ({
     appointments: [],
     getAppointments: () => {
-        axios.get("api/calendar").then(response => {
+        axios.get("/api/calendar").then(response => {
             set({appointments: response.data})
         }).catch(error => console.log(error))
     },
     createAppointment: (newAppointment) => {
-        axios.post("api/calendar/create", newAppointment).then(response => {
+        axios.post("/api/calendar/create", newAppointment).then(response => {
             set(state => ({
                 appointments: [...state.appointments, response.data]
             }));
@@ -27,7 +27,7 @@ const useAppointmentStore = create<AppointmentState>()((set) => ({
             .catch(error => console.log(error))
     },
     deleteAppointment: (id) => {
-        axios.delete(`api/calendar/${id}`)
+        axios.delete(`/api/calendar/${id}`)
             .then(() => {
                 set(state => ({
                     appointments: state.appointments.filter(appointment => appointment.id !== id)
@@ -37,7 +37,7 @@ const useAppointmentStore = create<AppointmentState>()((set) => ({
             .catch(error => console.log(error));
     },
     updateAppointment: (id, updatedAppointment) => {
-        axios.put(`api/calendar/${id}`, updatedAppointment).then(response => {
+        axios.put(`/api/calendar/${id}`, updatedAppointment).then(response => {
             set((state) => ({
                 appointments: state.appointments.map(appointment => appointment.id === id ? response.data : appointment)
             }));

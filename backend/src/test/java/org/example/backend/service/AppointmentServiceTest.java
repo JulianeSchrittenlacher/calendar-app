@@ -61,7 +61,7 @@ class AppointmentServiceTest {
                     add("participant1");
                 }}
         );
-        Appointment expected = new Appointment("Test ID", appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime(), appointmentDTO.participantIds());
+        Appointment expected = new Appointment("Test ID", appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime(), appointmentDTO.userIds());
 
         //WHEN
         when(mockAppointmentRepository.save(expected)).thenReturn(expected);

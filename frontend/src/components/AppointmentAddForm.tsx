@@ -4,6 +4,8 @@ import {format, parseISO} from 'date-fns';
 import {toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
+import useUserStore from "../stores/useUserStore.ts";
+import {User} from "../types/User.ts";
 
 type AppointmentAddFormProps = {
     onClose: () => void;
@@ -12,11 +14,12 @@ type AppointmentAddFormProps = {
 export default function AppointmentAddForm(props: Readonly<AppointmentAddFormProps>) {
 
     const createAppointment: (newAppointment: Appointment) => void = useAppointmentStore(state => state.createAppointment);
+    const users: User[] = useUserStore(state => state.users);
 
     const [description, setDescription] = useState<string>("");
     const [startTime, setStartTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
     const [endTime, setEndTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
-
+    const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -38,6 +41,7 @@ export default function AppointmentAddForm(props: Readonly<AppointmentAddFormPro
             description,
             startTime: zonedStartTime,
             endTime: zonedEndTime,
+            userIds: selectedUserIds,
         };
 
         createAppointment(newAppointment);
@@ -71,6 +75,31 @@ export default function AppointmentAddForm(props: Readonly<AppointmentAddFormPro
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
                 />
+            </label>
+            <label className="form-entries">
+                <p>Teilnehmer:</p>
+                <ul className="no-bullets">
+                    {users.map(user => (
+                        <li key={user.id}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    value={user.id}
+                                    checked={selectedUserIds.includes(user.id)}
+                                    onChange={(e) => {
+                                        const userId = e.target.value;
+                                        setSelectedUserIds(prev =>
+                                            e.target.checked
+                                                ? [...prev, userId]
+                                                : prev.filter(id => id !== userId)
+                                        );
+                                    }}
+                                />
+                                {user.name}
+                            </label>
+                        </li>
+                    ))}
+                </ul>
             </label>
             <div className="button-container">
                 <button onClick={props.onClose}>Abbrechen</button>

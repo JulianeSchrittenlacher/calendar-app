@@ -2,7 +2,7 @@ import "../styles/Header.css"
 import {useState} from "react";
 import Modal from "./Modal.tsx";
 import UserAddForm from "./UserAddForm.tsx";
-import {NavLink, useLocation} from "react-router-dom";
+import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
 import useUserStore from "../stores/useUserStore.ts";
 
@@ -12,6 +12,7 @@ export default function Header() {
     const currentUser = useUserStore(state => state.currentUser);
     const setCurrentUser = useUserStore(state => state.setCurrentUser);
     const location = useLocation();
+    const navigate = useNavigate();
 
 
     const handleClick = () => {
@@ -24,7 +25,7 @@ export default function Header() {
     const renderForm = () => {
         if (location.pathname === '/') {
             return <UserAddForm onClose={handleCloseModal}/>;
-        } else if (location.pathname === '/shared-calendar') {
+        } else if (currentUser && (location.pathname === `/${currentUser.id}/shared-calendar` || location.pathname === `/${currentUser.id}/my-calendar`)) {
             return <AppointmentAddForm onClose={handleCloseModal}/>;
         }
         return null;
@@ -42,6 +43,7 @@ export default function Header() {
 
     const handleLogout = () => {
         setCurrentUser(null);
+        navigate("/");
     }
 
     return (

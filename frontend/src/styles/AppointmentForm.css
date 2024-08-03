@@ -62,3 +62,8 @@ button:hover {
     font-size: 1.2rem;
     gap: 30px;
 }
+
+.no-bullets {
+    list-style-type: none;
+    padding: 0;
+}

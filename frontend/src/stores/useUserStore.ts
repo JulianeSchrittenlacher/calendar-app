@@ -5,23 +5,27 @@ import {User} from "../types/User.ts";
 interface UserState {
     users: User[];
     currentUser: User | null;
+    setCurrentUser: (user: User | null) => void;
     getUsers: () => void;
     createUser: (newUser: User) => void;
     deleteUser: (id: string) => void;
     updateUser: (id: string, updatedUser: User) => void;
-    setCurrentUser: (user: User | null) => void;
 }
 
 const useUserStore = create<UserState>()((set) => ({
     users: [],
     currentUser: JSON.parse(localStorage.getItem('currentUser') || 'null'),
+    setCurrentUser: (user) => {
+        set({currentUser: user});
+        localStorage.setItem('currentUser', JSON.stringify(user));
+    },
     getUsers: () => {
-        axios.get("api/user").then(response => {
+        axios.get("/api/user").then(response => {
             set({users: response.data});
         }).catch(error => console.log(error))
     },
     createUser: (newUser) => {
-        axios.post("api/user/create", newUser).then(response => {
+        axios.post("/api/user/create", newUser).then(response => {
             set(state => ({
                 users: [...state.users, response.data]
             }));
@@ -30,7 +34,7 @@ const useUserStore = create<UserState>()((set) => ({
             .catch(error => console.log(error))
     },
     deleteUser: (id: string) => {
-        axios.delete(`api/user/${id}`)
+        axios.delete(`/api/user/${id}`)
             .then(() => {
                 set(state => ({
                     users: state.users.filter(user => user.id !== id)
@@ -40,7 +44,7 @@ const useUserStore = create<UserState>()((set) => ({
             .catch(error => console.log(error));
     },
     updateUser: (id, updatedUser) => {
-        axios.put(`api/user/${id}`, updatedUser).then(response => {
+        axios.put(`/api/user/${id}`, updatedUser).then(response => {
             set(state => {
                 const updatedUsers: User[] = state.users.map(user => user.id === id ? response.data : user);
                 return {users: updatedUsers};
@@ -48,10 +52,6 @@ const useUserStore = create<UserState>()((set) => ({
             alert("User geändert!");
         })
             .catch(error => console.log("Error updating user " + error))
-    },
-    setCurrentUser: (user) => {
-        set({currentUser: user});
-        localStorage.setItem('currentUser', JSON.stringify(user));
     },
 }))
 export default useUserStore;
