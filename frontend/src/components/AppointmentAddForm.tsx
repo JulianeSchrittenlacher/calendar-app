@@ -6,6 +6,7 @@ import "../styles/AppointmentForm.css"
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
 import useUserStore from "../stores/useUserStore.ts";
 import {User} from "../types/User.ts";
+import UserSelector from "./UserSelector.tsx";
 
 type AppointmentAddFormProps = {
     onClose: () => void;
@@ -76,31 +77,11 @@ export default function AppointmentAddForm(props: Readonly<AppointmentAddFormPro
                     onChange={(e) => setEndTime(e.target.value)}
                 />
             </label>
-            <label className="form-entries">
-                <p>Teilnehmer:</p>
-                <ul className="no-bullets">
-                    {users.map(user => (
-                        <li key={user.id}>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    value={user.id}
-                                    checked={selectedUserIds.includes(user.id)}
-                                    onChange={(e) => {
-                                        const userId = e.target.value;
-                                        setSelectedUserIds(prev =>
-                                            e.target.checked
-                                                ? [...prev, userId]
-                                                : prev.filter(id => id !== userId)
-                                        );
-                                    }}
-                                />
-                                {user.name}
-                            </label>
-                        </li>
-                    ))}
-                </ul>
-            </label>
+            <UserSelector
+                users={users}
+                selectedUserIds={selectedUserIds}
+                setSelectedUserIds={setSelectedUserIds}
+            />
             <div className="button-container">
                 <button onClick={props.onClose}>Abbrechen</button>
                 <button type="submit">Hinzufügen</button>
