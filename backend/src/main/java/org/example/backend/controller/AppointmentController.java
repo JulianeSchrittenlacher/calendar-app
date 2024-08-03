@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/calender")
+@RequestMapping("api/calendar")
 @RequiredArgsConstructor
 
 public class AppointmentController {
@@ -40,7 +40,6 @@ public class AppointmentController {
     public Appointment updateAppointment(@PathVariable String id, @RequestBody AppointmentDTO appointmentDTO) throws AppointmentNotFoundException {
         return appointmentService.updateAppointment(id, appointmentDTO);
     }
-
 
 
 }

@@ -42,11 +42,13 @@ export default function UserEditForm(props: Readonly<UserEditFormProps>) {
             </label>
             <label className="form-entries">
                 <p>Rolle:</p>
-                <input
-                    type="text"
+                <select
                     value={newRole}
                     onChange={(e) => setNewRole(e.target.value as Role)}
-                />
+                >
+                    <option value={Role.ADULT}>Adult</option>
+                    <option value={Role.CHILD}>Child</option>
+                </select>
             </label>
             <label className="form-entries">
                 <p> Familien-Id:</p>

@@ -10,23 +10,36 @@ import useUserStore from "./stores/useUserStore.ts";
 export default function App() {
     const getAppointments: () => void = useAppointmentStore(state => state.getAppointments);
     const getUsers: () => void = useUserStore(state => state.getUsers);
+    const currentUser = useUserStore(state => state.currentUser);
+
 
     useEffect(() => {
         getAppointments();
         getUsers();
     }, []);
 
+    console.log(currentUser?.id);
+
     return (
         <>
             <Routes>
                 <Route path="/" element={<WelcomePage/>}></Route>
-                <Route path="/shared-calendar" element={
+                {currentUser && (
                     <>
-                        <Header/>
-                        <AppointmentGallery/>
+                        <Route path={`/${currentUser.id}/shared-calendar`} element={
+                            <>
+                                <Header/>
+                                <AppointmentGallery/>
+                            </>
+                        }></Route>
+                        <Route path={`/${currentUser.id}/my-calendar`} element={
+                            <>
+                                <Header/>
+                                <AppointmentGallery/>
+                            </>
+                        }></Route>
                     </>
-                }>
-                </Route>
+                )}
             </Routes>
         </>
     )

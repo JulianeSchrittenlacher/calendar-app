@@ -9,13 +9,6 @@ h1 {
     font-size: 3rem;
 }
 
-.plus-button {
-    width: 10rem;
-    height: 5rem;
-    border-radius: 8px;
-}
-
-
 .App-nav ul {
     list-style-type: none;
     padding: 0;
@@ -40,6 +33,13 @@ h1 {
 .App-nav a.active-link,
 .App-nav a:hover {
     background-color: hotpink;
+}
+
+.header-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
 }
 
 

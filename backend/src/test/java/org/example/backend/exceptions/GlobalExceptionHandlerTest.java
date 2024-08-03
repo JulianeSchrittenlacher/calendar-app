@@ -28,16 +28,15 @@ public class GlobalExceptionHandlerTest {
         Mockito.when(appointmentService.updateAppointment(Mockito.any(String.class), Mockito.any(AppointmentDTO.class)))
                 .thenThrow(new AppointmentNotFoundException("This is a AppointmentNotFoundException"));
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/calender/123")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {
-                          "description": "Meeting with team",
-                          "startTime": "2024-07-16T09:00:00Z",
-                          "endTime": "2024-07-16T10:00:00Z"
-                        }
-                    
-                        """))
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/calendar/123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "description": "Meeting with team",
+                                  "startTime": "2024-07-16T09:00:00Z",
+                                  "endTime": "2024-07-16T10:00:00Z"
+                                }
+                                """))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("This is a AppointmentNotFoundException"));
     }

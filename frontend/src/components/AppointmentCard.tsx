@@ -5,6 +5,8 @@ import Modal from './Modal';
 import AppointmentEditForm from './AppointmentEditForm';
 import {useState} from "react";
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
+import useUserStore from "../stores/useUserStore.ts";
+import {User} from "../types/User.ts";
 
 function isIsoDateString(value: string): boolean {
     const isoDatePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|([+-]\d{2}:\d{2}))?$/;
@@ -17,6 +19,7 @@ type AppointmentCardProps = {
 
 export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
     const deleteAppointment: (id: string) => void = useAppointmentStore(state => state.deleteAppointment);
+    const users: User[] = useUserStore(state => state.users);
 
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -45,6 +48,9 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
             <p className="appointment-description">{props.appointment.description}</p>
             <p>Beginn: {formatDate(startDate)}</p>
             <p>Ende: {formatDate(endDate)}</p>
+            <p>Teilnehmer: {users.filter(user => props.appointment.userIds.includes(user.id))
+                .map(user => user.name)
+                .join(', ')}</p>
             <div className="card-button-container">
                 <button onClick={() => deleteAppointment(props.appointment.id)}>Löschen</button>
                 <button onClick={handleEdit}>Bearbeiten</button>
