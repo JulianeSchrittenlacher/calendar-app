@@ -32,6 +32,7 @@ export default function FamilyCard(props: Readonly<FamilyCardProps>) {
         <article className="appointment-card">
             {!currentFamily && <button className="login-button" onClick={handleLogin}>Login</button>}
             <p>{props.family.name}</p>
+            <p>{props.family.id}</p>
             <div className="card-button-container">
                 <button onClick={() => deleteFamily(props.family.id)}>Löschen</button>
                 <button onClick={handleEdit}>Bearbeiten</button>

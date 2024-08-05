@@ -2,6 +2,8 @@ import {User} from "../types/User.ts";
 import React, {useState} from "react";
 import {Role} from "../types/Role.ts";
 import useUserStore from "../stores/useUserStore.ts";
+import {Family} from "../types/Family.ts";
+import useFamilyStore from "../stores/useFamilyStore.ts";
 
 type UserAddFormProps = {
     onClose: () => void;
@@ -10,21 +12,24 @@ type UserAddFormProps = {
 export default function UserAddForm(props: Readonly<UserAddFormProps>) {
     const {onClose} = props;
 
-    const createUser: (newUser: User) => void = useUserStore(state => state.createUser);
+    const createUser: (newUser: User, familyId: string) => void = useUserStore(state => state.createUser);
+    const currentFamily: Family | null = useFamilyStore(state => state.currentFamily);
 
     const [name, setName] = useState<string>("");
     const [role, setRole] = useState<Role>(Role.CHILD);
-    const [familyId, setFamilyId] = useState<string>("");
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const newUser: User = {
-            id: "",
-            name,
-            role,
-            familyId,
+        if (currentFamily) {
+            const newUser: User = {
+                id: "",
+                name,
+                role,
+                familyId: currentFamily.id,
+            }
+            createUser(newUser, currentFamily.id);
         }
-        createUser(newUser);
+
         onClose();
     }
     return (
@@ -48,14 +53,6 @@ export default function UserAddForm(props: Readonly<UserAddFormProps>) {
                         <option value={Role.ADULT}>Adult</option>
                         <option value={Role.CHILD}>Child</option>
                     </select>
-                </label>
-                <label className="form-entries">
-                    <p> FamilyId</p>
-                    <input
-                        type="text"
-                        value={familyId}
-                        onChange={(e) => setFamilyId(e.target.value)}
-                    />
                 </label>
                 <div className="button-container">
                     <button onClick={onClose}>Abbrechen</button>

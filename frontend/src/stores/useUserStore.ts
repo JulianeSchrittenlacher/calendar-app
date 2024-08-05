@@ -7,7 +7,7 @@ interface UserState {
     currentUser: User | null;
     setCurrentUser: (user: User | null) => void;
     getUsers: () => void;
-    createUser: (newUser: User) => void;
+    createUser: (newUser: User, familyId: string) => void;
     deleteUser: (id: string) => void;
     updateUser: (id: string, updatedUser: User) => void;
 }
@@ -25,7 +25,7 @@ const useUserStore = create<UserState>()((set) => ({
         }).catch(error => console.log(error))
     },
     createUser: (newUser) => {
-        axios.post("/api/user/create", newUser).then(response => {
+        axios.post(`/api/user/create`, newUser).then(response => {
             set(state => ({
                 users: [...state.users, response.data]
             }));
