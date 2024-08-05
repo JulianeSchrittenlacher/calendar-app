@@ -3,4 +3,5 @@ export type Appointment = {
     description: string;
     startTime: Date;
     endTime: Date;
+    userIds: string[];
 }
