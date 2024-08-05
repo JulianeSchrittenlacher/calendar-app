@@ -24,6 +24,7 @@ export default function App() {
         <>
             <Routes>
                 <Route path="/" element={<WelcomePage/>}></Route>
+                <Route path={`/${currentFamily.id}`} element={<FamilyPage/>}></Route>
                 {currentUser && (
                     <>
                         <Route path={`/${currentUser.id}/shared-calendar`} element={
