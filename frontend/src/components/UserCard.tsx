@@ -31,7 +31,7 @@ export default function UserCard(props: Readonly<UserCardProps>) {
             {!currentUser && <button className="login-button" onClick={handleLogin}>Login</button>}
             <p>{props.user.name}</p>
             <p>{props.user.role}</p>
-            <p>{props.user.familyId}</p>
+            <p>Familien id: {props.user.familyId}</p>
             <div className="card-button-container">
                 <button onClick={() => deleteUser(props.user.id)}>Löschen</button>
                 <button onClick={handleEdit}>Bearbeiten</button>

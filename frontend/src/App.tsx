@@ -6,16 +6,21 @@ import WelcomePage from "./pages/WelcomePage.tsx";
 import useAppointmentStore from "./stores/useAppointmentStore.ts";
 import {useEffect} from "react";
 import useUserStore from "./stores/useUserStore.ts";
+import MyFamilyPage from "./pages/MyFamilyPage.tsx";
+import useFamilyStore from "./stores/useFamilyStore.ts";
 
 export default function App() {
     const getAppointments: () => void = useAppointmentStore(state => state.getAppointments);
     const getUsers: () => void = useUserStore(state => state.getUsers);
+    const getFamilies: () => void = useFamilyStore(state => state.getFamilies);
     const currentUser = useUserStore(state => state.currentUser);
+    const currentFamily = useFamilyStore(state => state.currentFamily);
 
 
     useEffect(() => {
         getAppointments();
         getUsers();
+        getFamilies()
     }, []);
 
     console.log(currentUser?.id);
@@ -24,7 +29,8 @@ export default function App() {
         <>
             <Routes>
                 <Route path="/" element={<WelcomePage/>}></Route>
-                <Route path={`/${currentFamily.id}`} element={<FamilyPage/>}></Route>
+                {currentFamily &&
+                    <Route path={`/${currentFamily.id}/my-family-page`} element={<MyFamilyPage/>}></Route>}
                 {currentUser && (
                     <>
                         <Route path={`/${currentUser.id}/shared-calendar`} element={
