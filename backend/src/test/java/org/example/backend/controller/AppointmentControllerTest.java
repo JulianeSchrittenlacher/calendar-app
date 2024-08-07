@@ -55,9 +55,10 @@ class AppointmentControllerTest {
                 (new Appointment("1", "test", Instant.parse("2024-07-16T09:00:00Z"), Instant.parse("2024-07-16T10:00:00Z"), new ArrayList<>() {{
                     add("participant1");
                     add("participant2");
-                }}))
+                }}, "12"))
         ));
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/calendar"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/calendar")
+                        .param("familyId", "12"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                             [{
@@ -65,7 +66,8 @@ class AppointmentControllerTest {
                           "description": "test",
                           "startTime": "2024-07-16T09:00:00Z",
                           "endTime": "2024-07-16T10:00:00Z",
-                          "userIds": ["participant1", "participant2"]
+                          "userIds": ["participant1", "participant2"],
+                          "familyId": "12",
                         }]
                         """));
     }
@@ -74,7 +76,7 @@ class AppointmentControllerTest {
     void deleteAppointment_ShouldReturnHttpOK_WhenCalledWithId() throws Exception {
         appointmentRepository.save(new Appointment("1", "test", Instant.parse("2024-07-16T09:00:00Z"), Instant.parse("2024-07-16T10:00:00Z"), new ArrayList<>() {{
             add("participant1");
-        }}));
+        }}, "12"));
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/calendar/{id}", "1"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -84,7 +86,7 @@ class AppointmentControllerTest {
         appointmentRepository.save(new Appointment("1", "test", Instant.parse("2024-07-16T09:00:00Z"), Instant.parse("2024-07-16T10:00:00Z"), new ArrayList<>() {{
             add("participant1");
             add("participant2");
-        }}));
+        }}, "12"));
         mockMvc.perform(MockMvcRequestBuilders.put("/api/calendar/{id}", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""

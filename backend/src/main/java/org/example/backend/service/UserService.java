@@ -21,8 +21,8 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsersOfAFamily(String familyId) {
+        return userRepository.findUsersByFamilyId(familyId);
     }
 
     public void deleteUser(String id) {

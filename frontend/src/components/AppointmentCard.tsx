@@ -51,6 +51,7 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
             <p>Teilnehmer: {users.filter(user => props.appointment.userIds.includes(user.id))
                 .map(user => user.name)
                 .join(', ')}</p>
+            <p>Familien Id: {props.appointment.familyId}</p>
             <div className="card-button-container">
                 <button onClick={() => deleteAppointment(props.appointment.id)}>Löschen</button>
                 <button onClick={handleEdit}>Bearbeiten</button>

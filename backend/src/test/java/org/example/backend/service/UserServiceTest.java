@@ -31,7 +31,7 @@ class UserServiceTest {
         userService = new UserService(mockUtilService, mockUserRepository);
         testUser = new ArrayList<>() {{
             add(new User("1", "John Doe", Role.ADULT, "family123"));
-            add(new User("2", "Jane Doe", Role.ADULT, "family456"));
+            add(new User("2", "Jane Doe", Role.ADULT, "family123"));
             add(new User("3", "Jimmy Doe", Role.CHILD, "family123"));
         }};
     }
@@ -53,10 +53,11 @@ class UserServiceTest {
     }
 
     @Test
-    void getAllUsers_shouldReturnAllUsers_whenCalledWith() {
-        when(mockUserRepository.findAll()).thenReturn(testUser);
-        List<User> actual = userService.getAllUsers();
-        verify(mockUserRepository).findAll();
+    void getAllUsersOfAFamily_shouldReturnAllUsersOfAFamily_whenCalledWithFamilyId() {
+        String familyId = "family123";
+        when(mockUserRepository.findUsersByFamilyId(familyId)).thenReturn(testUser);
+        List<User> actual = userService.getAllUsersOfAFamily(familyId);
+        verify(mockUserRepository).findUsersByFamilyId(familyId);
         assertEquals(testUser, actual);
     }
 

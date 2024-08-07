@@ -4,7 +4,7 @@ import axios from "axios";
 
 interface AppointmentState {
     appointments: Appointment[];
-    getAppointments: () => void;
+    getAppointments: (familyId: string) => void;
     createAppointment: (newAppointment: Appointment) => void;
     deleteAppointment: (id: string) => void;
     updateAppointment: (id: string, updatedAppointment: Appointment) => void;
@@ -12,8 +12,8 @@ interface AppointmentState {
 
 const useAppointmentStore = create<AppointmentState>()((set) => ({
     appointments: [],
-    getAppointments: () => {
-        axios.get("/api/calendar").then(response => {
+    getAppointments: (familyId: string) => {
+        axios.get(`/api/calendar`, {params: {familyId}}).then(response => {
             set({appointments: response.data})
         }).catch(error => console.log(error))
     },

@@ -6,6 +6,7 @@ import org.example.backend.model.UserDTO;
 import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,9 +24,15 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/{familyId}")
+    public List<User> getAllUsersOfAFamily(@PathVariable String familyId) {
+        try {
+            return userService.getAllUsersOfAFamily(familyId);
+        } catch (Exception e) {
+            // Log error and return a proper response
+            e.printStackTrace(); // For debugging
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error retrieving users", e);
+        }
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
