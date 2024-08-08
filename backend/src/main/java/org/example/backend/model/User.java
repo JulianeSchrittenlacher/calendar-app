@@ -9,7 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public record User(
         @Id String id,
-        String name,
+        String username,
+        String password,
         Role role,
         String familyId
 ) {

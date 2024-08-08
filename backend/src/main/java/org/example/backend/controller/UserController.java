@@ -1,10 +1,12 @@
 package org.example.backend.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.model.User;
 import org.example.backend.model.UserDTO;
 import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,6 +18,33 @@ import java.util.List;
 
 public class UserController {
     private final UserService userService;
+
+    @GetMapping
+    public String getMe() {
+        return SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+    }
+
+    @PostMapping("/login")
+    public String login() {
+        return SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+    }
+
+    @PostMapping("/register")
+    public void register(@RequestBody UserDTO newUser) {
+        userService.registerNewUser(newUser);
+    }
+
+    @GetMapping("/logout")
+    public void logout(HttpSession session) {
+        session.invalidate();
+        SecurityContextHolder.clearContext();
+    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create")
@@ -29,8 +58,6 @@ public class UserController {
         try {
             return userService.getAllUsersOfAFamily(familyId);
         } catch (Exception e) {
-            // Log error and return a proper response
-            e.printStackTrace(); // For debugging
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error retrieving users", e);
         }
     }

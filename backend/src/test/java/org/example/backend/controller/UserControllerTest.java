@@ -50,14 +50,15 @@ public class UserControllerTest {
     @Test
     void getAllUser_shouldReturnUserList_whenCalled() throws Exception {
         userRepository.saveAll(List.of(
-                new User("1", "John Doe", Role.ADULT, "1")));
+                new User("1", "John Doe", "123", Role.ADULT, "1")));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                         [{
                                 "id": "1",
-                                "name": "John Doe",
+                                "username": "John Doe",
+                                "password": "123",
                                 "role": "ADULT",
                                 "familyId": "1"
                         }]
@@ -66,19 +67,20 @@ public class UserControllerTest {
 
     @Test
     void deleteUser_shouldDeleteUser_whenCalled() throws Exception {
-        userRepository.save(new User("1", "Name", Role.CHILD, "1"));
+        userRepository.save(new User("1", "Name", "123", Role.CHILD, "1"));
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/1"))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test
     void updateUser_shouldUpdateUser_whenCalled() throws Exception {
-        userRepository.saveAll(List.of(new User("1", "name", Role.CHILD, "1")));
+        userRepository.saveAll(List.of(new User("1", "name", "123", Role.CHILD, "1")));
         mockMvc.perform(MockMvcRequestBuilders.put("/api/user/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                        "name": "newName",
+                                        "username": "newName",
+                                        "password": "123",
                                         "role": "CHILD",
                                         "familyId": "1"
                                 }
@@ -88,7 +90,8 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.content().json("""
                         {
                                 "id": "1",
-                                "name": "newName",
+                                "username": "newName",
+                                "password": "123",
                                 "role": "CHILD",
                                 "familyId": "1"
                         }
