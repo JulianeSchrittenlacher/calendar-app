@@ -39,13 +39,10 @@ export default function Header() {
 
     const getButtonText = () => {
 
-        if (location.pathname === "/") {
-            return "Familie hinzufügen"
-        }
-        if (currentFamily && location.pathname === `/${currentFamily.id}/my-family-page`) {
+        if (currentUser && location.pathname === `/my-family-page`) {
             return "Familienmitglied hinzufügen";
         }
-        if (currentUser && (location.pathname === `/${currentUser.id}/shared-calendar` || location.pathname === `/${currentUser.id}/my-calendar`)) {
+        if (currentUser && (location.pathname === `/shared-calendar` || location.pathname === `/${currentUser.id}/my-calendar`)) {
             return "Termin hinzufügen";
         }
         return "Hinzufügen";
@@ -53,7 +50,7 @@ export default function Header() {
 
     const handleLogout = () => {
         setCurrentUser(null);
-        currentFamily && navigate(`/${currentFamily.id}/my-family-page`);
+        currentFamily && navigate(`/my-family-page`);
     }
 
     const handleLogoutFamily = () => {
@@ -71,7 +68,7 @@ export default function Header() {
                 </div>
                 <div className="header-buttons">
                     <button onClick={handleClick}>{getButtonText()}</button>
-                    {currentUser && <button onClick={handleLogout}>Du bist {currentUser.name}! Logout?</button>}
+                    {currentUser && <button onClick={handleLogout}>Du bist {currentUser.username}! Logout?</button>}
                     {currentFamily && <button onClick={handleLogoutFamily}>Du gehörst zu Familie {currentFamily.name}!
                         Logout?</button>}
                 </div>

@@ -13,13 +13,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 
 public class UserController {
     private final UserService userService;
 
-    @GetMapping
+    @PostMapping
     public String getMe() {
         return SecurityContextHolder
                 .getContext()
@@ -36,8 +36,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody UserDTO newUser) {
-        userService.registerNewUser(newUser);
+    public User register(@RequestBody UserDTO newUser) {
+        return userService.registerNewUser(newUser);
     }
 
     @GetMapping("/logout")

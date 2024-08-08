@@ -32,7 +32,7 @@ export default function UserCard(props: Readonly<UserCardProps>) {
     return (
         <article className="appointment-card">
             {!currentUser && <button className="login-button" onClick={handleLogin}>Login</button>}
-            <p>{props.user.name}</p>
+            <p>{props.user.username}</p>
             <p>{props.user.role}</p>
             <p>Familien id: {props.user.familyId}</p>
             <div className="card-button-container">

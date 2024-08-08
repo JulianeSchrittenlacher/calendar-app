@@ -30,7 +30,7 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.username(), user.password(), Collections.emptyList());
     }
 
-    public void registerNewUser(UserDTO newUserDto) {
+    public User registerNewUser(UserDTO newUserDto) {
         User newUser = new User(
                 utilService.generateId(),
                 newUserDto.username(),
@@ -38,7 +38,7 @@ public class UserService implements UserDetailsService {
                 newUserDto.role(),
                 newUserDto.familyId()
         );
-        userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
 
     public User createUser(UserDTO userDTO) {

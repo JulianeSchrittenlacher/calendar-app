@@ -1,0 +1,40 @@
+import {FormEvent, useState} from "react";
+import useUserStore from "../stores/useUserStore.ts";
+import "../styles/AppointmentForm.css"
+
+type LoginFormProps = {
+    onClose: () => void;
+}
+
+export default function LoginForm(props: Readonly<LoginFormProps>) {
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const loginUser = useUserStore(state => state.loginUser);
+
+    function submitLogin(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        loginUser(username, password);
+        props.onClose();
+    }
+
+    return (
+        <>
+            <form className="user-form" onSubmit={submitLogin}>
+                <label className="form-entries">
+                    <p>Benutzername:</p>
+                    <input value={username} placeholder={"Please enter your Username"} type={"text"}
+                           onChange={e => setUsername(e.target.value)}/>
+                </label>
+                <label className="form-entries">
+                    <p>Passwort:</p>
+                    <input value={password} placeholder={"Please enter your Password"} type={"password"}
+                           onChange={e => setPassword(e.target.value)}/>
+                </label>
+                <div className="button-container">
+                    <button onClick={props.onClose}>Abbrechen</button>
+                    <button>Login</button>
+                </div>
+            </form>
+        </>
+    );
+}

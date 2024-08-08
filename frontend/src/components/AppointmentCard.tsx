@@ -49,7 +49,7 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
             <p>Beginn: {formatDate(startDate)}</p>
             <p>Ende: {formatDate(endDate)}</p>
             <p>Teilnehmer: {users.filter(user => props.appointment.userIds.includes(user.id))
-                .map(user => user.name)
+                .map(user => user.username)
                 .join(', ')}</p>
             <p>Familien Id: {props.appointment.familyId}</p>
             <div className="card-button-container">
