@@ -30,8 +30,8 @@ public class SecurityConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(requestAttributeHandler))
                 .authorizeHttpRequests(c -> {
-                    c.requestMatchers("/api/user/register", "POST").authenticated();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/user", "POST")).permitAll();
+                    c.requestMatchers("/api/user").permitAll();
+                    c.requestMatchers(new AntPathRequestMatcher("/api/user/*")).permitAll();
                     c.anyRequest().authenticated();
                 })
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))

@@ -19,7 +19,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping
+    @GetMapping
     public String getMe() {
         return SecurityContextHolder
                 .getContext()
@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login() {
+    public String loginUser() {
         return SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -36,12 +36,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody UserDTO newUser) {
+    public User registerUser(@RequestBody UserDTO newUser) {
         return userService.registerNewUser(newUser);
     }
 
     @GetMapping("/logout")
-    public void logout(HttpSession session) {
+    public void logoutUser(HttpSession session) {
         session.invalidate();
         SecurityContextHolder.clearContext();
     }
