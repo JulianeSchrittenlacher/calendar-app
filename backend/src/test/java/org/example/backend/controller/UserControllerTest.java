@@ -29,6 +29,44 @@ public class UserControllerTest {
     private UserRepository userRepository;
 
     @Test
+    void getMe_shouldReturnAnonymousUser_whenCalledWithoutLogin() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/user"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("anonymousUser"));
+    }
+
+    @Test
+    @WithMockUser(username = "testUser")
+    void getMe_shouldReturnUsername_whenCalledWithLogin() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/user"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("testUser"));
+    }
+
+    @Test
+    @WithMockUser(username = "testUser")
+    void loginUser_shouldReturnIsForbidden_whenCalledWithoutCSRF() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/login"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void loginUser_shouldReturn_whenCalledWithout() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/login"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "testUser")
+    void loginUser_shouldReturnUsername_whenUserIsLoggedIn() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/login")
+                        .with(csrf()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("testUser"));
+    }
+
+
+    @Test
     @WithMockUser
     void registerUser_shouldReturnUser_whenCalledWithUserDTO() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/user/register")
@@ -51,6 +89,21 @@ public class UserControllerTest {
                         """))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.password").exists());
+    }
+
+    @Test
+    @WithMockUser
+    void logoutUser_shouldReturnIsOk_whenCalled() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/user/logout")
+                        .with(csrf()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void logoutUser_shouldReturn_whenCalledWithoutMockUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/user/logout")
+                        .with(csrf()))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
     @Test

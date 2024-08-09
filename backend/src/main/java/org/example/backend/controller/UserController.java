@@ -19,6 +19,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public String getMe() {
         return SecurityContextHolder
@@ -27,6 +28,7 @@ public class UserController {
                 .getName();
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/login")
     public String loginUser() {
         return SecurityContextHolder
@@ -41,6 +43,7 @@ public class UserController {
         return userService.registerNewUser(newUser);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/logout")
     public void logoutUser(HttpSession session) {
         session.invalidate();

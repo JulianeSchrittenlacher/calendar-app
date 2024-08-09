@@ -6,9 +6,11 @@ import org.example.backend.model.UserDTO;
 import org.example.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,29 @@ class UserServiceTest {
             add(new User("2", "Jane Doe", "456", Role.ADULT, "family123"));
             add(new User("3", "Jimmy Doe", "789", Role.CHILD, "family123"));
         }};
+    }
+
+    @Test
+    void loadUserByUsername_shouldReturnUserDetail_whenCalledWithUsername() {
+        //GIVEN
+        User user = testUser.getFirst();
+        org.springframework.security.core.userdetails.User expectedUserDetails =
+                new org.springframework.security.core.userdetails.User(
+                        user.username(),
+                        user.password(),
+                        Collections.emptyList()
+                );
+
+        //WHEN
+        when(mockUserRepository.findByUsername(user.username())).thenReturn(Optional.of(user));
+        UserDetails actualUserDetails = userService.loadUserByUsername(user.username());
+
+        //THEN
+        assertEquals(expectedUserDetails.getUsername(), actualUserDetails.getUsername());
+        assertEquals(expectedUserDetails.getPassword(), actualUserDetails.getPassword());
+        assertEquals(expectedUserDetails.getAuthorities(), actualUserDetails.getAuthorities());
+        
+        verify(mockUserRepository).findByUsername(user.username());
     }
 
     @Test
