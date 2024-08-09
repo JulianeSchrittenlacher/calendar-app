@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -26,33 +29,37 @@ public class UserControllerTest {
     private UserRepository userRepository;
 
     @Test
-    void createUse_shouldReturnUser_whenCalledWithUserDTO() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/create")
+    @WithMockUser
+    void registerUser_shouldReturnUser_whenCalledWithUserDTO() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                  {
-                                         "name": "John Doe",
+                                         "username": "John Doe",
+                                         "password": "johndoe",
                                          "role": "ADULT",
                                          "familyId": "family123"
                                      }
-                                """))
+                                """).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json("""
                                 {
-                                         "name": "John Doe",
+                                         "username": "John Doe",
                                          "role": "ADULT",
                                          "familyId": "family123"
                                  }
                         """))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.password").exists());
     }
 
     @Test
+    @WithMockUser
     void getAllUser_shouldReturnUserList_whenCalled() throws Exception {
         userRepository.saveAll(List.of(
                 new User("1", "John Doe", "123", Role.ADULT, "1")));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/user"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/user/{familyId}", 1).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                         [{
@@ -62,17 +69,21 @@ public class UserControllerTest {
                                 "role": "ADULT",
                                 "familyId": "1"
                         }]
-                        """));
+                        """))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].password").exists());
     }
 
     @Test
+    @WithMockUser
     void deleteUser_shouldDeleteUser_whenCalled() throws Exception {
         userRepository.save(new User("1", "Name", "123", Role.CHILD, "1"));
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/1").with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test
+    @WithMockUser
     void updateUser_shouldUpdateUser_whenCalled() throws Exception {
         userRepository.saveAll(List.of(new User("1", "name", "123", Role.CHILD, "1")));
         mockMvc.perform(MockMvcRequestBuilders.put("/api/user/1")
@@ -85,7 +96,7 @@ public class UserControllerTest {
                                         "familyId": "1"
                                 }
 
-                                """))
+                                """).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json("""
                         {

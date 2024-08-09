@@ -41,11 +41,6 @@ public class UserService implements UserDetailsService {
         return userRepository.save(newUser);
     }
 
-    public User createUser(UserDTO userDTO) {
-        User newUser = new User(utilService.generateId(), userDTO.username(), userDTO.password(), userDTO.role(), userDTO.familyId());
-        return userRepository.save(newUser);
-    }
-
     public List<User> getAllUsersOfAFamily(String familyId) {
         return userRepository.findUsersByFamilyId(familyId);
     }

@@ -35,6 +35,7 @@ public class UserController {
                 .getName();
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
     public User registerUser(@RequestBody UserDTO newUser) {
         return userService.registerNewUser(newUser);
@@ -44,12 +45,6 @@ public class UserController {
     public void logoutUser(HttpSession session) {
         session.invalidate();
         SecurityContextHolder.clearContext();
-    }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/create")
-    public User createUser(@RequestBody UserDTO userDTO) {
-        return userService.createUser(userDTO);
     }
 
     @ResponseStatus(HttpStatus.OK)
