@@ -5,11 +5,13 @@ import useAppointmentStore from "../stores/useAppointmentStore.ts";
 import useUserStore from "../stores/useUserStore.ts";
 import {User} from "../types/User.ts";
 import {useLocation} from "react-router-dom";
+import {useEffect} from "react";
 
 export default function AppointmentGallery() {
     const appointments: Appointment[] = useAppointmentStore(state => state.appointments);
     const currentUser: User | null = useUserStore(state => state.currentUser);
     const location = useLocation();
+    const getAppointments = useAppointmentStore(state => state.getAppointments);
 
     const getActualAppointments = (appointments: Appointment[]): Appointment[] => {
         if (!currentUser) {
@@ -33,6 +35,10 @@ export default function AppointmentGallery() {
             return [];
         }
     };
+
+    useEffect(() => {
+        currentUser && getAppointments(currentUser.familyId)
+    }, []);
 
     return (
         <div className="gallery">

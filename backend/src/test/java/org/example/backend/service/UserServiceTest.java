@@ -6,9 +6,11 @@ import org.example.backend.model.UserDTO;
 import org.example.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,33 +32,61 @@ class UserServiceTest {
         mockUtilService = mock(UtilService.class);
         userService = new UserService(mockUtilService, mockUserRepository);
         testUser = new ArrayList<>() {{
-            add(new User("1", "John Doe", Role.ADULT, "family123"));
-            add(new User("2", "Jane Doe", Role.ADULT, "family456"));
-            add(new User("3", "Jimmy Doe", Role.CHILD, "family123"));
+            add(new User("1", "John Doe", "123", Role.ADULT, "family123"));
+            add(new User("2", "Jane Doe", "456", Role.ADULT, "family123"));
+            add(new User("3", "Jimmy Doe", "789", Role.CHILD, "family123"));
         }};
     }
 
     @Test
-    void createUser_shouldReturnUser_whenCalledWithUserDTO() {
+    void loadUserByUsername_shouldReturnUserDetail_whenCalledWithUsername() {
         //GIVEN
-        User expectedUser = testUser.getFirst();
+        User user = testUser.getFirst();
+        org.springframework.security.core.userdetails.User expectedUserDetails =
+                new org.springframework.security.core.userdetails.User(
+                        user.username(),
+                        user.password(),
+                        Collections.emptyList()
+                );
 
         //WHEN
-        when(mockUserRepository.save(expectedUser)).thenReturn(expectedUser);
-        when(mockUtilService.generateId()).thenReturn(expectedUser.id());
-        User actual = userService.createUser(new UserDTO(expectedUser.name(), expectedUser.role(), expectedUser.familyId()));
+        when(mockUserRepository.findByUsername(user.username())).thenReturn(Optional.of(user));
+        UserDetails actualUserDetails = userService.loadUserByUsername(user.username());
 
         //THEN
-        assertEquals(expectedUser, actual);
-        verify(mockUserRepository).save(expectedUser);
-        verify(mockUtilService).generateId();
+        assertEquals(expectedUserDetails.getUsername(), actualUserDetails.getUsername());
+        assertEquals(expectedUserDetails.getPassword(), actualUserDetails.getPassword());
+        assertEquals(expectedUserDetails.getAuthorities(), actualUserDetails.getAuthorities());
+        
+        verify(mockUserRepository).findByUsername(user.username());
     }
 
     @Test
-    void getAllUsers_shouldReturnAllUsers_whenCalledWith() {
-        when(mockUserRepository.findAll()).thenReturn(testUser);
-        List<User> actual = userService.getAllUsers();
-        verify(mockUserRepository).findAll();
+    void registerNewUser_shouldReturnUser_whenCalledWithUserDTO() {
+        // GIVEN
+        User expectedUser = testUser.getFirst();
+
+        // WHEN
+        when(mockUserRepository.save(any(User.class))).thenReturn(expectedUser);
+        when(mockUtilService.generateId()).thenReturn(expectedUser.id());
+        User actual = userService.registerNewUser(new UserDTO(expectedUser.username(), expectedUser.password(), expectedUser.role(), expectedUser.familyId()));
+
+        // THEN
+        assertEquals(expectedUser.username(), actual.username());
+        assertEquals(expectedUser.role(), actual.role());
+        assertEquals(expectedUser.familyId(), actual.familyId());
+
+        verify(mockUserRepository).save(any(User.class));
+        verify(mockUtilService).generateId();
+    }
+
+
+    @Test
+    void getAllUsersOfAFamily_shouldReturnAllUsersOfAFamily_whenCalledWithFamilyId() {
+        String familyId = "family123";
+        when(mockUserRepository.findUsersByFamilyId(familyId)).thenReturn(testUser);
+        List<User> actual = userService.getAllUsersOfAFamily(familyId);
+        verify(mockUserRepository).findUsersByFamilyId(familyId);
         assertEquals(testUser, actual);
     }
 
@@ -81,7 +111,7 @@ class UserServiceTest {
     void updateUser_shouldUpdateUser_whenCalledWithValidId() {
         //WHEN
         when(mockUserRepository.findById("2")).thenReturn(Optional.of(testUser.get(1)));
-        User actual = userService.updateUser("2", new UserDTO("Mama", Role.ADULT, "family123"));
+        User actual = userService.updateUser("2", new UserDTO("Mama", "123", Role.ADULT, "family123"));
         when(mockUserRepository.save(any(User.class))).thenReturn(actual);
         //THEN
         verify(mockUserRepository).findById("2");

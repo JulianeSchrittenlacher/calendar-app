@@ -3,6 +3,7 @@ import useUserStore from "../stores/useUserStore.ts";
 import Modal from "./Modal.tsx";
 import {useState} from "react";
 import UserEditForm from "./UserEditForm.tsx";
+import {useNavigate} from "react-router-dom";
 
 type UserCardProps = {
     user: User;
@@ -11,6 +12,7 @@ export default function UserCard(props: Readonly<UserCardProps>) {
     const deleteUser: (id: string) => void = useUserStore(state => state.deleteUser);
     const setCurrentUser = useUserStore(state => state.setCurrentUser);
     const currentUser = useUserStore(state => state.currentUser);
+    const navigate = useNavigate();
 
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -24,12 +26,13 @@ export default function UserCard(props: Readonly<UserCardProps>) {
 
     const handleLogin = () => {
         setCurrentUser(props.user);
+        currentUser && navigate(`/${currentUser.id}/my-calendar`);
     };
 
     return (
         <article className="appointment-card">
             {!currentUser && <button className="login-button" onClick={handleLogin}>Login</button>}
-            <p>{props.user.name}</p>
+            <p>{props.user.username}</p>
             <p>{props.user.role}</p>
             <p>Familien id: {props.user.familyId}</p>
             <div className="card-button-container">

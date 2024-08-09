@@ -7,6 +7,8 @@ import useAppointmentStore from "../stores/useAppointmentStore.ts";
 import useUserStore from "../stores/useUserStore.ts";
 import {User} from "../types/User.ts";
 import UserSelector from "./UserSelector.tsx";
+import {Family} from "../types/Family.ts";
+import useFamilyStore from "../stores/useFamilyStore.ts";
 
 type AppointmentAddFormProps = {
     onClose: () => void;
@@ -16,6 +18,7 @@ export default function AppointmentAddForm(props: Readonly<AppointmentAddFormPro
 
     const createAppointment: (newAppointment: Appointment) => void = useAppointmentStore(state => state.createAppointment);
     const users: User[] = useUserStore(state => state.users);
+    const currentFamily: Family = useFamilyStore(state => state.currentFamily);
 
     const [description, setDescription] = useState<string>("");
     const [startTime, setStartTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
@@ -43,6 +46,7 @@ export default function AppointmentAddForm(props: Readonly<AppointmentAddFormPro
             startTime: zonedStartTime,
             endTime: zonedEndTime,
             userIds: selectedUserIds,
+            familyId: currentFamily.id,
         };
 
         createAppointment(newAppointment);

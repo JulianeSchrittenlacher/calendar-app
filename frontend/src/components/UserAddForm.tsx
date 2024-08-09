@@ -23,7 +23,7 @@ export default function UserAddForm(props: Readonly<UserAddFormProps>) {
         if (currentFamily) {
             const newUser: User = {
                 id: "",
-                name,
+                username: name,
                 role,
                 familyId: currentFamily.id,
             }

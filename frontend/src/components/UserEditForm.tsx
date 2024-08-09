@@ -11,7 +11,7 @@ export default function UserEditForm(props: Readonly<UserEditFormProps>) {
     const {user, onClose} = props;
 
     const updateUser: (id: string, updatedUser: User) => void = useUserStore(state => state.updateUser);
-    const [newName, setNewName] = useState<string>(user.name);
+    const [newName, setNewName] = useState<string>(user.username);
     const [newRole, setNewRole] = useState<Role>(user.role);
     const [newFamilyId, setNewFamilyId] = useState<string>(user.familyId);
 
@@ -20,7 +20,7 @@ export default function UserEditForm(props: Readonly<UserEditFormProps>) {
 
         const updatedUser: User = {
             id: user.id,
-            name: newName,
+            username: newName,
             role: newRole,
             familyId: newFamilyId,
         };
@@ -35,7 +35,7 @@ export default function UserEditForm(props: Readonly<UserEditFormProps>) {
                 <p>Name:</p>
                 <input
                     type="text"
-                    placeholder={user.name}
+                    placeholder={user.username}
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                 />
