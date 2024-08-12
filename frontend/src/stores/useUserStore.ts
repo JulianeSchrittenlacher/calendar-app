@@ -1,6 +1,7 @@
 import {create} from "zustand";
 import axios from "axios";
 import {User} from "../types/User.ts";
+import useAppointmentStore from "./useAppointmentStore.ts";
 
 interface UserState {
     users: User[] | null;
@@ -20,7 +21,7 @@ const useUserStore = create<UserState>()((set) => ({
     setUsers: (users) => {
         set({users});
     },
-    currentUser: JSON.parse(localStorage.getItem('currentUser') || 'null'),
+    currentUser: JSON.parse(localStorage.getItem('currentUser') || 'null') as User | null,
     setCurrentUser: (user) => {
         set({currentUser: user});
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -43,22 +44,37 @@ const useUserStore = create<UserState>()((set) => ({
         })
             .catch(error => console.log(error))
     },
-    loginUser: (username, password) => {
-        axios.post("/api/user/login", undefined, {auth: {username, password}})
-            .then(response => {
+    loginUser: async (username: string, password: string) => {
+        try {
+            const response = await axios.post("/api/user/login", undefined, {
+                auth: {username, password},
+                headers: {'Accept': 'application/json'}
+            });
+
+            if (response.headers['content-type'].includes('application/json')) {
                 const user = response.data;
-                set({setCurrentUser: user});
+                set({currentUser: user});
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 console.log("User successfully logged in:", user);
-            }).catch(error => console.log(error()));
+                return user;  // Promise wird hier zurückgegeben
+            } else {
+                console.error("Unexpected response format", response);
+                return null;  // Rückgabe null wenn das Format unerwartet ist
+            }
+        } catch (error) {
+            console.error("Login failed:", error);
+            throw error;
+        }
     },
     logoutUser: () => {
         axios.get("/api/user/logout")
             .then(() => {
                 const anonymousUser = null;
                 set({currentUser: anonymousUser});
-                localStorage.removeItem('currentUser');  // Entferne den Benutzer aus dem localStorage
+                localStorage.removeItem('currentUser');
                 console.log("User successfully logged out");
+                const clearAppointments = useAppointmentStore.getState().clearAppointments;
+                clearAppointments();
             })
             .catch(error => console.log(error));
     },

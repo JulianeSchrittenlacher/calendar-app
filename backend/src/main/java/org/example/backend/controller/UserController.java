@@ -6,6 +6,8 @@ import org.example.backend.model.User;
 import org.example.backend.model.UserDTO;
 import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,11 +32,20 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/login")
-    public String loginUser() {
-        return SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
+    public ResponseEntity<User> loginUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @ResponseStatus(HttpStatus.CREATED)

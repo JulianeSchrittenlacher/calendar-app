@@ -16,14 +16,14 @@ export default function AppointmentGallery() {
     const getActualAppointments = (appointments: Appointment[]): Appointment[] => {
         if (!currentUser) {
             return [];
-        } else if (location.pathname === `/${currentUser.id}/shared-calendar`) {
+        } else if (location.pathname === `/shared-calendar`) {
             return appointments
                 .sort((a, b) => {
                     const dateA = new Date(a.startTime).getTime();
                     const dateB = new Date(b.startTime).getTime();
                     return dateA - dateB;
                 });
-        } else if (location.pathname === `/${currentUser.id}/my-calendar`) {
+        } else if (location.pathname === `/my-calendar`) {
             return appointments
                 .filter(appointment => appointment.userIds.includes(currentUser.id))
                 .sort((a, b) => {

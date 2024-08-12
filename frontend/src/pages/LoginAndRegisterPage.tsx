@@ -45,7 +45,6 @@ export default function LoginAndRegisterPage() {
                     <LoginForm onClose={handleCloseModal}/>
                 )}
             </Modal>
-
         </article>
     );
 }

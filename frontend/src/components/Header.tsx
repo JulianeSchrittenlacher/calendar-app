@@ -1,22 +1,16 @@
 import "../styles/Header.css"
 import {useState} from "react";
 import Modal from "./Modal.tsx";
-import UserAddForm from "./UserAddForm.tsx";
-import {NavLink, useLocation, useNavigate} from "react-router-dom";
+import {NavLink, useLocation} from "react-router-dom";
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
 import useUserStore from "../stores/useUserStore.ts";
-import useFamilyStore from "../stores/useFamilyStore.ts";
 import FamilyAddForm from "./FamilyAddForm.tsx";
 
 export default function Header() {
 
     const [modalOpen, setModalOpen] = useState(false);
     const currentUser = useUserStore(state => state.currentUser);
-    const setCurrentUser = useUserStore(state => state.setCurrentUser);
-    const currentFamily = useFamilyStore(state => state.currentFamily);
-    const setCurrentFamily = useFamilyStore(state => state.setCurrentFamily);
     const location = useLocation();
-    const navigate = useNavigate();
 
 
     const handleClick = () => {
@@ -26,37 +20,24 @@ export default function Header() {
         setModalOpen(false);
     };
 
+    const getButtonText = () => {
+        if (location.pathname === '/my-family-page') {
+            return "Familie bearbeiten";
+        } else if (location.pathname === `/shared-calendar` || location.pathname === `/my-calendar`) {
+            return "Termin hinzufügen";
+        }
+        return null;
+
+    }
+
     const renderForm = () => {
-        if (location.pathname === '/') {
+        if (location.pathname === '/my-family-page') {
             return <FamilyAddForm onClose={handleCloseModal}/>;
-        } else if (currentFamily && location.pathname === `/${currentFamily.id}/my-family-page`) {
-            return <UserAddForm onClose={handleCloseModal}/>
-        } else if (currentUser && (location.pathname === `/${currentUser.id}/shared-calendar` || location.pathname === `/${currentUser.id}/my-calendar`)) {
+        } else if (location.pathname === `/shared-calendar` || location.pathname === `/my-calendar`) {
             return <AppointmentAddForm onClose={handleCloseModal}/>;
         }
         return null;
     };
-
-    const getButtonText = () => {
-
-        if (currentUser && location.pathname === `/my-family-page`) {
-            return "Familienmitglied hinzufügen";
-        }
-        if (currentUser && (location.pathname === `/shared-calendar` || location.pathname === `/${currentUser.id}/my-calendar`)) {
-            return "Termin hinzufügen";
-        }
-        return "Hinzufügen";
-    };
-
-    const handleLogout = () => {
-        setCurrentUser(null);
-        currentFamily && navigate(`/my-family-page`);
-    }
-
-    const handleLogoutFamily = () => {
-        setCurrentFamily(null);
-        navigate("/")
-    }
 
     return (
         <>
@@ -67,10 +48,10 @@ export default function Header() {
                     <h2>Termine für Herz und Seele</h2>
                 </div>
                 <div className="header-buttons">
-                    <button onClick={handleClick}>{getButtonText()}</button>
-                    {currentUser && <button onClick={handleLogout}>Du bist {currentUser.username}! Logout?</button>}
-                    {currentFamily && <button onClick={handleLogoutFamily}>Du gehörst zu Familie {currentFamily.name}!
-                        Logout?</button>}
+                    <p>{currentUser && "Hallo " + currentUser.username + "!"}</p>
+                    {location.pathname !== "/" && location.pathname !== "/my-family-page" && (
+                        <button onClick={handleClick}>{getButtonText()}</button>
+                    )}
                 </div>
             </div>
 
@@ -81,24 +62,22 @@ export default function Header() {
                             Home
                         </NavLink>
                     </li>
-                    {currentFamily && (
-                        <li>
-                            <NavLink to={`/${currentFamily.id}/my-family-page`}
-                                     className={({isActive}) => (isActive ? "active-link" : "")}>
-                                Meine Familie
-                            </NavLink>
-                        </li>
-                    )}
-                    {currentFamily && currentUser && (
+                    {currentUser && (
                         <>
                             <li>
-                                <NavLink to={`/${currentUser.id}/my-calendar`}
+                                <NavLink to={`/my-family-page`}
+                                         className={({isActive}) => (isActive ? "active-link" : "")}>
+                                    Meine Familie
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to={`/my-calendar`}
                                          className={({isActive}) => (isActive ? "active-link" : "")}>
                                     Mein Kalender
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to={`/${currentUser.id}/shared-calendar`}
+                                <NavLink to={`/shared-calendar`}
                                          className={({isActive}) => (isActive ? "active-link" : "")}>
                                     Unser Kalender
                                 </NavLink>

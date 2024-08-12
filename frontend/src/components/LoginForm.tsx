@@ -1,6 +1,7 @@
 import {FormEvent, useState} from "react";
 import useUserStore from "../stores/useUserStore.ts";
 import "../styles/AppointmentForm.css"
+import {useNavigate} from "react-router-dom";
 
 type LoginFormProps = {
     onClose: () => void;
@@ -10,12 +11,22 @@ export default function LoginForm(props: Readonly<LoginFormProps>) {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const loginUser = useUserStore(state => state.loginUser);
+    const navigate = useNavigate();
 
-    function submitLogin(e: FormEvent<HTMLFormElement>) {
+    async function submitLogin(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        loginUser(username, password);
-        props.onClose();
+        try {
+            const user = await loginUser(username, password);
+            console.log("Aktuell eingeloggt user: ", user);
+            const latestCurrentUser = useUserStore.getState().currentUser;
+            console.log("Aktuell eingeloggt currentUser: ", latestCurrentUser);
+            props.onClose();
+            navigate(`/my-family-page`);
+        } catch (error) {
+            console.error("Login failed:", error);
+        }
     }
+
 
     return (
         <>

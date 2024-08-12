@@ -5,8 +5,18 @@ import {Route, Routes} from "react-router-dom";
 import WelcomePage from "./pages/WelcomePage.tsx";
 import MyFamilyPage from "./pages/MyFamilyPage.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx"
+import {useEffect} from "react";
+import useUserStore from "./stores/useUserStore.ts";
+import useAppointmentStore from "./stores/useAppointmentStore.ts";
 
 export default function App() {
+    const getUsers = useUserStore(state => state.getUsers);
+    const currentUser = useUserStore(state => state.currentUser);
+    const getAppointments = useAppointmentStore(state => state.getAppointments);
+    useEffect(() => {
+        currentUser && getUsers(currentUser.familyId);
+        currentUser && getAppointments(currentUser.familyId)
+    }, []);
 
     return (
         <>

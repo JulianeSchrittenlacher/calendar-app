@@ -30,6 +30,11 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.username(), user.password(), Collections.emptyList());
     }
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElse(null);
+    }
+
     public User registerNewUser(UserDTO newUserDto) {
         User newUser = new User(
                 utilService.generateId(),
