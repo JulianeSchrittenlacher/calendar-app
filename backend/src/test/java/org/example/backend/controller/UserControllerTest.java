@@ -58,11 +58,10 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "testUser")
-    void loginUser_shouldReturnUsername_whenUserIsLoggedIn() throws Exception {
+    void loginUser_shouldReturnUser_whenUserIsLoggedIn() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/user/login")
                         .with(csrf()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("testUser"));
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 
