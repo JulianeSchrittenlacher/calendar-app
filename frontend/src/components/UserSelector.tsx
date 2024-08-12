@@ -33,7 +33,7 @@ export default function UserSelector(props: Readonly<UserSelectorProps>) {
                                 checked={selectedUserIds.includes(user.id)}
                                 onChange={handleCheckboxChange}
                             />
-                            {user.name}
+                            {user.username}
                         </label>
                     </li>
                 ))}

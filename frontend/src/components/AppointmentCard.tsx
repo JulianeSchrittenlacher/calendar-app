@@ -19,7 +19,7 @@ type AppointmentCardProps = {
 
 export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
     const deleteAppointment: (id: string) => void = useAppointmentStore(state => state.deleteAppointment);
-    const users: User[] = useUserStore(state => state.users);
+    const users: User[] | null = useUserStore(state => state.users);
 
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -48,9 +48,10 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
             <p className="appointment-description">{props.appointment.description}</p>
             <p>Beginn: {formatDate(startDate)}</p>
             <p>Ende: {formatDate(endDate)}</p>
-            <p>Teilnehmer: {users.filter(user => props.appointment.userIds.includes(user.id))
-                .map(user => user.name)
+            <p>Teilnehmer: {users && users.filter(user => props.appointment.userIds.includes(user.id))
+                .map(user => user.username)
                 .join(', ')}</p>
+            <p>Familien Id: {props.appointment.familyId}</p>
             <div className="card-button-container">
                 <button onClick={() => deleteAppointment(props.appointment.id)}>Löschen</button>
                 <button onClick={handleEdit}>Bearbeiten</button>

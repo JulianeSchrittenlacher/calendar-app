@@ -51,6 +51,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
             startTime: zonedStartTime,
             endTime: zonedEndTime,
             userIds: selectedUserIds,
+            familyId: appointment.familyId,
         };
 
         updateAppointment(appointment.id, updatedAppointment);

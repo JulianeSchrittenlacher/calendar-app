@@ -15,7 +15,8 @@ type AppointmentAddFormProps = {
 export default function AppointmentAddForm(props: Readonly<AppointmentAddFormProps>) {
 
     const createAppointment: (newAppointment: Appointment) => void = useAppointmentStore(state => state.createAppointment);
-    const users: User[] = useUserStore(state => state.users);
+    const users: User[] | null = useUserStore(state => state.users);
+    const currentUser = useUserStore(state => state.currentUser);
 
     const [description, setDescription] = useState<string>("");
     const [startTime, setStartTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
@@ -43,6 +44,7 @@ export default function AppointmentAddForm(props: Readonly<AppointmentAddFormPro
             startTime: zonedStartTime,
             endTime: zonedEndTime,
             userIds: selectedUserIds,
+            familyId: currentUser ? currentUser.familyId : "",
         };
 
         createAppointment(newAppointment);
@@ -77,11 +79,11 @@ export default function AppointmentAddForm(props: Readonly<AppointmentAddFormPro
                     onChange={(e) => setEndTime(e.target.value)}
                 />
             </label>
-            <UserSelector
+            {users && <UserSelector
                 users={users}
                 selectedUserIds={selectedUserIds}
                 setSelectedUserIds={setSelectedUserIds}
-            />
+            />}
             <div className="button-container">
                 <button onClick={props.onClose}>Abbrechen</button>
                 <button type="submit">Hinzufügen</button>

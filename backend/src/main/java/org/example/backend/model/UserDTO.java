@@ -5,7 +5,8 @@ import lombok.With;
 @With
 
 public record UserDTO(
-        String name,
+        String username,
+        String password,
         Role role,
         String familyId
 ) {

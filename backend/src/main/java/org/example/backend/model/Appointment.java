@@ -15,6 +15,7 @@ public record Appointment(
         String description,
         Instant startTime,
         Instant endTime,
-        List<String> userIds
+        List<String> userIds,
+        String familyId
 ) {
 }

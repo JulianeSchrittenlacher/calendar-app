@@ -24,9 +24,9 @@ public class AppointmentController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public List<Appointment> getAllAppointments() {
-        return appointmentService.getAllAppointments();
+    @GetMapping("/{familyId}")
+    public List<Appointment> getAllAppointmentsOfAFamily(@PathVariable String familyId) {
+        return appointmentService.getAllAppointmentsOfAFamily(familyId);
     }
 
     @ResponseStatus(HttpStatus.OK)
