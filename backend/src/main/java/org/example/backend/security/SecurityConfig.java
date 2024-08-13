@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .csrfTokenRequestHandler(requestAttributeHandler))
                 .authorizeHttpRequests(c -> {
                     c.requestMatchers("/api/user").permitAll();
+                    c.requestMatchers("/").permitAll();
                     c.requestMatchers(new AntPathRequestMatcher("/api/user/register")).permitAll();
                     c.requestMatchers(new AntPathRequestMatcher("/api/user/login")).permitAll();
                     c.anyRequest().authenticated();
