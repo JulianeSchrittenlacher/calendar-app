@@ -31,14 +31,14 @@ public class SecurityConfig {
                         .csrfTokenRequestHandler(requestAttributeHandler))
                 .authorizeHttpRequests(c -> {
                     c.requestMatchers("/api/user").permitAll();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/family/**")).authenticated();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/calendar/**")).authenticated();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/user/{familyId}")).authenticated();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/user/{id}")).authenticated();
-                    c.anyRequest().permitAll();
+                    c.requestMatchers("/").permitAll();
+                    c.requestMatchers(new AntPathRequestMatcher("/api/user/register")).permitAll();
+                    c.requestMatchers(new AntPathRequestMatcher("/api/user/login")).permitAll();
+                    c.anyRequest().authenticated();
                 })
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .httpBasic(Customizer.withDefaults())
+                .formLogin(Customizer.withDefaults())
                 .build();
     }
 }
