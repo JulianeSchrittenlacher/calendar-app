@@ -39,7 +39,6 @@ public class SecurityConfig {
                 })
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
                 .build();
     }
 }
