@@ -2,9 +2,16 @@ import useUserStore from "../stores/useUserStore.ts";
 import UserCard from "./UserCard.tsx";
 import {User} from "../types/User.ts";
 import "../styles/Gallery.css";
+import {useEffect} from "react";
 
 export default function UserGallery() {
     const users: User[] | null = useUserStore(state => state.users);
+    const currentUser = useUserStore(state => state.currentUser);
+    const getUsers = useUserStore(state => state.getUsers);
+
+    useEffect(() => {
+        currentUser && getUsers(currentUser.familyId);
+    }, [users]);
 
     return (
         <div className="gallery">
