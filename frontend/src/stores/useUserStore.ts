@@ -31,7 +31,6 @@ const useUserStore = create<UserState>()((set) => ({
             .then(response => {
                 const users = response.data;
                 set({users});
-                console.log(users);
             })
             .catch(error => console.log(error));
     },
@@ -56,10 +55,10 @@ const useUserStore = create<UserState>()((set) => ({
                 set({currentUser: user});
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 console.log("User successfully logged in:", user);
-                return user;  // Promise wird hier zurückgegeben
+                return user;
             } else {
                 console.error("Unexpected response format", response);
-                return null;  // Rückgabe null wenn das Format unerwartet ist
+                return null;
             }
         } catch (error) {
             console.error("Login failed:", error);
