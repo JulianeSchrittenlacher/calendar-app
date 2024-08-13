@@ -11,7 +11,7 @@ export default function UserGallery() {
 
     useEffect(() => {
         currentUser && getUsers(currentUser.familyId);
-    }, [users]);
+    }, []);
 
     return (
         <div className="gallery">
