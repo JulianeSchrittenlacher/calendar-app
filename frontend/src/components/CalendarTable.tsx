@@ -1,16 +1,8 @@
-import {
-    MenuItem,
-    Paper, Select,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow
-} from '@mui/material';
+import {MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
 import {useEffect, useState} from "react";
 import useUserStore from "../stores/useUserStore.ts";
+import axios from "axios";
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
@@ -21,10 +13,19 @@ export default function CalendarTable() {
     const [month, setMonth] = useState<number>(new Date().getMonth());
     const [year, setYear] = useState<number>(new Date().getFullYear());
     const months = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
-    const holidays = [
-        '2024-01-01',
-        '2024-12-25',
-    ];
+
+    async function fetchHolidays(year: string) {
+        try {
+            const response = await axios.get(`/api/holidays/${year}`);
+            // Extrahiere die Feiertage aus der Antwort
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching holidays:', error);
+            throw error;
+        }
+    }
+
+    const holidays = fetchHolidays(String(year));
 
     const formatDate = (date: Date) => {
         const year = date.getFullYear();
@@ -65,10 +66,19 @@ export default function CalendarTable() {
         return dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sonntag, 6 = Samstag
     };
 
-    const isHoliday = (date: string) => {
-        const formattedDate = formatDate(new Date(date));
-        return holidays.includes(formattedDate);
-    };
+    async function isHoliday(date: string, year: string): Promise<boolean> {
+        try {
+            // Hol die Feiertage für das Jahr
+            const holidays = await fetchHolidays(year);
+            // Formatieren des Datums (falls nötig)
+            const formattedDate = formatDate(new Date(date));
+            // Überprüfen, ob das Datum in den Feiertagen enthalten ist
+            return holidays.includes(formattedDate);
+        } catch (error) {
+            console.error('Error checking if date is a holiday:', error);
+            return false; // oder einen geeigneten Wert zurückgeben
+        }
+    }
 
     const generateYearOptions = () => {
         const currentYear = new Date().getFullYear();
@@ -117,7 +127,7 @@ export default function CalendarTable() {
                 <TableBody>
                     {days.map((day, index) => {
                         const isWeekendDay = isWeekend(day);
-                        const isHolidayDay = isHoliday(day);
+                        const isHolidayDay = isHoliday(day, String(year));
                         const backgroundColor = isWeekendDay || isHolidayDay ? '#FFFFE0' : 'white'; // Pastellgelb für Wochenenden und Feiertage
 
                         return (
