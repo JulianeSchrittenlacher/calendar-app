@@ -2,30 +2,23 @@ import {MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, Ta
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
 import {useEffect, useState} from "react";
 import useUserStore from "../stores/useUserStore.ts";
-import axios from "axios";
+import useApiStore from "../stores/useApiStore.tsx";
+import {Holiday} from "../types/Holiday.ts";
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
     const users = useUserStore(state => state.users); // Holt alle Benutzer
     const currentUser = useUserStore(state => state.currentUser);
     const getAppointments = useAppointmentStore(state => state.getAppointments);
+    const getUsers = useUserStore(state => state.getUsers);
+    const getHolidays = useApiStore(state => state.getHolidaysOfCurrentYear);
+    const holidaysOfCurrentYear = useApiStore(state => state.holidaysOfCurrentYear);
+    const currentState = useApiStore(state => state.currentState);
 
     const [month, setMonth] = useState<number>(new Date().getMonth());
-    const [year, setYear] = useState<number>(new Date().getFullYear());
+    const [year, setYear] = useState<string>(String(new Date().getFullYear()));
     const months = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
 
-    async function fetchHolidays(year: string) {
-        try {
-            const response = await axios.get(`/api/holidays/${year}`);
-            // Extrahiere die Feiertage aus der Antwort
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching holidays:', error);
-            throw error;
-        }
-    }
-
-    const holidays = fetchHolidays(String(year));
 
     const formatDate = (date: Date) => {
         const year = date.getFullYear();
@@ -59,26 +52,12 @@ export default function CalendarTable() {
         return descriptions || '';
     };
 
-    const days = getDaysInMonth(month, year);
+    const days = getDaysInMonth(month, Number(year));
 
     const isWeekend = (date: string) => {
         const dayOfWeek = new Date(date).getDay();
         return dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sonntag, 6 = Samstag
     };
-
-    async function isHoliday(date: string, year: string): Promise<boolean> {
-        try {
-            // Hol die Feiertage für das Jahr
-            const holidays = await fetchHolidays(year);
-            // Formatieren des Datums (falls nötig)
-            const formattedDate = formatDate(new Date(date));
-            // Überprüfen, ob das Datum in den Feiertagen enthalten ist
-            return holidays.includes(formattedDate);
-        } catch (error) {
-            console.error('Error checking if date is a holiday:', error);
-            return false; // oder einen geeigneten Wert zurückgeben
-        }
-    }
 
     const generateYearOptions = () => {
         const currentYear = new Date().getFullYear();
@@ -89,11 +68,18 @@ export default function CalendarTable() {
         return years;
     };
 
+    function getHolidayName(day: string, holidaysOfCurrentYear: Holiday[]): string {
+        const holiday = holidaysOfCurrentYear.find(holiday => holiday.date === day);
+        return holiday ? holiday.fname : "";
+    }
+
     useEffect(() => {
         if (currentUser) {
             getAppointments(currentUser.familyId);
+            getUsers(currentUser.familyId);
+            getHolidays(year, currentState);
         }
-    }, [currentUser, getAppointments]);
+    }, [currentUser, getAppointments, year, currentState]);
 
     return (
         <TableContainer component={Paper}>
@@ -108,7 +94,7 @@ export default function CalendarTable() {
                                     </MenuItem>
                                 ))}
                             </Select>
-                            <Select value={year} onChange={(e) => setYear(Number(e.target.value))}>
+                            <Select value={year} onChange={(e) => setYear(e.target.value)}>
                                 {generateYearOptions().map((yr) => (
                                     <MenuItem key={yr} value={yr}>
                                         {yr}
@@ -127,15 +113,25 @@ export default function CalendarTable() {
                 <TableBody>
                     {days.map((day, index) => {
                         const isWeekendDay = isWeekend(day);
-                        const isHolidayDay = isHoliday(day, String(year));
+                        const isHolidayDay = getHolidayName(day, holidaysOfCurrentYear);
+
                         const backgroundColor = isWeekendDay || isHolidayDay ? '#FFFFE0' : 'white'; // Pastellgelb für Wochenenden und Feiertage
 
                         return (
                             <TableRow key={index} style={{backgroundColor}}>
-                                <TableCell style={{
-                                    fontWeight: 'bold',
-                                    fontSize: '1.1rem', // Größere Schriftgröße für die erste Spalte
-                                }}>{showDays(day)}</TableCell>
+                                <TableCell
+                                    style={{
+                                        fontWeight: 'bold',
+                                        fontSize: '1.1rem',
+                                        lineHeight: '1.1rem',
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    <span>{showDays(day)}</span>
+                                    <span style={{display: 'block', lineHeight: '1.1rem', color: "hotpink"}}>
+                                        {getHolidayName(day, holidaysOfCurrentYear)}
+                                    </span>
+                                </TableCell>
                                 {users && users.map(user => (
                                     <TableCell key={user.id}>
                                         {getAppointmentDescriptionsForUser(day, user.id)}
