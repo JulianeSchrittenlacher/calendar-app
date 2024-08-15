@@ -1,18 +1,16 @@
 import "../styles/Header.css"
 import {useState} from "react";
 import Modal from "./Modal.tsx";
-import UserAddForm from "./UserAddForm.tsx";
-import {NavLink, useLocation, useNavigate} from "react-router-dom";
+import {NavLink, useLocation} from "react-router-dom";
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
 import useUserStore from "../stores/useUserStore.ts";
+import FamilyAddForm from "./FamilyAddForm.tsx";
 
 export default function Header() {
 
     const [modalOpen, setModalOpen] = useState(false);
     const currentUser = useUserStore(state => state.currentUser);
-    const setCurrentUser = useUserStore(state => state.setCurrentUser);
     const location = useLocation();
-    const navigate = useNavigate();
 
 
     const handleClick = () => {
@@ -22,29 +20,24 @@ export default function Header() {
         setModalOpen(false);
     };
 
+    const getButtonText = () => {
+        if (location.pathname === '/my-family-page') {
+            return "Familie bearbeiten";
+        } else if (location.pathname === `/shared-calendar` || location.pathname === `/my-calendar`) {
+            return "Termin hinzufügen";
+        }
+        return null;
+
+    }
+
     const renderForm = () => {
-        if (location.pathname === '/') {
-            return <UserAddForm onClose={handleCloseModal}/>;
-        } else if (currentUser && (location.pathname === `/${currentUser.id}/shared-calendar` || location.pathname === `/${currentUser.id}/my-calendar`)) {
+        if (location.pathname === '/my-family-page') {
+            return <FamilyAddForm onClose={handleCloseModal}/>;
+        } else if (location.pathname === `/shared-calendar` || location.pathname === `/my-calendar`) {
             return <AppointmentAddForm onClose={handleCloseModal}/>;
         }
         return null;
     };
-
-    const getButtonText = () => {
-        if (location.pathname === "/") {
-            return "Familienmitglied hinzufügen";
-        }
-        if (currentUser && (location.pathname === `/${currentUser.id}/shared-calendar` || location.pathname === `/${currentUser.id}/my-calendar`)) {
-            return "Termin hinzufügen";
-        }
-        return "Hinzufügen";
-    };
-
-    const handleLogout = () => {
-        setCurrentUser(null);
-        navigate("/");
-    }
 
     return (
         <>
@@ -55,8 +48,10 @@ export default function Header() {
                     <h2>Termine für Herz und Seele</h2>
                 </div>
                 <div className="header-buttons">
-                    <button onClick={handleClick}>{getButtonText()}</button>
-                    {currentUser && <button onClick={handleLogout}>Du bist {currentUser.name}! Logout?</button>}
+                    <p>{currentUser && "Hallo " + currentUser.username + "!"}</p>
+                    {location.pathname !== "/" && location.pathname !== "/my-family-page" && (
+                        <button onClick={handleClick}>{getButtonText()}</button>
+                    )}
                 </div>
             </div>
 
@@ -70,15 +65,27 @@ export default function Header() {
                     {currentUser && (
                         <>
                             <li>
-                                <NavLink to={`/${currentUser.id}/my-calendar`}
+                                <NavLink to={`/my-family-page`}
+                                         className={({isActive}) => (isActive ? "active-link" : "")}>
+                                    Meine Familie
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to={`/my-calendar`}
                                          className={({isActive}) => (isActive ? "active-link" : "")}>
                                     Mein Kalender
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to={`/${currentUser.id}/shared-calendar`}
+                                <NavLink to={`/shared-calendar`}
                                          className={({isActive}) => (isActive ? "active-link" : "")}>
                                     Unser Kalender
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to={`/calendar`}
+                                         className={({isActive}) => (isActive ? "active-link" : "")}>
+                                    Kalenderansicht
                                 </NavLink>
                             </li>
                         </>

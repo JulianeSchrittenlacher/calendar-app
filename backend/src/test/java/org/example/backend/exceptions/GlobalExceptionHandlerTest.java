@@ -9,9 +9,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -24,6 +26,7 @@ public class GlobalExceptionHandlerTest {
     private AppointmentService appointmentService;
 
     @Test
+    @WithMockUser
     public void testHandleIdNotFoundException() throws Exception {
         Mockito.when(appointmentService.updateAppointment(Mockito.any(String.class), Mockito.any(AppointmentDTO.class)))
                 .thenThrow(new AppointmentNotFoundException("This is a AppointmentNotFoundException"));
@@ -36,7 +39,7 @@ public class GlobalExceptionHandlerTest {
                                   "startTime": "2024-07-16T09:00:00Z",
                                   "endTime": "2024-07-16T10:00:00Z"
                                 }
-                                """))
+                                """).with(csrf()))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("This is a AppointmentNotFoundException"));
     }

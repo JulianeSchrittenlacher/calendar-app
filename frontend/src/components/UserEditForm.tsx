@@ -11,16 +11,18 @@ export default function UserEditForm(props: Readonly<UserEditFormProps>) {
     const {user, onClose} = props;
 
     const updateUser: (id: string, updatedUser: User) => void = useUserStore(state => state.updateUser);
-    const [newName, setNewName] = useState<string>(user.name);
+    const [newName, setNewName] = useState<string>(user.username);
     const [newRole, setNewRole] = useState<Role>(user.role);
     const [newFamilyId, setNewFamilyId] = useState<string>(user.familyId);
+    const [newPassword, setNewPassword] = useState<string>(user.password);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const updatedUser: User = {
             id: user.id,
-            name: newName,
+            username: newName,
+            password: newPassword,
             role: newRole,
             familyId: newFamilyId,
         };
@@ -35,9 +37,18 @@ export default function UserEditForm(props: Readonly<UserEditFormProps>) {
                 <p>Name:</p>
                 <input
                     type="text"
-                    placeholder={user.name}
+                    placeholder={user.username}
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
+                />
+            </label>
+            <label className="form-entries">
+                <p>Passwort:</p>
+                <input
+                    type="password"
+                    placeholder={user.password}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                 />
             </label>
             <label className="form-entries">

@@ -4,18 +4,20 @@ import axios from "axios";
 
 interface AppointmentState {
     appointments: Appointment[];
-    getAppointments: () => void;
+    getAppointments: (familyId: string) => void;
     createAppointment: (newAppointment: Appointment) => void;
     deleteAppointment: (id: string) => void;
     updateAppointment: (id: string, updatedAppointment: Appointment) => void;
+    clearAppointments: () => void;
 }
 
 const useAppointmentStore = create<AppointmentState>()((set) => ({
     appointments: [],
-    getAppointments: () => {
-        axios.get("/api/calendar").then(response => {
-            set({appointments: response.data})
-        }).catch(error => console.log(error))
+    getAppointments: (familyId: string) => {
+        axios.get(`/api/calendar/` + familyId)
+            .then(response => {
+                set({appointments: response.data})
+            }).catch(error => console.log(error))
     },
     createAppointment: (newAppointment) => {
         axios.post("/api/calendar/create", newAppointment).then(response => {
@@ -44,6 +46,9 @@ const useAppointmentStore = create<AppointmentState>()((set) => ({
             alert("Termin geändert!");
         })
             .catch(error => console.log("Error updating Appointment " + error))
+    },
+    clearAppointments: () => {
+        set({appointments: []});
     }
 }))
 

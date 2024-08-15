@@ -1,11 +1,11 @@
 import Header from "../components/Header.tsx";
-import UserGallery from "../components/UserGallery.tsx";
+import LoginAndRegisterPage from "./LoginAndRegisterPage.tsx";
 
 export default function WelcomePage() {
     return (
         <>
             <Header/>
-            <UserGallery/>
+            <LoginAndRegisterPage/>
         </>
     );
 }

@@ -17,7 +17,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
     const {appointment, onClose} = props;
 
     const updateAppointment: (id: string, updatedAppointment: Appointment) => void = useAppointmentStore(state => state.updateAppointment);
-    const users: User[] = useUserStore(state => state.users);
+    const users: User[] | null = useUserStore(state => state.users);
 
     function formatDate(inputDate?: Date): string {
         if (!inputDate) {
@@ -51,6 +51,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
             startTime: zonedStartTime,
             endTime: zonedEndTime,
             userIds: selectedUserIds,
+            familyId: appointment.familyId,
         };
 
         updateAppointment(appointment.id, updatedAppointment);
@@ -90,7 +91,7 @@ export default function AppointmentEditForm(props: Readonly<AppointmentEditFormP
                 />
             </label>
             <UserSelector
-                users={users}
+                users={users || []}
                 selectedUserIds={selectedUserIds}
                 setSelectedUserIds={setSelectedUserIds}
             />

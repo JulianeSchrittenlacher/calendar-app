@@ -1,43 +1,49 @@
+import {FormEvent, useState} from "react";
 import {User} from "../types/User.ts";
-import React, {useState} from "react";
-import {Role} from "../types/Role.ts";
 import useUserStore from "../stores/useUserStore.ts";
+import {Role} from "../types/Role.ts";
+import "../styles/AppointmentForm.css"
 
-type UserAddFormProps = {
+type RegisterFormProps = {
     onClose: () => void;
 }
 
-export default function UserAddForm(props: Readonly<UserAddFormProps>) {
-    const {onClose} = props;
-
-    const createUser: (newUser: User) => void = useUserStore(state => state.createUser);
-
-    const [name, setName] = useState<string>("");
+export default function RegisterForm(props: Readonly<RegisterFormProps>) {
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [role, setRole] = useState<Role>(Role.CHILD);
-    const [familyId, setFamilyId] = useState<string>("");
+    const [familyId, setFamilyId] = useState<string>("")
+    const registerUser = useUserStore(state => state.registerUser);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    function submitRegister(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const newUser: User = {
             id: "",
-            name,
+            username: username,
+            password: password,
             role,
-            familyId,
-        }
-        createUser(newUser);
-        onClose();
+            familyId: familyId,
+        };
+        registerUser(newUser);
+        props.onClose();
     }
+
     return (
         <>
-            <form className="user-form" onSubmit={handleSubmit}>
+            <form className="user-form" onSubmit={submitRegister}>
                 <label className="form-entries">
-                    <p>Name:</p>
+                    <p>Benutzername:</p>
                     <input
                         placeholder={""}
                         type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
+                </label>
+                <label className="form-entries">
+                    <p>Passwort:</p>
+                    <input value={password} placeholder={"Enter Password"} type={password}
+                           onChange={e => setPassword(e.target.value)}/>
                 </label>
                 <label className="form-entries">
                     <p>Rolle:</p>
@@ -50,15 +56,16 @@ export default function UserAddForm(props: Readonly<UserAddFormProps>) {
                     </select>
                 </label>
                 <label className="form-entries">
-                    <p> FamilyId</p>
+                    <p>Familien Id:</p>
                     <input
+                        placeholder={""}
                         type="text"
                         value={familyId}
                         onChange={(e) => setFamilyId(e.target.value)}
                     />
                 </label>
                 <div className="button-container">
-                    <button onClick={onClose}>Abbrechen</button>
+                    <button onClick={props.onClose}>Abbrechen</button>
                     <button type="submit">Hinzufügen</button>
                 </div>
             </form>

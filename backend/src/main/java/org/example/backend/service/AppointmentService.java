@@ -17,12 +17,12 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
 
     public Appointment createAppointment(AppointmentDTO appointmentDTO) {
-        Appointment newAppointment = new Appointment(utilService.generateId(), appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime(), appointmentDTO.userIds());
+        Appointment newAppointment = new Appointment(utilService.generateId(), appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime(), appointmentDTO.userIds(), appointmentDTO.familyId());
         return appointmentRepository.save(newAppointment);
     }
 
-    public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+    public List<Appointment> getAllAppointmentsOfAFamily(String familyId) {
+        return appointmentRepository.findAppointmentsByFamilyId(familyId);
     }
 
     public void deleteAppointment(String id) {

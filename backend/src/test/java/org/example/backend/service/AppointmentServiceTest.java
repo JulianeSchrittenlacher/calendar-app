@@ -37,16 +37,16 @@ class AppointmentServiceTest {
                 add("participant1");
                 add("participant2");
                 add("participant3");
-            }}));
+            }}, "12"));
             add(new Appointment("2", "test2", Instant.parse("2025-07-17T10:00:00Z"),
                     Instant.parse("2025-07-17T11:00:00Z"), new ArrayList<>() {{
                 add("participant3");
                 add("participant4");
-            }}));
+            }}, "12"));
             add(new Appointment("3", "test3", Instant.parse("2026-07-17T10:00:00Z"),
                     Instant.parse("2026-07-17T11:00:00Z"), new ArrayList<>() {{
                 add("participant1");
-            }}));
+            }}, "12"));
         }};
     }
 
@@ -59,9 +59,9 @@ class AppointmentServiceTest {
                 Instant.parse("2024-07-17T11:00:00Z"),
                 new ArrayList<>() {{
                     add("participant1");
-                }}
+                }}, "11"
         );
-        Appointment expected = new Appointment("Test ID", appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime(), appointmentDTO.userIds());
+        Appointment expected = new Appointment("Test ID", appointmentDTO.description(), appointmentDTO.startTime(), appointmentDTO.endTime(), appointmentDTO.userIds(), appointmentDTO.familyId());
 
         //WHEN
         when(mockAppointmentRepository.save(expected)).thenReturn(expected);
@@ -75,12 +75,13 @@ class AppointmentServiceTest {
     }
 
     @Test
-    void getAllAppointments_shouldReturnAllAppointments_whenCalled() {
+    void getAllAppointmentsOfAFamily_shouldReturnAllAppointments_whenCalledWithFamilyId() {
         //WHEN
-        when(mockAppointmentRepository.findAll()).thenReturn(testAppointments);
-        List<Appointment> actual = appointmentService.getAllAppointments();
+        String familyId = "12";
+        when(mockAppointmentRepository.findAppointmentsByFamilyId(familyId)).thenReturn(testAppointments);
+        List<Appointment> actual = appointmentService.getAllAppointmentsOfAFamily(familyId);
         //THEN
-        verify(mockAppointmentRepository).findAll();
+        verify(mockAppointmentRepository).findAppointmentsByFamilyId(familyId);
         assertEquals(testAppointments, actual);
 
     }
@@ -103,7 +104,7 @@ class AppointmentServiceTest {
                         Instant.parse("2024-07-17T11:00:00Z"),
                         new ArrayList<>() {{
                             add("participant1");
-                        }}));
+                        }}, "12"));
         when(mockAppointmentRepository.save(any(Appointment.class))).thenReturn(actual);
         //THEN
         verify(mockAppointmentRepository).findById("3");
