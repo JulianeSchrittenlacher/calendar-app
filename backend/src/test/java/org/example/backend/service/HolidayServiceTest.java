@@ -7,17 +7,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
-import java.time.Year;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestPropertySource(properties = {
-        "FEIERTAGE_URL=https://get.api-feiertage.de"
-})
 @SpringBootTest
 public class HolidayServiceTest {
 
@@ -38,7 +34,7 @@ public class HolidayServiceTest {
     }
 
     @Test
-    void getHolidaysByYear_success() throws IOException {
+    void getHolidaysByYearAndState_success() throws IOException {
         String mockResponse = "{"
                 + "\"status\": \"success\","
                 + "\"feiertage\": ["
@@ -52,7 +48,7 @@ public class HolidayServiceTest {
                 .setBody(mockResponse)
                 .addHeader("Content-Type", "application/json"));
 
-        List<Holidays> holidays = holidayService.getHolidaysByYear("2024");
+        List<Holidays> holidays = holidayService.getHolidaysByYearAndState("2024", "sh");
 
         assertNotNull(holidays);
         assertEquals(3, holidays.size());
@@ -60,30 +56,22 @@ public class HolidayServiceTest {
     }
 
     @Test
-    void getHolidaysByYear_noHolidaysFound() throws IOException {
-        // Simuliere eine leere Antwort mit Statuscode 404 Not Found
+    void getHolidaysByYear_noHolidaysFound() {
         String mockResponse = "{ \"status\": \"success\", \"feiertage\": [] }";
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
-                .setResponseCode(404)  // Simuliere den 404-Statuscode
+                .setResponseCode(404)
                 .addHeader("Content-Type", "application/json"));
 
-        // Teste, ob eine IOException geworfen wird, wenn keine Feiertage gefunden werden
-        assertThrows(IOException.class, () -> {
-            holidayService.getHolidaysByYear("2028");
-        });
+        assertThrows(HttpClientErrorException.NotFound.class, () -> holidayService.getHolidaysByYearAndState("2029", "sh"));
     }
 
     @Test
     void getHolidaysByYear_throwsIOException() {
-        // Simuliere einen Fehlerfall (z.B. 404 Not Found)
+
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(404));
-
-        // Überprüfung, dass eine IOException geworfen wird
-        assertThrows(IOException.class, () -> {
-            holidayService.getHolidaysByYear("2029");
-        });
+        assertThrows(HttpClientErrorException.NotFound.class, () -> holidayService.getHolidaysByYearAndState("2029", "sh"));
     }
 }

@@ -20,9 +20,9 @@ public class HolidayController {
 
     private final HolidayService holidayService;
 
-    @GetMapping("/{year}")
-    public ResponseEntity<List<Holidays>> getHolidaysByYear(@PathVariable String year) throws IOException {
-        List<Holidays> holidays = holidayService.getHolidaysByYear(year);
+    @GetMapping("/{year}/{state}")
+    public ResponseEntity<List<Holidays>> getHolidaysByYearAndState(@PathVariable String year, @PathVariable String state) throws IOException {
+        List<Holidays> holidays = holidayService.getHolidaysByYearAndState(year, state);
 
         if (holidays == null || holidays.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,84 +42,68 @@ class HolidayControllerTest {
     }
 
     @Test
-    void getHolidaysByYear_shouldReturnListOfHolidays_WhenCalledWithValidYear() throws Exception {
+    @WithMockUser
+    void getHolidaysByYearAndState_shouldReturnListOfHolidays_WhenCalledWithValidYearAndState() throws Exception {
 
         mockWebServer.enqueue(new MockResponse()
                 .addHeader("Content-Type", "application/json")
                 .setBody("""
                         {
-                                      "status": "success",
-                                      "feiertage": [
-                                          {
-                                              "date": "2024-01-01",
-                                              "fname": "Neujahr",
-                                              "all_states": "1",
-                                                          "bw": "1",
-                                                          "by": "1",
-                                                          "be": "1",
-                                                          "bb": "1",
-                                                          "hb": "1",
-                                                          "hh": "1",
-                                                          "he": "1",
-                                                          "mv": "1",
-                                                          "ni": "1",
-                                                          "nw": "1",
-                                                          "rp": "1",
-                                                          "sl": "1",
-                                                          "sn": "1",
-                                                          "st": "1",
-                                                          "sh": "1",
-                                                          "th": "1",
-                                                          "comment": "",
-                                                          "augsburg": null,
-                                                          "katholisch": null
-                                          },
-                                          {
-                                              "date": "2024-03-29",
-                                              "fname": "Karfreitag",
-                                               "all_states": "1",
-                                                          "bw": "1",
-                                                          "by": "1",
-                                                          "be": "1",
-                                                          "bb": "1",
-                                                          "hb": "1",
-                                                          "hh": "1",
-                                                          "he": "1",
-                                                          "mv": "1",
-                                                          "ni": "1",
-                                                          "nw": "1",
-                                                          "rp": "1",
-                                                          "sl": "1",
-                                                          "sn": "1",
-                                                          "st": "1",
-                                                          "sh": "1",
-                                                          "th": "1",
-                                                          "comment": "",
-                                                          "augsburg": null,
-                                                          "katholisch": null
-                                          },
-                                          {
-                                              "date": "2024-04-01",
-                                              "fname": "Ostermontag",
-                                          }]}
+                                                                       "status": "success",
+                                                                       "feiertage": [
+                                                                           {
+                                                                               "date": "2024-01-01",
+                                                                               "fname": "Neujahr"
+                                                                           },
+                                                                           {
+                                                                               "date": "2024-03-29",
+                                                                               "fname": "Karfreitag",
+                                                                               "all_states": "1",
+                                                                               "bw": "1",
+                                                                               "by": "1",
+                                                                               "be": "1",
+                                                                               "bb": "1",
+                                                                               "hb": "1",
+                                                                               "hh": "1",
+                                                                               "he": "1",
+                                                                               "mv": "1",
+                                                                               "ni": "1",
+                                                                               "nw": "1",
+                                                                               "rp": "1",
+                                                                               "sl": "1",
+                                                                               "sn": "1",
+                                                                               "st": "1",
+                                                                               "sh": "1",
+                                                                               "th": "1",
+                                                                               "comment": "",
+                                                                               "augsburg": null,
+                                                                               "katholisch": null
+                                                                           },
+                                                                           {
+                                                                               "date": "2024-04-01",
+                                                                               "fname": "Ostermontag"
+                                                                           }
+                                                                       ]
+                                                                   }
                         """));
         //WHEN&THEN
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/holidays/2024"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/holidays/2024/sh"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                                                                   [
-                                                                  {
-                                                                      "date": "2024-01-01",
-                                                                      "fname": "Neujahr",
-                                                                  },
-                                                                  {
-                                                                      "date": "2024-03-29",
-                                                                      "fname": "Karfreitag",
-                                                                  },
-                                                                  {
-                                                                      "date": "2024-04-01",
-                                                                      "fname": "Ostermontag",
-                                                                  }]
+                                                                           {
+                                                                               "date": "2024-01-01",
+                                                                               "fname": "Neujahr"
+                                                                           },
+                                                                           {
+                                                                               "date": "2024-03-29",
+                                                                               "fname": "Karfreitag"
+                                                                           },
+                                                                           {
+                                                                               "date": "2024-04-01",
+                                                                               "fname": "Ostermontag"
+                                                                           }
+                                                                       ]
                         """));
     }
 

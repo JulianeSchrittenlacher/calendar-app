@@ -3,7 +3,6 @@ package org.example.backend.service;
 import org.example.backend.model.HolidayResponse;
 import org.example.backend.model.Holidays;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -20,9 +19,9 @@ public class HolidayService {
                 .build();
     }
 
-    public List<Holidays> getHolidaysByYear(String year) throws IOException {
+    public List<Holidays> getHolidaysByYearAndState(String year, String state) throws IOException {
         HolidayResponse response = restClient.get()
-                .uri("?years=" + year + "&states=sh")
+                .uri("?years=" + year + "&states=" + state)
                 .retrieve()
                 .body(HolidayResponse.class);
         if (response != null) {
