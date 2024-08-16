@@ -12,10 +12,12 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.IOException;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -87,8 +89,8 @@ class HolidayControllerTest {
                                                                    }
                         """));
         //WHEN&THEN
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/holidays/2024/sh"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+        mockMvc.perform(get("/api/holidays/2024/sh"))
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("""
                                                                   [
                                                                            {
