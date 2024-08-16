@@ -4,7 +4,7 @@ import Modal from "./Modal.tsx";
 import {NavLink, useLocation} from "react-router-dom";
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
 import useUserStore from "../stores/useUserStore.ts";
-import FamilyAddForm from "./FamilyAddForm.tsx";
+import FamilyDetailForm from "./FamilyDetailForm.tsx";
 
 export default function Header() {
 
@@ -22,8 +22,8 @@ export default function Header() {
 
     const getButtonText = () => {
         if (location.pathname === '/my-family-page') {
-            return "Familie bearbeiten";
-        } else if (location.pathname === `/shared-calendar` || location.pathname === `/my-calendar`) {
+            return "Familien Details";
+        } else if (location.pathname === `/shared-calendar` || location.pathname === `/my-calendar` || location.pathname === `/calendar`) {
             return "Termin hinzufügen";
         }
         return null;
@@ -32,7 +32,7 @@ export default function Header() {
 
     const renderForm = () => {
         if (location.pathname === '/my-family-page') {
-            return <FamilyAddForm onClose={handleCloseModal}/>;
+            return <FamilyDetailForm onClose={handleCloseModal}/>;
         } else if (location.pathname === `/shared-calendar` || location.pathname === `/my-calendar`) {
             return <AppointmentAddForm onClose={handleCloseModal}/>;
         }
@@ -49,7 +49,7 @@ export default function Header() {
                 </div>
                 <div className="header-buttons">
                     <p>{currentUser && "Hallo " + currentUser.username + "!"}</p>
-                    {location.pathname !== "/" && location.pathname !== "/my-family-page" && (
+                    {location.pathname !== "/" && (
                         <button onClick={handleClick}>{getButtonText()}</button>
                     )}
                 </div>
