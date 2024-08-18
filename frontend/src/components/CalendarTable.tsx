@@ -18,6 +18,8 @@ import useApiStore from "../stores/useApiStore.tsx";
 import {Holiday} from "../types/Holiday.ts";
 import "../styles/CalendarTable.css"
 import React from 'react';
+import AppointmentCard from "./AppointmentCard.tsx";
+import {Appointment} from "../types/Appointment.ts";
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
@@ -97,6 +99,24 @@ export default function CalendarTable() {
         setOpenRowIndex(openRowIndex === index ? null : index);
     };
 
+    const getActualAppointments = (appointments: Appointment[], day: string): Appointment[] => {
+        if (!currentUser) {
+            return [];
+        }
+
+        const appointmentsForDay = appointments.filter(appointment => {
+            const appointmentDate = formatDate(new Date(appointment.startTime));
+            return appointmentDate === day;
+        });
+
+        return appointmentsForDay.sort((a, b) => {
+            const dateA = new Date(a.startTime).getTime();
+            const dateB = new Date(b.startTime).getTime();
+            return dateA - dateB;
+        });
+    };
+
+
     useEffect(() => {
         if (currentUser) {
             getAppointments(currentUser.familyId);
@@ -171,9 +191,9 @@ export default function CalendarTable() {
                                     <TableCell colSpan={(users?.length ?? 0) + 1} style={{padding: 0}}>
                                         <Collapse in={openRowIndex === index}>
                                             <div style={{padding: '16px'}}>
-                                                {/* Hier kannst du die Details für den Tag anzeigen */}
-                                                <p>Details:</p>
-                                                {/* Hier Details einfügen */}
+                                                {getActualAppointments(appointments, day).map(appointment => (
+                                                    <AppointmentCard key={appointment.id} appointment={appointment}/>
+                                                ))}
                                             </div>
                                         </Collapse>
                                     </TableCell>
