@@ -1,9 +1,4 @@
 import {
-    Checkbox,
-    ListItem,
-    ListItemText,
-    FormControl,
-    InputLabel,
     MenuItem,
     Paper,
     Select,
@@ -12,15 +7,15 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, SelectChangeEvent
+    TableRow,
 } from '@mui/material';
 
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
-import {ReactNode, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import useUserStore from "../stores/useUserStore.ts";
 import useApiStore from "../stores/useApiStore.tsx";
 import {Holiday} from "../types/Holiday.ts";
-import {User} from "../types/User.ts";
+import "../styles/CalendarTable.css"
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
@@ -31,12 +26,10 @@ export default function CalendarTable() {
     const getHolidays = useApiStore(state => state.getHolidaysOfCurrentYear);
     const holidaysOfCurrentYear = useApiStore(state => state.holidaysOfCurrentYear);
     const currentState = useApiStore(state => state.currentState);
+    const [openRowIndex, setOpenRowIndex] = useState(null);
 
     const [month, setMonth] = useState<number>(new Date().getMonth());
     const [year, setYear] = useState<string>(String(new Date().getFullYear()));
-    // @ts-ignore
-    const [selectedColumns, setSelectedColumns] = useState<User[]>(users);
-
     const months = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
 
 
@@ -93,10 +86,10 @@ export default function CalendarTable() {
         return holiday ? holiday.fname : "";
     }
 
-    const handleColumnChange = (event: SelectChangeEvent<User[]>) => {
-        setSelectedColumns(event.target.value as User[]);
+    const widthDependingOnHowManyUsers = (): string => {
+        const userCount = users ? users.length : 1;
+        return `${80 / userCount}%`;
     };
-
 
     useEffect(() => {
         if (currentUser) {
@@ -107,86 +100,65 @@ export default function CalendarTable() {
     }, [currentUser, getAppointments, year, currentState]);
 
     return (
-        <div>
-            <FormControl fullWidth margin="normal">
-                <InputLabel>Select Columns</InputLabel>
-                <Select
-                    multiple
-                    value={selectedColumns}
-                    onChange={handleColumnChange}
-                    renderValue={(selected) => selected.join(', ')}
-                >
-                    {users && users.map((user) => (
-                        <MenuItem key={user.id} value={user.username}>
-                            <Checkbox checked={selectedColumns.indexOf(user.username) > -1}/>
-                            <ListItemText primary={user.username}/>
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>
-                                <Select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
-                                    {months.map((monthName, index) => (
-                                        <MenuItem key={index} value={index}>
-                                            {monthName}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                                <Select value={year} onChange={(e) => setYear(e.target.value)}>
-                                    {generateYearOptions().map((yr) => (
-                                        <MenuItem key={yr} value={yr}>
-                                            {yr}
-                                        </MenuItem>
-                                    ))}
-                                </Select></TableCell>
-                            {users && selectedColumns.map(user => (
-                                <TableCell key={user.id}
-                                           style={{
-                                               fontWeight: 'bold',
-                                               fontSize: '1.2rem' // Größere Schriftgröße für die Kopfzeile
-                                           }}>{user.username}</TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {days.map((day, index) => {
-                            const isWeekendDay = isWeekend(day);
-                            const isHolidayDay = getHolidayName(day, holidaysOfCurrentYear);
-
-                            const backgroundColor = isWeekendDay || isHolidayDay ? '#FFFFE0' : 'white'; // Pastellgelb für Wochenenden und Feiertage
-
-                            return (
-                                <TableRow key={index} style={{backgroundColor}}>
-                                    <TableCell
-                                        style={{
-                                            fontWeight: 'bold',
-                                            fontSize: '1.1rem',
-                                            lineHeight: '1.1rem',
-                                            textAlign: 'center',
-                                        }}
-                                    >
-                                        <span>{showDays(day)}</span>
-                                        <span style={{display: 'block', lineHeight: '1.1rem', color: "hotpink"}}>
+        <TableContainer component={Paper} className="table-container">
+            <Table className="table">
+                <TableHead className="table-head">
+                    <TableRow className="table-row">
+                        <TableCell className="first-cell header-cell">
+                            <Select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+                                {months.map((monthName, index) => (
+                                    <MenuItem key={index} value={index}>
+                                        {monthName}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            <Select value={year} onChange={(e) => setYear(e.target.value)}>
+                                {generateYearOptions().map((yr) => (
+                                    <MenuItem key={yr} value={yr}>
+                                        {yr}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </TableCell>
+                        {users && users.map(user => (
+                            <TableCell
+                                key={user.id}
+                                className="dynamic-cell user-cell"
+                                style={{width: widthDependingOnHowManyUsers()}}
+                            >
+                                {user.username}
+                            </TableCell>
+                        ))}
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {days.map((day, index) => {
+                        const isWeekendDay = isWeekend(day);
+                        const isHolidayDay = getHolidayName(day, holidaysOfCurrentYear);
+                        const cellClass = isWeekendDay || isHolidayDay ? 'first-cell day-cell weekend-holiday-cell' : 'first-cell day-cell';
+                        return (
+                            <TableRow key={index} className="table-row">
+                                <TableCell className={cellClass}>
+                                    <span>{showDays(day)}</span>
+                                    <span style={{display: 'block', lineHeight: '1.1rem', color: "hotpink"}}>
                                         {getHolidayName(day, holidaysOfCurrentYear)}
                                     </span>
-                                    </TableCell>
-                                    {users && users.map(user => (
-                                        <TableCell key={user.id}>
+                                </TableCell>
+                                {users && users.map(user => (
+                                    <TableCell
+                                        key={user.id}
+                                        className={`dynamic-cell ${cellClass}`}
+                                    >
+                                        <span className="appointments">
                                             {getAppointmentDescriptionsForUser(day, user.id)}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </div>
-
+                                        </span>
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 }

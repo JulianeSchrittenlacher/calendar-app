@@ -1,0 +1,59 @@
+.table-container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-head {
+    background-color: #f5f5f5;
+}
+
+.table-row {
+    width: 100%;
+}
+
+.first-cell {
+    width: 15%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.dynamic-cell {
+    flex: 1;
+    width: 14%; /* Gesamtbreite für dynamische Zellen, falls 7 Spalten existieren */
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-cell {
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.day-cell {
+    font-weight: bold;
+    font-size: 1.1rem;
+    line-height: 1.1rem;
+    text-align: center;
+}
+
+.user-cell {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.weekend-holiday-cell {
+    background-color: #FFFFE0;
+}
+
