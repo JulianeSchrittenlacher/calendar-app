@@ -1,4 +1,5 @@
 import {
+    Collapse,
     MenuItem,
     Paper,
     Select,
@@ -16,6 +17,7 @@ import useUserStore from "../stores/useUserStore.ts";
 import useApiStore from "../stores/useApiStore.tsx";
 import {Holiday} from "../types/Holiday.ts";
 import "../styles/CalendarTable.css"
+import React from 'react';
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
@@ -26,7 +28,7 @@ export default function CalendarTable() {
     const getHolidays = useApiStore(state => state.getHolidaysOfCurrentYear);
     const holidaysOfCurrentYear = useApiStore(state => state.holidaysOfCurrentYear);
     const currentState = useApiStore(state => state.currentState);
-    const [openRowIndex, setOpenRowIndex] = useState(null);
+    const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
 
     const [month, setMonth] = useState<number>(new Date().getMonth());
     const [year, setYear] = useState<string>(String(new Date().getFullYear()));
@@ -91,6 +93,10 @@ export default function CalendarTable() {
         return `${80 / userCount}%`;
     };
 
+    const handleRowClick = (index: number) => {
+        setOpenRowIndex(openRowIndex === index ? null : index);
+    };
+
     useEffect(() => {
         if (currentUser) {
             getAppointments(currentUser.familyId);
@@ -136,25 +142,43 @@ export default function CalendarTable() {
                         const isWeekendDay = isWeekend(day);
                         const isHolidayDay = getHolidayName(day, holidaysOfCurrentYear);
                         const cellClass = isWeekendDay || isHolidayDay ? 'first-cell day-cell weekend-holiday-cell' : 'first-cell day-cell';
+
                         return (
-                            <TableRow key={index} className="table-row">
-                                <TableCell className={cellClass}>
-                                    <span>{showDays(day)}</span>
-                                    <span style={{display: 'block', lineHeight: '1.1rem', color: "hotpink"}}>
-                                        {getHolidayName(day, holidaysOfCurrentYear)}
-                                    </span>
-                                </TableCell>
-                                {users && users.map(user => (
-                                    <TableCell
-                                        key={user.id}
-                                        className={`dynamic-cell ${cellClass}`}
-                                    >
-                                        <span className="appointments">
-                                            {getAppointmentDescriptionsForUser(day, user.id)}
+                            <React.Fragment key={index}>
+                                <TableRow
+                                    className="table-row"
+                                    onClick={() => handleRowClick(index)}
+                                    style={{cursor: 'pointer'}}
+                                >
+                                    <TableCell className={cellClass}>
+                                        <span>{showDays(day)}</span>
+                                        <span style={{display: 'block', lineHeight: '1.1rem', color: "hotpink"}}>
+                                            {getHolidayName(day, holidaysOfCurrentYear)}
                                         </span>
                                     </TableCell>
-                                ))}
-                            </TableRow>
+                                    {users && users.map(user => (
+                                        <TableCell
+                                            key={user.id}
+                                            className={`dynamic-cell ${cellClass}`}
+                                        >
+                                            <span className="appointments">
+                                                {getAppointmentDescriptionsForUser(day, user.id)}
+                                            </span>
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell colSpan={(users?.length ?? 0) + 1} style={{padding: 0}}>
+                                        <Collapse in={openRowIndex === index}>
+                                            <div style={{padding: '16px'}}>
+                                                {/* Hier kannst du die Details für den Tag anzeigen */}
+                                                <p>Details:</p>
+                                                {/* Hier Details einfügen */}
+                                            </div>
+                                        </Collapse>
+                                    </TableCell>
+                                </TableRow>
+                            </React.Fragment>
                         );
                     })}
                 </TableBody>
