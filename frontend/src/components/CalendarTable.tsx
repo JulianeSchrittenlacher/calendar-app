@@ -12,15 +12,13 @@ import {
 } from '@mui/material';
 
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import useUserStore from "../stores/useUserStore.ts";
 import useApiStore from "../stores/useApiStore.ts";
 import {Holiday} from "../types/Holiday.ts";
 import "../styles/CalendarTable.css"
-import React from 'react';
 import AppointmentCard from "./AppointmentCard.tsx";
 import {Appointment} from "../types/Appointment.ts";
-import "../styles/CalendarTable.css"
 import Modal from "./Modal.tsx";
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
 
@@ -98,9 +96,9 @@ export default function CalendarTable() {
         return holiday ? holiday.fname : "";
     }
 
-    const widthDependingOnHowManyUsers = (): string => {
+    const widthDependingOnHowManyUsers = (): number => {
         const userCount = users ? users.length : 1;
-        return `${80 / userCount}%`;
+        return 85 / userCount;
     };
 
     const handleRowClick = (index: number) => {
@@ -139,6 +137,7 @@ export default function CalendarTable() {
             getAppointments(currentUser.familyId);
             getUsers(currentUser.familyId);
             getHolidays(year, currentState);
+            holidaysOfCurrentYear;
         }
     }, [currentUser, getAppointments, year, currentState]);
 
@@ -163,6 +162,7 @@ export default function CalendarTable() {
                                         </MenuItem>
                                     ))}
                                 </Select>
+                                <p>{holidaysOfCurrentYear.length === 0 && "Feiertage nicht verfügbar"}</p>
                             </TableCell>
                             {users && users.map(user => (
                                 <TableCell

@@ -1,7 +1,10 @@
-.table-container .MuiTable-root {
+.table-container {
     width: 100%;
     margin: 0 auto;
-    font-size: 1.9rem !important;
+}
+
+.table-container td, .table-container th {
+    font-size: 1.4rem;
 }
 
 .table {
@@ -27,7 +30,7 @@
 
 .dynamic-cell {
     flex: 1;
-    width: 14%; /* Gesamtbreite für dynamische Zellen, falls 7 Spalten existieren */
+    width: 15%;
     padding: 8px;
     border: 1px solid #ddd;
     text-align: center;

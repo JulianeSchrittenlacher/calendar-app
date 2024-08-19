@@ -58,12 +58,10 @@ export default function Header() {
                 </IconButton>
                 <div className="app-header">
                     <h1>Familienkalender</h1>
-                    <h2>Mit Liebe geplant, mit Freude gelebt</h2>
-                    <h2>Termine für Herz und Seele</h2>
                 </div>
                 <div className="header-buttons">
                     <p>{currentUser && "Hallo " + currentUser.username + "!"}</p>
-                    {location.pathname !== "/" && (
+                    {location.pathname === "/my-family-page" && (
                         <button onClick={handleClick}>{getButtonText()}</button>
                     )}
 
@@ -86,17 +84,17 @@ export default function Header() {
                         <Typography variant="h6">Menu</Typography>
                     </ListItem>
                     <ListItem component={NavLink} to="/" onClick={toggleDrawer(false)}>
-                        <ListItemText primary="Login/Logout" primaryTypographyProps={{style: {fontSize: '1.2rem'}}}/>
+                        <ListItemText primary="Login/Logout" primaryTypographyProps={{style: {fontSize: '1.4rem'}}}/>
                     </ListItem>
                     {currentUser && (
                         <>
                             <ListItem component={NavLink} to="/my-family-page" onClick={toggleDrawer(false)}>
                                 <ListItemText primary="Meine Familie"
-                                              primaryTypographyProps={{style: {fontSize: '1.2rem'}}}/>
+                                              primaryTypographyProps={{style: {fontSize: '1.4rem'}}}/>
                             </ListItem>
                             <ListItem component={NavLink} to="/calendar" onClick={toggleDrawer(false)}>
                                 <ListItemText primary="Kalenderansicht"
-                                              primaryTypographyProps={{style: {fontSize: '1.2rem'}}}/>
+                                              primaryTypographyProps={{style: {fontSize: '1.4rem'}}}/>
                             </ListItem>
                         </>
                     )}

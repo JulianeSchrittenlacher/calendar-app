@@ -21,11 +21,13 @@ const useApiStore = create<ApiState>()((set) => ({
             set({holidaysOfCurrentYear: response.data});
         } catch (error) {
             console.error("Failed to fetch holidays:", error);
+            set({holidaysOfCurrentYear: []});
         }
     },
     currentState: "sh",
     setCurrentState: (newState: string) => {
         set({currentState: newState})
+
     },
 }))
 
