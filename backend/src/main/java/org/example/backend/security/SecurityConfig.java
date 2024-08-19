@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(requestAttributeHandler))
                 .authorizeHttpRequests(c -> {
-                    c.requestMatchers("/api/user").permitAll();
+                    c.requestMatchers("/api/user/register").permitAll();
                     c.requestMatchers(new AntPathRequestMatcher("/api/family/**")).authenticated();
                     c.requestMatchers(new AntPathRequestMatcher("/api/calendar/**")).authenticated();
                     c.requestMatchers(new AntPathRequestMatcher("/api/user/{familyId}")).authenticated();
