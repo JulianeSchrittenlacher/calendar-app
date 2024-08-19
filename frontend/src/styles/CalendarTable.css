@@ -66,6 +66,25 @@
     font-weight: bold;
 }
 
+.collapse-content {
+    display: flex;
+    padding: 15px;
+    border-radius: 8px;
+    gap: 10px;
+}
+
+.collapse-content > * {
+    width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+}
+
+
+
+
 
 
 

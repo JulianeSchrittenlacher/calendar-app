@@ -210,7 +210,7 @@ export default function CalendarTable() {
                                     <TableRow>
                                         <TableCell colSpan={(users?.length ?? 0) + 1} style={{padding: 0}}>
                                             <Collapse in={openRowIndex === index}>
-                                                <div style={{padding: '16px'}}>
+                                                <div className="collapse-content">
                                                     <button onClick={() => handleClick(day)}>Termin hinzufügen</button>
                                                     {getActualAppointments(appointments, day).map(appointment => (
                                                         <AppointmentCard key={appointment.id}
