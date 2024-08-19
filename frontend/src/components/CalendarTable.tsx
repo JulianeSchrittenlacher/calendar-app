@@ -96,9 +96,9 @@ export default function CalendarTable() {
         return holiday ? holiday.fname : "";
     }
 
-    const widthDependingOnHowManyUsers = (): number => {
+    const widthDependingOnHowManyUsers = (): string => {
         const userCount = users ? users.length : 1;
-        return 85 / userCount;
+        return `${85 / userCount}%`;
     };
 
     const handleRowClick = (index: number) => {
@@ -168,7 +168,6 @@ export default function CalendarTable() {
                                 <TableCell
                                     key={user.id}
                                     className="dynamic-cell user-cell"
-                                    style={{width: widthDependingOnHowManyUsers()}}
                                 >
                                     {user.username}
                                 </TableCell>
@@ -180,7 +179,7 @@ export default function CalendarTable() {
                             const isWeekendDay = isWeekend(day);
                             const isHolidayDay = getHolidayName(day, holidaysOfCurrentYear);
                             const cellClass = isWeekendDay || isHolidayDay ? 'first-cell day-cell weekend-holiday-cell' : 'first-cell day-cell';
-                            const isToday = day === today ? 'today-cell' : ''; // Überprüfen, ob der Tag der aktuelle Tag ist
+                            const isToday = day === today ? 'today-cell' : '';
 
 
                             return (
@@ -201,7 +200,13 @@ export default function CalendarTable() {
                                                 key={user.id}
                                                 className={`dynamic-cell ${cellClass}`}
                                             >
-                                            <span className="appointments">
+                                            <span className="appointments" style={{
+                                                width: '200px',
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                display: 'inline-block'
+                                            }}>
                                                 {getAppointmentDescriptionsForUser(day, user.id)}
                                             </span>
                                             </TableCell>

@@ -7,6 +7,18 @@
     font-size: 1.4rem;
 }
 
+.table-container td, .table-cell {
+    white-space: nowrap; /* Verhindert Zeilenumbrüche */
+    overflow: hidden; /* Verhindert das Anzeigen des Überlaufs */
+    text-overflow: ellipsis; /* Fügt ... hinzu, wenn der Text abgeschnitten wird */
+    width: 150px; /* Feste Breite, stelle sicher, dass alle Zellen die gleiche Breite haben */
+}
+
+.dynamic-cell td {
+    min-width: 100px;
+    max-width: 200px;
+}
+
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -26,30 +38,6 @@
     border: 1px solid #ddd;
     text-align: center;
     box-sizing: border-box;
-}
-
-.dynamic-cell {
-    flex: 1;
-    width: 15%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    text-align: center;
-    box-sizing: border-box;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.header-cell {
-    font-weight: bold;
-    font-size: 2rem;
-}
-
-.day-cell {
-    font-weight: bold;
-    font-size: 1.1rem;
-    line-height: 1.1rem;
-    text-align: center;
 }
 
 .user-cell {
