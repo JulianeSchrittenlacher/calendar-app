@@ -20,6 +20,7 @@ import "../styles/CalendarTable.css"
 import React from 'react';
 import AppointmentCard from "./AppointmentCard.tsx";
 import {Appointment} from "../types/Appointment.ts";
+import "../styles/CalendarTable.css"
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
@@ -32,6 +33,7 @@ export default function CalendarTable() {
     const currentState = useApiStore(state => state.currentState);
     const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
 
+
     const [month, setMonth] = useState<number>(new Date().getMonth());
     const [year, setYear] = useState<string>(String(new Date().getFullYear()));
     const months = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
@@ -43,6 +45,8 @@ export default function CalendarTable() {
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
+    
+    const today = formatDate(new Date());
 
     const getDaysInMonth = (month: number, year: number) => {
         const lastDay = new Date(year, month + 1, 0);
@@ -162,15 +166,17 @@ export default function CalendarTable() {
                         const isWeekendDay = isWeekend(day);
                         const isHolidayDay = getHolidayName(day, holidaysOfCurrentYear);
                         const cellClass = isWeekendDay || isHolidayDay ? 'first-cell day-cell weekend-holiday-cell' : 'first-cell day-cell';
+                        const isToday = day === today ? 'today-cell' : ''; // Überprüfen, ob der Tag der aktuelle Tag ist
+
 
                         return (
                             <React.Fragment key={index}>
                                 <TableRow
-                                    className="table-row"
+                                    className={`table-row ${isToday}`}
                                     onClick={() => handleRowClick(index)}
                                     style={{cursor: 'pointer'}}
                                 >
-                                    <TableCell className={cellClass}>
+                                    <TableCell className={`${cellClass} ${isToday}`}>
                                         <span>{showDays(day)}</span>
                                         <span style={{display: 'block', lineHeight: '1.1rem', color: "hotpink"}}>
                                             {getHolidayName(day, holidaysOfCurrentYear)}
