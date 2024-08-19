@@ -14,13 +14,15 @@ import {
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
 import {useEffect, useState} from "react";
 import useUserStore from "../stores/useUserStore.ts";
-import useApiStore from "../stores/useApiStore.tsx";
+import useApiStore from "../stores/useApiStore.ts";
 import {Holiday} from "../types/Holiday.ts";
 import "../styles/CalendarTable.css"
 import React from 'react';
 import AppointmentCard from "./AppointmentCard.tsx";
 import {Appointment} from "../types/Appointment.ts";
 import "../styles/CalendarTable.css"
+import Modal from "./Modal.tsx";
+import AppointmentAddForm from "./AppointmentAddForm.tsx";
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
@@ -31,12 +33,14 @@ export default function CalendarTable() {
     const getHolidays = useApiStore(state => state.getHolidaysOfCurrentYear);
     const holidaysOfCurrentYear = useApiStore(state => state.holidaysOfCurrentYear);
     const currentState = useApiStore(state => state.currentState);
-    const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
 
 
     const [month, setMonth] = useState<number>(new Date().getMonth());
     const [year, setYear] = useState<string>(String(new Date().getFullYear()));
     const months = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+    const [modalOpen, setModalOpen] = useState(false);
+    const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
+    const [selectedDay, setSelectedDay] = useState<string>("");
 
 
     const formatDate = (date: Date) => {
@@ -45,7 +49,7 @@ export default function CalendarTable() {
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
-    
+
     const today = formatDate(new Date());
 
     const getDaysInMonth = (month: number, year: number) => {
@@ -120,6 +124,15 @@ export default function CalendarTable() {
         });
     };
 
+    const handleClick = (day: string) => {
+        setSelectedDay(day);
+        setModalOpen(true);
+    }
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
 
     useEffect(() => {
         if (currentUser) {
@@ -130,85 +143,94 @@ export default function CalendarTable() {
     }, [currentUser, getAppointments, year, currentState]);
 
     return (
-        <TableContainer component={Paper} className="table-container">
-            <Table className="table">
-                <TableHead className="table-head">
-                    <TableRow className="table-row">
-                        <TableCell className="first-cell header-cell">
-                            <Select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
-                                {months.map((monthName, index) => (
-                                    <MenuItem key={index} value={index}>
-                                        {monthName}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                            <Select value={year} onChange={(e) => setYear(e.target.value)}>
-                                {generateYearOptions().map((yr) => (
-                                    <MenuItem key={yr} value={yr}>
-                                        {yr}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </TableCell>
-                        {users && users.map(user => (
-                            <TableCell
-                                key={user.id}
-                                className="dynamic-cell user-cell"
-                                style={{width: widthDependingOnHowManyUsers()}}
-                            >
-                                {user.username}
+        <>
+            <TableContainer component={Paper} className="table-container">
+                <Table className="table">
+                    <TableHead className="table-head">
+                        <TableRow className="table-row">
+                            <TableCell className="first-cell header-cell">
+                                <Select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+                                    {months.map((monthName, index) => (
+                                        <MenuItem key={index} value={index}>
+                                            {monthName}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                <Select value={year} onChange={(e) => setYear(e.target.value)}>
+                                    {generateYearOptions().map((yr) => (
+                                        <MenuItem key={yr} value={yr}>
+                                            {yr}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
                             </TableCell>
-                        ))}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {days.map((day, index) => {
-                        const isWeekendDay = isWeekend(day);
-                        const isHolidayDay = getHolidayName(day, holidaysOfCurrentYear);
-                        const cellClass = isWeekendDay || isHolidayDay ? 'first-cell day-cell weekend-holiday-cell' : 'first-cell day-cell';
-                        const isToday = day === today ? 'today-cell' : ''; // Überprüfen, ob der Tag der aktuelle Tag ist
-
-
-                        return (
-                            <React.Fragment key={index}>
-                                <TableRow
-                                    className={`table-row ${isToday}`}
-                                    onClick={() => handleRowClick(index)}
-                                    style={{cursor: 'pointer'}}
+                            {users && users.map(user => (
+                                <TableCell
+                                    key={user.id}
+                                    className="dynamic-cell user-cell"
+                                    style={{width: widthDependingOnHowManyUsers()}}
                                 >
-                                    <TableCell className={`${cellClass} ${isToday}`}>
-                                        <span>{showDays(day)}</span>
-                                        <span style={{display: 'block', lineHeight: '1.1rem', color: "hotpink"}}>
+                                    {user.username}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {days.map((day, index) => {
+                            const isWeekendDay = isWeekend(day);
+                            const isHolidayDay = getHolidayName(day, holidaysOfCurrentYear);
+                            const cellClass = isWeekendDay || isHolidayDay ? 'first-cell day-cell weekend-holiday-cell' : 'first-cell day-cell';
+                            const isToday = day === today ? 'today-cell' : ''; // Überprüfen, ob der Tag der aktuelle Tag ist
+
+
+                            return (
+                                <React.Fragment key={index}>
+                                    <TableRow
+                                        className={`table-row ${isToday}`}
+                                        onClick={() => handleRowClick(index)}
+                                        style={{cursor: 'pointer'}}
+                                    >
+                                        <TableCell className={`${cellClass} ${isToday}`}>
+                                            <span>{showDays(day)}</span>
+                                            <span style={{display: 'block', lineHeight: '1.1rem', color: "hotpink"}}>
                                             {getHolidayName(day, holidaysOfCurrentYear)}
                                         </span>
-                                    </TableCell>
-                                    {users && users.map(user => (
-                                        <TableCell
-                                            key={user.id}
-                                            className={`dynamic-cell ${cellClass}`}
-                                        >
+                                        </TableCell>
+                                        {users && users.map(user => (
+                                            <TableCell
+                                                key={user.id}
+                                                className={`dynamic-cell ${cellClass}`}
+                                            >
                                             <span className="appointments">
                                                 {getAppointmentDescriptionsForUser(day, user.id)}
                                             </span>
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell colSpan={(users?.length ?? 0) + 1} style={{padding: 0}}>
+                                            <Collapse in={openRowIndex === index}>
+                                                <div style={{padding: '16px'}}>
+                                                    <button onClick={() => handleClick(day)}>Termin hinzufügen</button>
+                                                    {getActualAppointments(appointments, day).map(appointment => (
+                                                        <AppointmentCard key={appointment.id}
+                                                                         appointment={appointment}/>
+                                                    ))}
+                                                </div>
+                                            </Collapse>
                                         </TableCell>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell colSpan={(users?.length ?? 0) + 1} style={{padding: 0}}>
-                                        <Collapse in={openRowIndex === index}>
-                                            <div style={{padding: '16px'}}>
-                                                {getActualAppointments(appointments, day).map(appointment => (
-                                                    <AppointmentCard key={appointment.id} appointment={appointment}/>
-                                                ))}
-                                            </div>
-                                        </Collapse>
-                                    </TableCell>
-                                </TableRow>
-                            </React.Fragment>
-                        );
-                    })}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                                    </TableRow>
+                                </React.Fragment>
+                            );
+                        })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            <Modal show={modalOpen} onClose={handleCloseModal}>
+                <AppointmentAddForm onClose={handleCloseModal} day={selectedDay}/>
+            </Modal>
+        </>
+
     );
 }

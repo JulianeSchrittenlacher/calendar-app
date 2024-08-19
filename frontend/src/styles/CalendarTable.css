@@ -1,6 +1,7 @@
-.table-container {
+.table-container .MuiTable-root {
     width: 100%;
     margin: 0 auto;
+    font-size: 1.9rem !important;
 }
 
 .table {
@@ -61,5 +62,7 @@
     background-color: #fda5b8;
     font-weight: bold;
 }
+
+
 
 

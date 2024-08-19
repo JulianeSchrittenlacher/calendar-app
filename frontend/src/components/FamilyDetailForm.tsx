@@ -2,7 +2,7 @@ import {Family} from "../types/Family.ts";
 import useFamilyStore from "../stores/useFamilyStore.ts";
 import {useState} from "react";
 import useUserStore from "../stores/useUserStore.ts";
-import useApiStore from "../stores/useApiStore.tsx";
+import useApiStore from "../stores/useApiStore.ts";
 
 type FamilyAddFromProps = {
     onClose: () => void;

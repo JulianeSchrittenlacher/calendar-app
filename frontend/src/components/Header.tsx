@@ -2,13 +2,15 @@ import "../styles/Header.css"
 import {useState} from "react";
 import Modal from "./Modal.tsx";
 import {NavLink, useLocation} from "react-router-dom";
-import AppointmentAddForm from "./AppointmentAddForm.tsx";
 import useUserStore from "../stores/useUserStore.ts";
 import FamilyDetailForm from "./FamilyDetailForm.tsx";
+import {Drawer, IconButton, List, ListItem, ListItemText, Typography} from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
 
 export default function Header() {
 
     const [modalOpen, setModalOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
     const currentUser = useUserStore(state => state.currentUser);
     const location = useLocation();
 
@@ -23,8 +25,6 @@ export default function Header() {
     const getButtonText = () => {
         if (location.pathname === '/my-family-page') {
             return "Familien Details";
-        } else if (location.pathname === `/shared-calendar` || location.pathname === `/my-calendar` || location.pathname === `/calendar`) {
-            return "Termin hinzufügen";
         }
         return null;
 
@@ -33,15 +33,29 @@ export default function Header() {
     const renderForm = () => {
         if (location.pathname === '/my-family-page') {
             return <FamilyDetailForm onClose={handleCloseModal}/>;
-        } else if (location.pathname === `/shared-calendar` || location.pathname === `/my-calendar`) {
-            return <AppointmentAddForm onClose={handleCloseModal}/>;
         }
         return null;
+    };
+
+    const toggleDrawer = (open: boolean) => () => {
+        setDrawerOpen(open);
     };
 
     return (
         <>
             <div className="header-container">
+                <IconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    onClick={toggleDrawer(true)}
+                    sx={{
+                        marginRight: 2,
+                        fontSize: 70
+                    }}
+                >
+                    <MenuIcon sx={{fontSize: 'inherit'}}/>
+                </IconButton>
                 <div className="app-header">
                     <h1>Familienkalender</h1>
                     <h2>Mit Liebe geplant, mit Freude gelebt</h2>
@@ -52,52 +66,48 @@ export default function Header() {
                     {location.pathname !== "/" && (
                         <button onClick={handleClick}>{getButtonText()}</button>
                     )}
+
                 </div>
             </div>
 
-            <nav className="App-nav">
-                <ul>
-                    <li>
-                        <NavLink to="/" className={({isActive}) => (isActive ? "active-link" : "")}>
-                            Home
-                        </NavLink>
-                    </li>
+            <Drawer
+                anchor="left"
+                open={drawerOpen}
+                onClose={toggleDrawer(false)}
+                sx={{
+                    '& .MuiDrawer-paper': {
+                        width: 200, // Breite des Menüs
+                        boxSizing: 'border-box',
+                    },
+                }}
+            >
+                <List>
+                    <ListItem>
+                        <Typography variant="h6">Menu</Typography>
+                    </ListItem>
+                    <ListItem component={NavLink} to="/" onClick={toggleDrawer(false)}>
+                        <ListItemText primary="Login/Logout" primaryTypographyProps={{style: {fontSize: '1.2rem'}}}/>
+                    </ListItem>
                     {currentUser && (
                         <>
-                            <li>
-                                <NavLink to={`/my-family-page`}
-                                         className={({isActive}) => (isActive ? "active-link" : "")}>
-                                    Meine Familie
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to={`/my-calendar`}
-                                         className={({isActive}) => (isActive ? "active-link" : "")}>
-                                    Mein Kalender
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to={`/shared-calendar`}
-                                         className={({isActive}) => (isActive ? "active-link" : "")}>
-                                    Unser Kalender
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to={`/calendar`}
-                                         className={({isActive}) => (isActive ? "active-link" : "")}>
-                                    Kalenderansicht
-                                </NavLink>
-                            </li>
+                            <ListItem component={NavLink} to="/my-family-page" onClick={toggleDrawer(false)}>
+                                <ListItemText primary="Meine Familie"
+                                              primaryTypographyProps={{style: {fontSize: '1.2rem'}}}/>
+                            </ListItem>
+                            <ListItem component={NavLink} to="/calendar" onClick={toggleDrawer(false)}>
+                                <ListItemText primary="Kalenderansicht"
+                                              primaryTypographyProps={{style: {fontSize: '1.2rem'}}}/>
+                            </ListItem>
                         </>
                     )}
-                </ul>
-            </nav>
+                </List>
+            </Drawer>
 
             <Modal show={modalOpen} onClose={handleCloseModal}>
-                <>
-                    {renderForm()}
-                </>
+                {renderForm()}
             </Modal>
         </>
     );
 }
+
+
