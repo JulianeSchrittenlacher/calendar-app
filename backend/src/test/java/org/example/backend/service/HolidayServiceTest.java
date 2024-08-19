@@ -2,12 +2,12 @@ package org.example.backend.service;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.example.backend.exceptions.BadRequestException;
 import org.example.backend.model.Holidays;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,7 +34,7 @@ public class HolidayServiceTest {
     }
 
     @Test
-    void getHolidaysByYearAndState_success() throws IOException {
+    void getHolidaysByYearAndState_success() {
         String mockResponse = "{"
                 + "\"status\": \"success\","
                 + "\"feiertage\": ["
@@ -64,7 +64,7 @@ public class HolidayServiceTest {
                 .setResponseCode(404)
                 .addHeader("Content-Type", "application/json"));
 
-        assertThrows(HttpClientErrorException.NotFound.class, () -> holidayService.getHolidaysByYearAndState("2029", "sh"));
+        assertThrows(BadRequestException.class, () -> holidayService.getHolidaysByYearAndState("2029", "sh"));
     }
 
     @Test
@@ -72,6 +72,6 @@ public class HolidayServiceTest {
 
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(404));
-        assertThrows(HttpClientErrorException.NotFound.class, () -> holidayService.getHolidaysByYearAndState("2029", "sh"));
+        assertThrows(BadRequestException.class, () -> holidayService.getHolidaysByYearAndState("2029", "sh"));
     }
 }

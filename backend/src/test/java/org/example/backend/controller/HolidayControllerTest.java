@@ -109,4 +109,15 @@ class HolidayControllerTest {
                         """));
     }
 
+    @Test
+    @WithMockUser
+    void testTest() throws Exception {
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(400)
+                .addHeader("Content-Type", "application/json"));
+
+        mockMvc.perform(get("/api/holidays/2024/invalid"))
+                .andExpect(status().isBadRequest());
+    }
+
 }
