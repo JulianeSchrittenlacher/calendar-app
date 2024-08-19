@@ -96,11 +96,6 @@ export default function CalendarTable() {
         return holiday ? holiday.fname : "";
     }
 
-    const widthDependingOnHowManyUsers = (): string => {
-        const userCount = users ? users.length : 1;
-        return `${85 / userCount}%`;
-    };
-
     const handleRowClick = (index: number) => {
         setOpenRowIndex(openRowIndex === index ? null : index);
     };
