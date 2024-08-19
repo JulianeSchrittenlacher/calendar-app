@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +37,21 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerNewUser(UserDTO newUserDto) {
+
+        String familyId;
+        if (Objects.equals(newUserDto.familyId(), "") || newUserDto.familyId() == null) {
+            familyId = utilService.generateId();
+        } else {
+            familyId = newUserDto.familyId();
+        }
+
         User newUser = new User(
                 utilService.generateId(),
                 newUserDto.username(),
                 encoder.encode(newUserDto.password()),
                 newUserDto.role(),
-                newUserDto.familyId()
+                familyId,
+                newUserDto.familyName()
         );
         return userRepository.save(newUser);
     }
