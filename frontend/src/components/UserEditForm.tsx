@@ -15,6 +15,7 @@ export default function UserEditForm(props: Readonly<UserEditFormProps>) {
     const [newRole, setNewRole] = useState<Role>(user.role);
     const [newFamilyId, setNewFamilyId] = useState<string>(user.familyId);
     const [newPassword, setNewPassword] = useState<string>(user.password);
+    const [newFamilyName] = useState<string>(user.familyName);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -25,6 +26,7 @@ export default function UserEditForm(props: Readonly<UserEditFormProps>) {
             password: newPassword,
             role: newRole,
             familyId: newFamilyId,
+            familyName: newFamilyName
         };
 
         updateUser(user.id, updatedUser);

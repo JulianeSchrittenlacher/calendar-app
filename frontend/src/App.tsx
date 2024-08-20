@@ -1,5 +1,4 @@
 import Header from "./components/Header.tsx";
-import AppointmentGallery from "./components/AppointmentGallery.tsx";
 import "./App.css"
 import {Route, Routes} from "react-router-dom";
 import WelcomePage from "./pages/WelcomePage.tsx";
@@ -15,18 +14,6 @@ export default function App() {
                 <Route path="/" element={<WelcomePage/>}></Route>
                 <Route element={<ProtectedRoute/>}>
                     <Route path={`/my-family-page`} element={<MyFamilyPage/>}></Route>
-                    <Route path={`/shared-calendar`} element={
-                        <>
-                            <Header/>
-                            <AppointmentGallery/>
-                        </>
-                    }></Route>
-                    <Route path={`/my-calendar`} element={
-                        <>
-                            <Header/>
-                            <AppointmentGallery/>
-                        </>
-                    }></Route>
                     <Route path={"/calendar"} element={
                         <>
                             <Header/>

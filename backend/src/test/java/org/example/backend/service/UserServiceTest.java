@@ -9,10 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -32,9 +29,9 @@ class UserServiceTest {
         mockUtilService = mock(UtilService.class);
         userService = new UserService(mockUtilService, mockUserRepository);
         testUser = new ArrayList<>() {{
-            add(new User("1", "John Doe", "123", Role.ADULT, "family123"));
-            add(new User("2", "Jane Doe", "456", Role.ADULT, "family123"));
-            add(new User("3", "Jimmy Doe", "789", Role.CHILD, "family123"));
+            add(new User("1", "John Doe", "123", Role.ADULT, "family123", "Mustermann"));
+            add(new User("2", "Jane Doe", "456", Role.ADULT, "family123", "Doe"));
+            add(new User("3", "Jimmy Doe", "789", Role.CHILD, "family123", "Musterfamilie"));
         }};
     }
 
@@ -57,7 +54,7 @@ class UserServiceTest {
         assertEquals(expectedUserDetails.getUsername(), actualUserDetails.getUsername());
         assertEquals(expectedUserDetails.getPassword(), actualUserDetails.getPassword());
         assertEquals(expectedUserDetails.getAuthorities(), actualUserDetails.getAuthorities());
-        
+
         verify(mockUserRepository).findByUsername(user.username());
     }
 
@@ -69,7 +66,7 @@ class UserServiceTest {
         // WHEN
         when(mockUserRepository.save(any(User.class))).thenReturn(expectedUser);
         when(mockUtilService.generateId()).thenReturn(expectedUser.id());
-        User actual = userService.registerNewUser(new UserDTO(expectedUser.username(), expectedUser.password(), expectedUser.role(), expectedUser.familyId()));
+        User actual = userService.registerNewUser(new UserDTO(expectedUser.username(), expectedUser.password(), expectedUser.role(), expectedUser.familyId(), expectedUser.familyName()));
 
         // THEN
         assertEquals(expectedUser.username(), actual.username());
@@ -111,11 +108,29 @@ class UserServiceTest {
     void updateUser_shouldUpdateUser_whenCalledWithValidId() {
         //WHEN
         when(mockUserRepository.findById("2")).thenReturn(Optional.of(testUser.get(1)));
-        User actual = userService.updateUser("2", new UserDTO("Mama", "123", Role.ADULT, "family123"));
+        User actual = userService.updateUser("2", new UserDTO("Mama", "123", Role.ADULT, "family123", "Doe"));
         when(mockUserRepository.save(any(User.class))).thenReturn(actual);
         //THEN
         verify(mockUserRepository).findById("2");
         verify(mockUserRepository).save(any(User.class));
         assertNotEquals(testUser.get(1), actual);
     }
+
+    @Test
+    void updateUser_shouldThrowNoSuchElementException_whenCalledWithInvalidId() {
+        // GIVEN
+        String invalidId = "7";
+
+        // WHEN
+        when(mockUserRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        // THEN
+        assertThrows(NoSuchElementException.class, () -> {
+            userService.updateUser(invalidId, new UserDTO("Mama", "123", Role.ADULT, "family123", "Doe"));
+        });
+
+        verify(mockUserRepository).findById(invalidId);
+        verify(mockUserRepository, never()).save(any(User.class));
+    }
+
 }
