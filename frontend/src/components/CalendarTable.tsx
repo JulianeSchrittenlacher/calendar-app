@@ -132,7 +132,6 @@ export default function CalendarTable() {
             getAppointments(currentUser.familyId);
             getUsers(currentUser.familyId);
             getHolidays(year, currentState);
-            holidaysOfCurrentYear;
         }
     }, [currentUser, getAppointments, year, currentState]);
 
