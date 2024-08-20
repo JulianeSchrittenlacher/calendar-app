@@ -12,10 +12,12 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.IOException;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -111,13 +113,25 @@ class HolidayControllerTest {
 
     @Test
     @WithMockUser
-    void testTest() throws Exception {
+    void getHolidaysByYearAndState_shouldReturn400_whenCalledWithInvalidArguments() throws Exception {
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(400)
                 .addHeader("Content-Type", "application/json"));
 
         mockMvc.perform(get("/api/holidays/2024/invalid"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getHolidaysByYearAndState_shouldReturnUnautherized_whenCalledWithoutMockUser() throws Exception {
+
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(401)
+                .addHeader("Content-Type", "application/json"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/holidays/2024/sh")
+                        .with(csrf()))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
 }

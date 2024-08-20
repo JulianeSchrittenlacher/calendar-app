@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .csrfTokenRequestHandler(requestAttributeHandler))
                 .authorizeHttpRequests(c -> {
                     c.requestMatchers("/api/user/register").permitAll();
+                    c.requestMatchers(new AntPathRequestMatcher("/api/holidays/2024/sh")).authenticated();
                     c.requestMatchers(new AntPathRequestMatcher("/api/family/**")).authenticated();
                     c.requestMatchers(new AntPathRequestMatcher("/api/calendar/**")).authenticated();
                     c.requestMatchers(new AntPathRequestMatcher("/api/user/{familyId}")).authenticated();

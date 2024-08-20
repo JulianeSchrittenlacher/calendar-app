@@ -99,7 +99,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void logoutUser_shouldReturn_whenCalledWithoutMockUser() throws Exception {
+    void logoutUser_shouldReturnUnautherized_whenCalledWithoutMockUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/logout")
                         .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());

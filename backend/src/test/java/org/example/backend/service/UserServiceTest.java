@@ -9,10 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -118,4 +115,22 @@ class UserServiceTest {
         verify(mockUserRepository).save(any(User.class));
         assertNotEquals(testUser.get(1), actual);
     }
+
+    @Test
+    void updateUser_shouldThrowNoSuchElementException_whenCalledWithInvalidId() {
+        // GIVEN
+        String invalidId = "7";
+
+        // WHEN
+        when(mockUserRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        // THEN
+        assertThrows(NoSuchElementException.class, () -> {
+            userService.updateUser(invalidId, new UserDTO("Mama", "123", Role.ADULT, "family123", "Doe"));
+        });
+
+        verify(mockUserRepository).findById(invalidId);
+        verify(mockUserRepository, never()).save(any(User.class));
+    }
+
 }
