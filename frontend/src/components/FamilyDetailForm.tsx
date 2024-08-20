@@ -59,7 +59,7 @@ export default function FamilyDetailForm(props: Readonly<FamilyAddFromProps>) {
             </label>
             <div className="button-container">
                 <button onClick={onClose}>Abbrechen</button>
-                <button type="submit">Hinzufügen</button>
+                <button type="submit">Ok</button>
             </div>
         </form>
     );
