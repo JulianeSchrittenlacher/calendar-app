@@ -36,13 +36,32 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerNewUser(UserDTO newUserDto) {
+
+        String familyId = newUserDto.familyId();
+        if (familyId == null || familyId.isEmpty()) {
+            familyId = utilService.generateId();
+        }
+
+        List<User> familyMembers = userRepository.findUsersByFamilyId(familyId);
+
+        String familyName = newUserDto.familyName();
+        if (familyName == null || familyName.isEmpty()) {
+            if (!familyMembers.isEmpty()) {
+                familyName = familyMembers.get(0).familyName();
+            } else {
+                familyName = "Mustermann";
+            }
+        }
+
         User newUser = new User(
                 utilService.generateId(),
                 newUserDto.username(),
                 encoder.encode(newUserDto.password()),
                 newUserDto.role(),
-                newUserDto.familyId()
+                familyId,
+                familyName
         );
+
         return userRepository.save(newUser);
     }
 

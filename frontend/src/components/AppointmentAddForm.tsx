@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Appointment} from "../types/Appointment";
-import {format, parseISO} from 'date-fns';
+import {parseISO} from 'date-fns';
 import {toZonedTime} from 'date-fns-tz';
 import "../styles/AppointmentForm.css"
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
@@ -10,6 +10,7 @@ import UserSelector from "./UserSelector.tsx";
 
 type AppointmentAddFormProps = {
     onClose: () => void;
+    day: string;
 }
 
 export default function AppointmentAddForm(props: Readonly<AppointmentAddFormProps>) {
@@ -19,8 +20,8 @@ export default function AppointmentAddForm(props: Readonly<AppointmentAddFormPro
     const currentUser = useUserStore(state => state.currentUser);
 
     const [description, setDescription] = useState<string>("");
-    const [startTime, setStartTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
-    const [endTime, setEndTime] = useState<string>(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
+    const [startTime, setStartTime] = useState<string>(`${props.day}T09:00`);
+    const [endTime, setEndTime] = useState<string>(`${props.day}T10:00`);
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

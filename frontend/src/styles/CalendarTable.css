@@ -1,0 +1,78 @@
+.table-container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.table-container td, .table-container th {
+    font-size: 1.4rem;
+}
+
+.table-container td, .table-cell {
+    white-space: nowrap; /* Verhindert Zeilenumbrüche */
+    overflow: hidden; /* Verhindert das Anzeigen des Überlaufs */
+    text-overflow: ellipsis; /* Fügt ... hinzu, wenn der Text abgeschnitten wird */
+    width: 150px; /* Feste Breite, stelle sicher, dass alle Zellen die gleiche Breite haben */
+}
+
+.dynamic-cell td {
+    min-width: 100px;
+    max-width: 200px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-head {
+    background-color: #f5f5f5;
+}
+
+.table-row {
+    width: 100%;
+}
+
+.first-cell {
+    width: 15%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.user-cell {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.weekend-holiday-cell {
+    background-color: #FFFFE0;
+}
+
+.today-cell {
+    background-color: #fda5b8;
+    font-weight: bold;
+}
+
+.collapse-content {
+    display: flex;
+    padding: 15px;
+    border-radius: 8px;
+    gap: 10px;
+}
+
+.collapse-content > * {
+    width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+}
+
+
+
+
+
+
+

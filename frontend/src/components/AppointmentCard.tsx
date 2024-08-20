@@ -1,5 +1,4 @@
 import {Appointment} from "../types/Appointment";
-import {DateOptions} from "../types/DateOptions";
 import "../styles/AppointmentCard.css";
 import Modal from './Modal';
 import AppointmentEditForm from './AppointmentEditForm';
@@ -29,7 +28,7 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
     };
 
     const formatDate = (date: Date): string => {
-        return date.toLocaleString('de-DE', DateOptions);
+        return date.toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
     };
 
     const startDate = parseDate(props.appointment.startTime);
@@ -45,13 +44,11 @@ export default function AppointmentCard(props: Readonly<AppointmentCardProps>) {
 
     return (
         <article className="appointment-card">
-            <p className="appointment-description">{props.appointment.description}</p>
-            <p>Beginn: {formatDate(startDate)}</p>
-            <p>Ende: {formatDate(endDate)}</p>
-            <p>Teilnehmer: {users && users.filter(user => props.appointment.userIds.includes(user.id))
+            <p className="appointment-text">{props.appointment.description}</p>
+            <p className="appointment-text">{formatDate(startDate)} bis {formatDate(endDate)}</p>
+            <p className="appointment-text">Teilnehmer: {users && users.filter(user => props.appointment.userIds.includes(user.id))
                 .map(user => user.username)
                 .join(', ')}</p>
-            <p>Familien Id: {props.appointment.familyId}</p>
             <div className="card-button-container">
                 <button onClick={() => deleteAppointment(props.appointment.id)}>Löschen</button>
                 <button onClick={handleEdit}>Bearbeiten</button>

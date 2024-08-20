@@ -8,6 +8,7 @@ public record UserDTO(
         String username,
         String password,
         Role role,
-        String familyId
+        String familyId,
+        String familyName
 ) {
 }

@@ -29,7 +29,7 @@ const useFamilyStore = create<FamilyState>()((set) => ({
             set(state => ({
                 families: [...state.families, response.data]
             }));
-            alert("Familie erfolgreich erstellt.")
+            alert("Familieninformationen geändert..")
         }).catch(error => console.log(error))
     },
     deleteFamily: (id: string) => {
@@ -46,7 +46,7 @@ const useFamilyStore = create<FamilyState>()((set) => ({
                 const updatedFamilies: Family[] = state.families.map(family => family.id === id ? response.data : family);
                 return {families: updatedFamilies};
             });
-            alert("Familie geändert.")
+            alert("Familieninformationen geändert.")
         }).catch(error => console.log(error))
     },
 }))
