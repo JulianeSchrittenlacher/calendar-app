@@ -57,7 +57,8 @@ export default function Header() {
                     <MenuIcon sx={{fontSize: 'inherit'}}/>
                 </IconButton>
                 <div className="app-header">
-                    <h1>Familienkalender</h1>
+                    <h1>Kalender</h1>
+                    <p>{currentUser && "Familie " + currentUser.familyName}</p>
                 </div>
                 <div className="header-buttons">
                     <p>{currentUser && "Hallo " + currentUser.username + "!"}</p>
