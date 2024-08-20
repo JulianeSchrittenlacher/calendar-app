@@ -1,7 +1,7 @@
 .gallery {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    align-items: center; /* vertikale Zentrierung */
+    justify-content: center; /* horizontale Zentrierung */
     gap: 5px;
     font-size: 1.2rem;
 }

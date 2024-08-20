@@ -17,10 +17,9 @@ import useUserStore from "../stores/useUserStore.ts";
 import useApiStore from "../stores/useApiStore.ts";
 import {Holiday} from "../types/Holiday.ts";
 import "../styles/CalendarTable.css"
-import AppointmentCard from "./AppointmentCard.tsx";
-import {Appointment} from "../types/Appointment.ts";
 import Modal from "./Modal.tsx";
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
+import AppointmentGallery from "./AppointmentGallery.tsx";
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
@@ -38,7 +37,7 @@ export default function CalendarTable() {
     const months = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
     const [modalOpen, setModalOpen] = useState(false);
     const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
-    const [selectedDay, setSelectedDay] = useState<string>("");
+    const [selectedDay] = useState<string>("");
 
 
     const formatDate = (date: Date) => {
@@ -99,28 +98,6 @@ export default function CalendarTable() {
     const handleRowClick = (index: number) => {
         setOpenRowIndex(openRowIndex === index ? null : index);
     };
-
-    const getActualAppointments = (appointments: Appointment[], day: string): Appointment[] => {
-        if (!currentUser) {
-            return [];
-        }
-
-        const appointmentsForDay = appointments.filter(appointment => {
-            const appointmentDate = formatDate(new Date(appointment.startTime));
-            return appointmentDate === day;
-        });
-
-        return appointmentsForDay.sort((a, b) => {
-            const dateA = new Date(a.startTime).getTime();
-            const dateB = new Date(b.startTime).getTime();
-            return dateA - dateB;
-        });
-    };
-
-    const handleClick = (day: string) => {
-        setSelectedDay(day);
-        setModalOpen(true);
-    }
 
     const handleCloseModal = () => {
         setModalOpen(false);
@@ -210,11 +187,15 @@ export default function CalendarTable() {
                                         <TableCell colSpan={(users?.length ?? 0) + 1} style={{padding: 0}}>
                                             <Collapse in={openRowIndex === index}>
                                                 <div className="collapse-content">
-                                                    <button onClick={() => handleClick(day)}>Termin hinzufügen</button>
+                                                    {currentUser && <AppointmentGallery key={currentUser.id}
+                                                                                        day={day}></AppointmentGallery>}
+                                                    {/*
+                                                    <button onClick={() => handleClick(day)}>Termin hinzufügen
                                                     {getActualAppointments(appointments, day).map(appointment => (
                                                         <AppointmentCard key={appointment.id}
                                                                          appointment={appointment}/>
-                                                    ))}
+                                                    ))}*/}
+
                                                 </div>
                                             </Collapse>
                                         </TableCell>
