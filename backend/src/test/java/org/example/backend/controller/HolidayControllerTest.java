@@ -134,4 +134,22 @@ class HolidayControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
+    @Test
+    @WithMockUser
+    void getHolidaysByYearAndState_shouldReturn404_whenHolidaysListIsNullOrEmpty() throws Exception {
+       
+        mockWebServer.enqueue(new MockResponse()
+                .addHeader("Content-Type", "application/json")
+                .setBody("""
+                        {
+                            "status": "success",
+                            "feiertage": []
+                        }
+                        """));
+
+        mockMvc.perform(get("/api/holidays/2024/sh"))
+                .andExpect(status().isNotFound());
+    }
+
+
 }
