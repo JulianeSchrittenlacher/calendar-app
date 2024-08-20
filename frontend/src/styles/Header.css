@@ -6,7 +6,11 @@
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 5rem;
+}
+
+.app-header p {
+    font-size: 2rem;
 }
 
 .App-nav ul {

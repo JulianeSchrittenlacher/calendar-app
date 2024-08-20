@@ -10,7 +10,7 @@ type FamilyAddFromProps = {
 export default function FamilyDetailForm(props: Readonly<FamilyAddFromProps>) {
     const {onClose} = props;
     const createFamily: (newFamily: Family) => void = useFamilyStore(state => state.createFamily);
-    const [name, setName] = useState<string>("");
+    const [name] = useState<string>("");
     const currentUser = useUserStore(state => state.currentUser);
     const currentState = useApiStore(state => state.currentState);
     const setCurrentState = useApiStore(state => state.setCurrentState);
@@ -56,14 +56,6 @@ export default function FamilyDetailForm(props: Readonly<FamilyAddFromProps>) {
                     <option value="sh">Schleswig-Holstein</option>
                     <option value="th">Thüringen</option>
                 </select>
-            </label>
-            <label className="form-entries">
-                <p>Name:</p>
-                <input
-                    placeholder={name}
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}/>
             </label>
             <div className="button-container">
                 <button onClick={onClose}>Abbrechen</button>

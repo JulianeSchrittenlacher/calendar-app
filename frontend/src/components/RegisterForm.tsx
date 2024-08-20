@@ -12,7 +12,8 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [role, setRole] = useState<Role>(Role.CHILD);
-    const [familyId, setFamilyId] = useState<string>("")
+    const [familyId, setFamilyId] = useState<string>("");
+    const [familyName, setFamilyName] = useState<string>("");
     const registerUser = useUserStore(state => state.registerUser);
 
     function submitRegister(e: FormEvent<HTMLFormElement>) {
@@ -23,6 +24,7 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
             password: password,
             role,
             familyId: familyId,
+            familyName: familyName,
         };
         registerUser(newUser);
         props.onClose();
@@ -62,6 +64,15 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
                         type="text"
                         value={familyId}
                         onChange={(e) => setFamilyId(e.target.value)}
+                    />
+                </label>
+                <label className="form-entries">
+                    <p>Neue Familie erstellen:</p>
+                    <input
+                        placeholder={""}
+                        type="text"
+                        value={familyName}
+                        onChange={(e) => setFamilyName(e.target.value)}
                     />
                 </label>
                 <div className="button-container">
