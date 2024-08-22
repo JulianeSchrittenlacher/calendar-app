@@ -1,6 +1,19 @@
 .table-container {
     width: 100%;
     margin: 0 auto;
+    min-height: 1000px;
+    overflow-y: auto; /* Vertikales Scrollen ermöglichen */
+}
+
+.header-cell {
+    position: sticky; /* Standard für andere Browser */
+    top: 0;
+    z-index: 1100; /* Höherer Z-Index für die Header-Zelle */
+    background-color: #f1f1f1; /* Hintergrundfarbe des Headers */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .table-container td, .table-container th {

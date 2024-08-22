@@ -23,7 +23,7 @@ import AppointmentGallery from "./AppointmentGallery.tsx";
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
-    const users = useUserStore(state => state.users); // Holt alle Benutzer
+    const users = useUserStore(state => state.users);
     const currentUser = useUserStore(state => state.currentUser);
     const getAppointments = useAppointmentStore(state => state.getAppointments);
     const getUsers = useUserStore(state => state.getUsers);
@@ -114,19 +114,42 @@ export default function CalendarTable() {
 
     return (
         <>
-            <TableContainer component={Paper} className="table-container">
-                <Table className="table">
-                    <TableHead className="table-head">
-                        <TableRow className="table-row">
-                            <TableCell className="first-cell header-cell">
-                                <Select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+            <TableContainer
+                component={Paper}
+                style={{maxHeight: '400px', overflowY: 'auto'}} // Inline-Styles für den TableContainer
+            >
+                <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell
+                                style={{
+                                    backgroundColor: '#f1f1f1',
+                                    fontWeight: 'bold',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: 1100, // Höherer Z-Index als andere Header-Zellen
+                                    background: '#f1f1f1', // Sicherstellen, dass der Hintergrund erhalten bleibt
+                                }}
+                            >
+                                <Select
+                                    value={month}
+                                    onChange={(e) => setMonth(Number(e.target.value))}
+                                    variant="outlined"
+                                >
                                     {months.map((monthName, index) => (
                                         <MenuItem key={index} value={index}>
                                             {monthName}
                                         </MenuItem>
                                     ))}
                                 </Select>
-                                <Select value={year} onChange={(e) => setYear(e.target.value)}>
+                                <Select
+                                    value={year}
+                                    onChange={(e) => setYear(e.target.value)}
+                                    variant="outlined"
+                                >
                                     {generateYearOptions().map((yr) => (
                                         <MenuItem key={yr} value={yr}>
                                             {yr}
@@ -138,7 +161,13 @@ export default function CalendarTable() {
                             {users && users.map(user => (
                                 <TableCell
                                     key={user.id}
-                                    className="dynamic-cell user-cell"
+                                    style={{
+                                        textAlign: 'center',
+                                        backgroundColor: '#f1f1f1',
+                                        position: 'sticky',
+                                        top: 0,
+                                        zIndex: 1000, // Für andere Header-Zellen
+                                    }}
                                 >
                                     {user.username}
                                 </TableCell>
