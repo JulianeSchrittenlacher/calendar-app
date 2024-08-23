@@ -1,8 +1,10 @@
 package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.model.Family;
 import org.example.backend.model.User;
 import org.example.backend.model.UserDTO;
+import org.example.backend.repository.FamilyRepository;
 import org.example.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ import java.util.NoSuchElementException;
 public class UserService implements UserDetailsService {
     private final UtilService utilService;
     private final UserRepository userRepository;
+    private final FamilyRepository familyRepository;
 
     private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
@@ -37,29 +41,23 @@ public class UserService implements UserDetailsService {
 
     public User registerNewUser(UserDTO newUserDto) {
 
+        Optional<Family> foundFamily = familyRepository.findByFamilyId(newUserDto.familyId());
+
+        String familyName = foundFamily.isPresent() ? foundFamily.get().familyName() : "Mustermann";
+
         String familyId = newUserDto.familyId();
         if (familyId == null || familyId.isEmpty()) {
             familyId = utilService.generateId();
+            familyRepository.save(new Family(utilService.generateId(), familyName, "sh"));
         }
 
-        List<User> familyMembers = userRepository.findUsersByFamilyId(familyId);
-
-        String familyName = newUserDto.familyName();
-        if (familyName == null || familyName.isEmpty()) {
-            if (!familyMembers.isEmpty()) {
-                familyName = familyMembers.get(0).familyName();
-            } else {
-                familyName = "Mustermann";
-            }
-        }
 
         User newUser = new User(
                 utilService.generateId(),
                 newUserDto.username(),
                 encoder.encode(newUserDto.password()),
                 newUserDto.role(),
-                familyId,
-                familyName
+                familyId
         );
 
         return userRepository.save(newUser);

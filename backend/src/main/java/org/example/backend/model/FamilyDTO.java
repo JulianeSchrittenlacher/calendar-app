@@ -4,5 +4,6 @@ import lombok.With;
 
 @With
 
-public record FamilyDTO(String name) {
+public record FamilyDTO(String familyName,
+                        String state) {
 }

@@ -35,27 +35,31 @@ public class FamilyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                "name": "testFamily1"
+                                "familyName": "testFamily1",
+                                "state": "sh"
                                 }
                                 """).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("testFamily1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.familyName").value("testFamily1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("sh"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.familyId").exists());
     }
 
     @Test
     @WithMockUser
     void getAllFamilies_shouldReturnAllFamilies_whenCalled() throws Exception {
-        familyRepository.saveAll(List.of(new Family("1", "kasldfkal")));
+        familyRepository.saveAll(List.of(new Family("1", "kasldfkal", "sh")));
         mockMvc.perform(MockMvcRequestBuilders.get("/api/family").with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("kasldfkal"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].familyName").value("kasldfkal"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].state").value("sh"));
+
     }
 
     @Test
     @WithMockUser
     void deleteFamily_shouldDeleteUser_whenCalled() throws Exception {
-        familyRepository.save(new Family("1", "kasldfkal"));
+        familyRepository.save(new Family("1", "kasldfkal", "sh"));
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/family/{id}", 1).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
@@ -63,15 +67,17 @@ public class FamilyControllerTest {
     @Test
     @WithMockUser
     void updateFamily_shouldUpdateFamily_whenCalled() throws Exception {
-        familyRepository.save(new Family("1", "kasldfkal"));
+        familyRepository.save(new Family("1", "kasldfkal", "sh"));
         mockMvc.perform(MockMvcRequestBuilders.put("/api/family/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                "name": "betterFamilyName"
+                                "familyName": "betterFamilyName",
+                                "state": "sh"
                                 }
                                 """).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("betterFamilyName"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.familyName").value("betterFamilyName"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("sh"));
     }
 }

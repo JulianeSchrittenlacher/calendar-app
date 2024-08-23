@@ -12,7 +12,6 @@ public record User(
         String username,
         String password,
         Role role,
-        String familyId,
-        String familyName
+        String familyId
 ) {
 }

@@ -109,7 +109,7 @@ public class UserControllerTest {
     @WithMockUser
     void getAllUser_shouldReturnUserList_whenCalled() throws Exception {
         userRepository.saveAll(List.of(
-                new User("1", "John Doe", "123", Role.ADULT, "1", "Mustermann")));
+                new User("1", "John Doe", "123", Role.ADULT, "1")));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user/{familyId}", 1).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -129,7 +129,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser
     void deleteUser_shouldDeleteUser_whenCalled() throws Exception {
-        userRepository.save(new User("1", "Name", "123", Role.CHILD, "1", "Mustermann"));
+        userRepository.save(new User("1", "Name", "123", Role.CHILD, "1"));
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/1").with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
@@ -137,7 +137,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser
     void updateUser_shouldUpdateUser_whenCalled() throws Exception {
-        userRepository.saveAll(List.of(new User("1", "name", "123", Role.CHILD, "1", "Mustermann")));
+        userRepository.saveAll(List.of(new User("1", "name", "123", Role.CHILD, "1")));
         mockMvc.perform(MockMvcRequestBuilders.put("/api/user/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -147,7 +147,7 @@ public class UserControllerTest {
                                         "role": "CHILD",
                                         "familyId": "1"
                                 }
-
+                                
                                 """).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json("""
