@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -31,13 +30,17 @@ public class SecurityConfig {
                         .csrfTokenRequestHandler(requestAttributeHandler))
                 .authorizeHttpRequests(c -> {
                     c.requestMatchers("/api/user/register").permitAll();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/holidays/2024/sh")).authenticated();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/family/**")).authenticated();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/calendar/**")).authenticated();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/user/{familyId}")).authenticated();
-                    c.requestMatchers(new AntPathRequestMatcher("/api/user/{id}")).authenticated();
+                    c.requestMatchers("/api/user/login").permitAll();
+                    c.requestMatchers("/api/family/create").permitAll();
+                    c.requestMatchers("/api/holidays/2024/sh").authenticated();
+                    c.requestMatchers("/api/family/**").authenticated();
+                    c.requestMatchers("/api/calendar/**").authenticated();
+                    c.requestMatchers("/api/user/{familyId}").authenticated();
+                    c.requestMatchers("/api/user/{id}").authenticated();
                     c.anyRequest().permitAll();
                 })
+
+
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
