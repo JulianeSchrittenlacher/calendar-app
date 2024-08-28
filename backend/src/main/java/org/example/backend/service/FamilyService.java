@@ -13,11 +13,10 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 
 public class FamilyService {
-    private final UtilService utilService;
     private final FamilyRepository familyRepository;
 
-    public Family createFamily(FamilyDTO familyDTO) {
-        return familyRepository.save(new Family(utilService.generateId(), familyDTO.familyName(), familyDTO.state()));
+    public Family createFamily(Family family) {
+        return familyRepository.save(new Family(family.familyId(), family.familyName(), family.state()));
     }
 
     public List<Family> getAllFamilies() {
@@ -33,5 +32,9 @@ public class FamilyService {
         return familyRepository.save(familyToUpdate
                 .withFamilyName(familyDTO.familyName())
                 .withState(familyDTO.state()));
+    }
+
+    public Family getFamilyById(String familyId) {
+        return familyRepository.findByFamilyId(familyId).orElseThrow(() -> new NoSuchElementException("Family not found"));
     }
 }

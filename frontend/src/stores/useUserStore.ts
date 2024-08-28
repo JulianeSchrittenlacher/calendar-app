@@ -9,7 +9,7 @@ interface UserState {
     currentUser: User | null;
     setCurrentUser: (user: User | null) => void;
     getUsers: (familyId: string) => void;
-    registerUser: (newUser: User) => void;
+    registerUser: (newUser: User) => Promise<User>;
     loginUser: (username: string, password: string) => void;
     logoutUser: () => void;
     deleteUser: (id: string) => void;
@@ -34,14 +34,19 @@ const useUserStore = create<UserState>()((set) => ({
             })
             .catch(error => console.log(error));
     },
-    registerUser: (newUser) => {
-        axios.post(`/api/user/register`, newUser).then(response => {
-            set(state => ({
-                users: state.users ? [...state.users, response.data] : [response.data]
-            }));
-            alert("User erfolgreich erstellt.");
-        })
-            .catch(error => console.log(error))
+    registerUser: (newUser: User): Promise<User> => {
+        return axios.post(`/api/user/register`, newUser)
+            .then(response => {
+                set(state => ({
+                    users: state.users ? [...state.users, response.data] : [response.data]
+                }));
+                alert("User erfolgreich erstellt.");
+                return response.data; // Return the registered user data
+            })
+            .catch(error => {
+                console.error(error);
+                throw error; // Rethrow the error so it can be handled by the caller
+            });
     },
     loginUser: async (username: string, password: string) => {
         try {

@@ -35,11 +35,13 @@ public class FamilyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
+                                "familyId": "sdfdsfsdf",
                                 "familyName": "testFamily1",
                                 "state": "sh"
                                 }
                                 """).with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.familyId").value("sdfdsfsdf"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.familyName").value("testFamily1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("sh"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.familyId").exists());

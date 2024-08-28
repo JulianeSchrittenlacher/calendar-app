@@ -2,7 +2,6 @@ import {Family} from "../types/Family.ts";
 import useFamilyStore from "../stores/useFamilyStore.ts";
 import {useState} from "react";
 import useUserStore from "../stores/useUserStore.ts";
-import useApiStore from "../stores/useApiStore.ts";
 
 type FamilyAddFromProps = {
     onClose: () => void;
@@ -10,32 +9,52 @@ type FamilyAddFromProps = {
 export default function FamilyDetailForm(props: Readonly<FamilyAddFromProps>) {
     const {onClose} = props;
     const createFamily: (newFamily: Family) => void = useFamilyStore(state => state.createFamily);
-    const [name] = useState<string>("");
+    const currentFamily = useFamilyStore(state => state.currentFamily);
+    const [newFamilyName, setNewFamilyName] = useState<string>(currentFamily?.familyName || "");
+    const [newState, setNewState] = useState<string>(currentFamily?.state || "");
     const currentUser = useUserStore(state => state.currentUser);
-    const currentState = useApiStore(state => state.currentState);
-    const setCurrentState = useApiStore(state => state.setCurrentState);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const newFamily: Family = {
-            id: "",
-            name,
+
+        if (currentFamily) {
+            const updatedFamily: Family = {
+                familyId: currentFamily.familyId,
+                familyName: newFamilyName,
+                state: newState,
+            };
+
+            createFamily(updatedFamily);
         }
-        createFamily(newFamily);
+
         onClose();
     }
 
     const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setCurrentState(e.target.value)
-    }
+        setNewState(e.target.value);
+    };
+
+    const handleFamilyNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewFamilyName(e.target.value);
+    };
+
 
     return (
         <form className="user-form" onSubmit={handleSubmit}>
             <label className="form-entries">Eure Familien Id: {currentUser?.familyId}</label>
+            <label>
+                Familienname:
+                <input
+                    type="text"
+                    value={newFamilyName}
+                    onChange={handleFamilyNameChange}
+                    placeholder="Geben Sie den Familiennamen ein"
+                />
+            </label>
             <label className="form-entries">In welchem Bundesland wohnt ihr (für die korrekten Feiertage)
                 <select
                     className="form-select"
-                    value={currentState}
+                    value={newState}
                     onChange={handleStateChange}
                 >
                     <option value="">Bitte wählen...</option>

@@ -2,6 +2,7 @@ import {FormEvent, useState} from "react";
 import useUserStore from "../stores/useUserStore.ts";
 import "../styles/AppointmentForm.css"
 import {useNavigate} from "react-router-dom";
+import useFamilyStore from "../stores/useFamilyStore.ts";
 
 type LoginFormProps = {
     onClose: () => void;
@@ -12,6 +13,8 @@ export default function LoginForm(props: Readonly<LoginFormProps>) {
     const [password, setPassword] = useState<string>("");
     const loginUser = useUserStore(state => state.loginUser);
     const navigate = useNavigate();
+    const getAndSetCurrentFamily = useFamilyStore(state => state.getAndSetCurrentFamily);
+    const currentFamily = useFamilyStore(state => state.currentFamily);
 
     async function submitLogin(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -20,6 +23,12 @@ export default function LoginForm(props: Readonly<LoginFormProps>) {
             console.log("Aktuell eingeloggt user: ", user);
             const latestCurrentUser = useUserStore.getState().currentUser;
             console.log("Aktuell eingeloggt currentUser: ", latestCurrentUser);
+            if (latestCurrentUser?.familyId) {
+                getAndSetCurrentFamily(latestCurrentUser.familyId);
+                console.log("aktuelle Familie: ", currentFamily)
+            } else {
+                console.error("FamilyId not found for the current user.");
+            }
             props.onClose();
             navigate(`/my-family-page`);
         } catch (error) {

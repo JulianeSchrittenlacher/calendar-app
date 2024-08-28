@@ -7,7 +7,7 @@ export default function FamilyGallery() {
     return (
         <div className="gallery">
             {families.map(family => (
-                <FamilyCard key={family.id} family={family}/>
+                <FamilyCard key={family.familyId} family={family}/>
             ))}
         </div>
     );

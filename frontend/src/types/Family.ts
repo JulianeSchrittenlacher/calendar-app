@@ -1,4 +1,5 @@
 export type Family = {
-    id: string;
-    name: string;
+    familyId: string;
+    familyName: string;
+    state: string;
 }

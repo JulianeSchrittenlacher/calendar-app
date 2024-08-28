@@ -6,8 +6,6 @@ interface ApiState {
     holidaysOfCurrentYear: Holiday[];
     setHolidaysOfCurrentYear: (holidays: Holiday[]) => void;
     getHolidaysOfCurrentYear: (year: string, state: string) => void;
-    currentState: string;
-    setCurrentState: (newState: string) => void;
 }
 
 const useApiStore = create<ApiState>()((set) => ({
@@ -23,12 +21,7 @@ const useApiStore = create<ApiState>()((set) => ({
             console.error("Failed to fetch holidays:", error);
             set({holidaysOfCurrentYear: []});
         }
-    },
-    currentState: "sh",
-    setCurrentState: (newState: string) => {
-        set({currentState: newState})
-
-    },
+    }
 }))
 
 export default useApiStore;

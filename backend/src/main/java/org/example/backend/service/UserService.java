@@ -1,10 +1,8 @@
 package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend.model.Family;
 import org.example.backend.model.User;
 import org.example.backend.model.UserDTO;
-import org.example.backend.repository.FamilyRepository;
 import org.example.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +20,6 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     private final UtilService utilService;
     private final UserRepository userRepository;
-    private final FamilyRepository familyRepository;
 
     private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
@@ -40,6 +36,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerNewUser(UserDTO newUserDto) {
+        {/*
 
         Optional<Family> foundFamily = familyRepository.findByFamilyId(newUserDto.familyId());
 
@@ -50,15 +47,17 @@ public class UserService implements UserDetailsService {
             familyId = utilService.generateId();
             familyRepository.save(new Family(utilService.generateId(), familyName, "sh"));
         }
-
+*/
+        }
 
         User newUser = new User(
                 utilService.generateId(),
                 newUserDto.username(),
                 encoder.encode(newUserDto.password()),
                 newUserDto.role(),
-                familyId
+                utilService.generateId()
         );
+
 
         return userRepository.save(newUser);
     }
