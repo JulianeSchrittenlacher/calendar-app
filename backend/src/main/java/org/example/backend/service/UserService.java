@@ -36,19 +36,6 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerNewUser(UserDTO newUserDto) {
-        {/*
-
-        Optional<Family> foundFamily = familyRepository.findByFamilyId(newUserDto.familyId());
-
-        String familyName = foundFamily.isPresent() ? foundFamily.get().familyName() : "Mustermann";
-
-        String familyId = newUserDto.familyId();
-        if (familyId == null || familyId.isEmpty()) {
-            familyId = utilService.generateId();
-            familyRepository.save(new Family(utilService.generateId(), familyName, "sh"));
-        }
-*/
-        }
 
         User newUser = new User(
                 utilService.generateId(),
@@ -57,8 +44,7 @@ public class UserService implements UserDetailsService {
                 newUserDto.role(),
                 utilService.generateId()
         );
-
-
+        
         return userRepository.save(newUser);
     }
 

@@ -31,21 +31,19 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
             familyId: familyId,
         };
 
-        let registeredUser: User | undefined; // Declare it here with an initial value
+        let registeredUser: User | undefined;
 
         try {
             registeredUser = await registerUser(newUser);
             console.log("Registered User: ", registeredUser);
         } catch (error) {
             console.error("Registration failed: ", error);
-            // Handle the error and potentially return or exit the function if necessary
-            return; // You might want to return early if registration fails
+            return;
         }
 
         console.log("FamilyName: ", familyName);
 
-        // Now registeredUser is accessible here
-        if (registeredUser && familyName) { // Check if registeredUser is defined
+        if (registeredUser && familyName) {
             const newFamily: Family = {
                 familyId: registeredUser.familyId,
                 familyName: familyName,
@@ -53,7 +51,7 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
             };
             console.log("Neue Familie ", newFamily)
 
-            createFamily(newFamily); // Assuming createFamily is async
+            createFamily(newFamily);
         }
 
 
