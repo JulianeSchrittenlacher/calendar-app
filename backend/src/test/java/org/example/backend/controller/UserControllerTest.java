@@ -82,10 +82,10 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.content().json("""
                                 {
                                          "username": "John Doe",
-                                         "role": "ADULT",
-                                         "familyId": "family123"
+                                         "role": "ADULT"
                                  }
                         """))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.familyId").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.password").exists());
     }

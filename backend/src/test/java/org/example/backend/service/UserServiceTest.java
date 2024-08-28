@@ -3,7 +3,6 @@ package org.example.backend.service;
 import org.example.backend.model.Role;
 import org.example.backend.model.User;
 import org.example.backend.model.UserDTO;
-import org.example.backend.repository.FamilyRepository;
 import org.example.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,15 +20,13 @@ class UserServiceTest {
     private static UserService userService;
     private static UserRepository mockUserRepository;
     private static UtilService mockUtilService;
-    private static FamilyRepository mockFamilyRepository;
     private static List<User> testUser;
 
     @BeforeEach
     void setUp() {
         mockUserRepository = mock(UserRepository.class);
         mockUtilService = mock(UtilService.class);
-        mockFamilyRepository = mock(FamilyRepository.class);
-        userService = new UserService(mockUtilService, mockUserRepository, mockFamilyRepository);
+        userService = new UserService(mockUtilService, mockUserRepository);
         testUser = new ArrayList<>() {{
             add(new User("1", "John Doe", "123", Role.ADULT, "family123"));
             add(new User("2", "Jane Doe", "456", Role.ADULT, "family123"));
@@ -76,7 +73,7 @@ class UserServiceTest {
         assertEquals(expectedUser.familyId(), actual.familyId());
 
         verify(mockUserRepository).save(any(User.class));
-        verify(mockUtilService).generateId();
+        verify(mockUtilService, times(2)).generateId();
     }
 
 
