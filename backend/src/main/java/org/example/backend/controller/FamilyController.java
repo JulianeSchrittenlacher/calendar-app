@@ -18,14 +18,20 @@ public class FamilyController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create")
-    public Family createFamily(@RequestBody FamilyDTO familyDTO) {
-        return familyService.createFamily(familyDTO);
+    public Family createFamily(@RequestBody Family family) {
+        return familyService.createFamily(family);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<Family> getAllFamilies() {
         return familyService.getAllFamilies();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{familyId}")
+    public Family getFamilyById(@PathVariable String familyId) {
+        return familyService.getFamilyById(familyId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

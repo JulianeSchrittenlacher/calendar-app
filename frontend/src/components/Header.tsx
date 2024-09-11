@@ -6,6 +6,7 @@ import useUserStore from "../stores/useUserStore.ts";
 import FamilyDetailForm from "./FamilyDetailForm.tsx";
 import {Drawer, IconButton, List, ListItem, ListItemText, Typography} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
+import useFamilyStore from "../stores/useFamilyStore.ts";
 
 export default function Header() {
 
@@ -13,6 +14,7 @@ export default function Header() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const currentUser = useUserStore(state => state.currentUser);
     const location = useLocation();
+    const currentFamily = useFamilyStore(state => state.currentFamily);
 
 
     const handleClick = () => {
@@ -41,6 +43,7 @@ export default function Header() {
         setDrawerOpen(open);
     };
 
+
     return (
         <>
             <div className="header-container">
@@ -58,7 +61,7 @@ export default function Header() {
                 </IconButton>
                 <div className="app-header">
                     <h1>Kalender</h1>
-                    <p>{currentUser && "Familie " + currentUser.familyName}</p>
+                    <p>{currentUser && "Familie " + currentFamily?.familyName}</p>
                 </div>
                 <div className="header-buttons">
                     <p>{currentUser && "Hallo " + currentUser.username + "!"}</p>

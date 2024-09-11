@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @With
 @Document(collection = "families")
 
-public record Family(@Id String id,
-                     String name) {
+public record Family(@Id String familyId,
+                     String familyName,
+                     String state) {
 }

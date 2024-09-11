@@ -13,24 +13,21 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class FamilyServiceTest {
     private static FamilyService familyService;
-    private static UtilService mockUtilService;
     private static FamilyRepository mockFamilyRepository;
     private static List<Family> testFamilies;
 
     @BeforeEach
     void setUp() {
-        mockUtilService = mock(UtilService.class);
         mockFamilyRepository = mock(FamilyRepository.class);
-        familyService = new FamilyService(mockUtilService, mockFamilyRepository);
+        familyService = new FamilyService(mockFamilyRepository);
         testFamilies = new ArrayList<>() {{
-            add(new Family("1", "family1"));
-            add(new Family("2", "family2"));
-            add(new Family("3", "family3"));
+            add(new Family("1", "family1", "sh"));
+            add(new Family("2", "family2", "bw"));
+            add(new Family("3", "family3", "hh"));
         }};
     }
 
@@ -41,13 +38,11 @@ class FamilyServiceTest {
 
         //WHEN
         when(mockFamilyRepository.save(expectedFamily)).thenReturn(expectedFamily);
-        when(mockUtilService.generateId()).thenReturn(expectedFamily.id());
-        Family actual = familyService.createFamily(new FamilyDTO(expectedFamily.name()));
+        Family actual = familyService.createFamily(new Family(expectedFamily.familyId(), expectedFamily.familyName(), expectedFamily.state()));
 
         //THEN
         assertEquals(expectedFamily, actual);
         verify(mockFamilyRepository).save(expectedFamily);
-        verify(mockUtilService).generateId();
     }
 
     @Test
@@ -63,7 +58,7 @@ class FamilyServiceTest {
         //GIVEN
         when(mockFamilyRepository.save(any(Family.class))).thenReturn(testFamilies.getFirst());
         mockFamilyRepository.save(testFamilies.getFirst());
-        String id = testFamilies.getFirst().id();
+        String id = testFamilies.getFirst().familyId();
         when(mockFamilyRepository.existsById(id)).thenReturn(false);
 
         //WHEN
@@ -78,7 +73,7 @@ class FamilyServiceTest {
     void updatedFamily_shouldReturnUpdatedFamily_whenCalledWithFamilyDTO() {
         //WHEN
         when(mockFamilyRepository.findById("3")).thenReturn(Optional.of(testFamilies.get(2)));
-        Family actual = familyService.updatedFamily("3", new FamilyDTO("testFamily5"));
+        Family actual = familyService.updatedFamily("3", new FamilyDTO("testFamily5", "hb"));
         when(mockFamilyRepository.save(any(Family.class))).thenReturn(actual);
 
         //THEN

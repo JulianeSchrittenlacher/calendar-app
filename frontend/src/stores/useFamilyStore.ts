@@ -5,7 +5,7 @@ import axios from "axios";
 interface FamilyState {
     families: Family[];
     currentFamily: Family | null;
-    setCurrentFamily: (family: Family | null) => void;
+    getAndSetCurrentFamily: (familyId: string) => void;
     getFamilies: () => void;
     createFamily: (newFamily: Family) => void;
     deleteFamily: (id: string) => void;
@@ -15,9 +15,14 @@ interface FamilyState {
 const useFamilyStore = create<FamilyState>()((set) => ({
     families: [],
     currentFamily: JSON.parse(localStorage.getItem('currentFamily') || 'null'),
-    setCurrentFamily: (family: Family | null) => {
-        set({currentFamily: family});
-        localStorage.setItem('currentFamily', JSON.stringify(family));
+    getAndSetCurrentFamily: (familyId: string) => {
+        axios.get(`/api/family/${familyId}`).then(response => {
+            const family = response.data;
+            set({currentFamily: family});
+            localStorage.setItem('currentFamily', JSON.stringify(family));
+        }).catch(error => {
+            console.error("Error fetching family data:", error);
+        });
     },
     getFamilies: () => {
         axios.get("/api/family").then(response => {
@@ -35,7 +40,7 @@ const useFamilyStore = create<FamilyState>()((set) => ({
     deleteFamily: (id: string) => {
         axios.delete(`/api/family/${id}`).then(() => {
             set(state => ({
-                families: state.families.filter(family => family.id !== id)
+                families: state.families.filter(family => family.familyId !== id)
             }));
             alert("Familie gelöscht.")
         }).catch(error => console.log(error));
@@ -43,7 +48,7 @@ const useFamilyStore = create<FamilyState>()((set) => ({
     updateFamily: (id: string, updatedFamily: Family) => {
         axios.put(`/api/family/${id}`, updatedFamily).then(response => {
             set(state => {
-                const updatedFamilies: Family[] = state.families.map(family => family.id === id ? response.data : family);
+                const updatedFamilies: Family[] = state.families.map(family => family.familyId === id ? response.data : family);
                 return {families: updatedFamilies};
             });
             alert("Familieninformationen geändert.")
