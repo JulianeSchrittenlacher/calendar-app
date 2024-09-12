@@ -36,7 +36,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerNewUser(UserDTO newUserDto) {
-        
+
         User newUser = new User(
                 utilService.generateId(),
                 newUserDto.username(),
@@ -59,9 +59,9 @@ public class UserService implements UserDetailsService {
     public User updateUser(String id, UserDTO userDTO) {
         User userToUpdate = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
         return userRepository.save(userToUpdate
-                        .withUsername(userDTO.username())
-                        .withPassword(encoder.encode(userDTO.password())))
+                .withUsername(userDTO.username())
+                .withPassword(encoder.encode(userDTO.password()))
                 .withRole(userDTO.role())
-                .withFamilyId(userDTO.familyId());
+                .withFamilyId(userDTO.familyId()));
     }
 }

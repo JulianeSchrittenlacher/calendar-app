@@ -154,7 +154,6 @@ public class UserControllerTest {
                         {
                                 "id": "1",
                                 "username": "newName",
-                                "password": "123",
                                 "role": "CHILD",
                                 "familyId": "1"
                         }
