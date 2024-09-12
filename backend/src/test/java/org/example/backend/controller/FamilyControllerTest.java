@@ -82,4 +82,18 @@ public class FamilyControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.familyName").value("betterFamilyName"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("sh"));
     }
+
+    @Test
+    @WithMockUser
+    void getFamilyById_shouldReturnFamily_whenFamilyExists() throws Exception {
+        Family family = new Family("sdfdsfsdf", "testFamily1", "sh");
+        familyRepository.save(family);
+        
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/family/sdfdsfsdf")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.familyId").value("sdfdsfsdf"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.familyName").value("testFamily1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("sh"));
+    }
 }

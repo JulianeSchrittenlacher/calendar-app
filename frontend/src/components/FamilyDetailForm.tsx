@@ -37,8 +37,7 @@ export default function FamilyDetailForm(props: Readonly<FamilyAddFromProps>) {
     const handleFamilyNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewFamilyName(e.target.value);
     };
-
-
+    
     return (
         <form className="user-form" onSubmit={handleSubmit}>
             <label className="form-entries">Eure Familien Id: {currentUser?.familyId}</label>

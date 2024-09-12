@@ -99,6 +99,7 @@ const useUserStore = create<UserState>()((set) => ({
                 return {users: updatedUsers};
             });
             alert("User geändert!");
+            console.log(`Making PUT request to: /api/user/${id}`);
         })
             .catch(error => console.log("Error updating user " + error))
     },

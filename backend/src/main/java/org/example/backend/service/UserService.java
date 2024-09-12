@@ -36,15 +36,15 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerNewUser(UserDTO newUserDto) {
-
+        
         User newUser = new User(
                 utilService.generateId(),
                 newUserDto.username(),
                 encoder.encode(newUserDto.password()),
                 newUserDto.role(),
-                utilService.generateId()
+                newUserDto.familyId().isEmpty() ? utilService.generateId() : newUserDto.familyId()
         );
-        
+
         return userRepository.save(newUser);
     }
 
@@ -59,8 +59,9 @@ public class UserService implements UserDetailsService {
     public User updateUser(String id, UserDTO userDTO) {
         User userToUpdate = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
         return userRepository.save(userToUpdate
-                .withUsername(userDTO.username())
+                        .withUsername(userDTO.username())
+                        .withPassword(encoder.encode(userDTO.password())))
                 .withRole(userDTO.role())
-                .withFamilyId(userDTO.familyId()));
+                .withFamilyId(userDTO.familyId());
     }
 }
