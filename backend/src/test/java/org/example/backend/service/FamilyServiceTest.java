@@ -9,6 +9,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,5 +81,33 @@ class FamilyServiceTest {
         verify(mockFamilyRepository).findById("3");
         verify(mockFamilyRepository).save(any(Family.class));
         assertNotEquals(testFamilies.get(2), actual);
+    }
+
+    @Test
+    void getFamilyById_shouldReturnFamily_whenFamilyExists() {
+        // GIVEN
+        Family expectedFamily = testFamilies.getFirst();
+        when(mockFamilyRepository.findByFamilyId("1")).thenReturn(Optional.of(expectedFamily));
+
+        // WHEN
+        Family actualFamily = familyService.getFamilyById("1");
+
+        // THEN
+        assertEquals(expectedFamily, actualFamily);
+        verify(mockFamilyRepository).findByFamilyId("1");
+    }
+
+    @Test
+    void getFamilyById_shouldThrowException_whenFamilyDoesNotExist() {
+        // GIVEN
+        when(mockFamilyRepository.findByFamilyId("999")).thenReturn(Optional.empty());
+
+        // WHEN & THEN
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+            familyService.getFamilyById("999");
+        });
+
+        assertEquals("Family not found", exception.getMessage());
+        verify(mockFamilyRepository).findByFamilyId("999");
     }
 }

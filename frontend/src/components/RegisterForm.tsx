@@ -30,6 +30,8 @@ export default function RegisterForm(props: Readonly<RegisterFormProps>) {
             role,
             familyId: familyId,
         };
+        
+        console.log("Neu anzulegender User: ", newUser);
 
         let registeredUser: User | undefined;
 

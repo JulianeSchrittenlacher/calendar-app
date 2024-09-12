@@ -7,6 +7,7 @@ import org.example.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.*;
@@ -21,12 +22,14 @@ class UserServiceTest {
     private static UserRepository mockUserRepository;
     private static UtilService mockUtilService;
     private static List<User> testUser;
+    private static Argon2PasswordEncoder mockPasswordEncoder;
 
     @BeforeEach
     void setUp() {
         mockUserRepository = mock(UserRepository.class);
         mockUtilService = mock(UtilService.class);
         userService = new UserService(mockUtilService, mockUserRepository);
+        mockPasswordEncoder = mock(Argon2PasswordEncoder.class);
         testUser = new ArrayList<>() {{
             add(new User("1", "John Doe", "123", Role.ADULT, "family123"));
             add(new User("2", "Jane Doe", "456", Role.ADULT, "family123"));
@@ -73,7 +76,67 @@ class UserServiceTest {
         assertEquals(expectedUser.familyId(), actual.familyId());
 
         verify(mockUserRepository).save(any(User.class));
-        verify(mockUtilService, times(2)).generateId();
+        verify(mockUtilService, times(1)).generateId();
+    }
+
+    @Test
+    void registerNewUser_shouldGenerateFamilyId_whenFamilyIdIsEmpty() {
+        // GIVEN
+        String generatedId = "generatedId";
+        String encodedPassword = "encodedPassword";
+        UserDTO newUserDto = new UserDTO("username", "password", Role.CHILD, "");
+        User expectedUser = new User(
+                generatedId,
+                newUserDto.username(),
+                encodedPassword,
+                newUserDto.role(),
+                generatedId
+        );
+
+        when(mockUtilService.generateId()).thenReturn(generatedId);
+        when(mockPasswordEncoder.encode(newUserDto.password())).thenReturn(encodedPassword); // Mock das Passwort-Encoding
+        when(mockUserRepository.save(any(User.class))).thenReturn(expectedUser);
+
+        // WHEN
+        User actual = userService.registerNewUser(newUserDto);
+
+        // THEN
+        assertEquals(expectedUser.username(), actual.username());
+        assertEquals(expectedUser.role(), actual.role());
+        assertEquals(expectedUser.familyId(), actual.familyId());
+
+        verify(mockUtilService, times((2))).generateId();
+        verify(mockUserRepository).save(any(User.class));
+    }
+
+    @Test
+    void registerNewUser_shouldUseProvidedFamilyId_whenFamilyIdIsNotEmpty() {
+        // GIVEN
+        String providedFamilyId = "existingFamilyId";
+        String encodedPassword = "encodedPassword";
+        UserDTO newUserDto = new UserDTO("username", "password", Role.CHILD, providedFamilyId);
+        User expectedUser = new User(
+                "generatedId",
+                newUserDto.username(),
+                encodedPassword,
+                newUserDto.role(),
+                providedFamilyId
+        );
+
+        // Mock behavior
+        when(mockPasswordEncoder.encode(newUserDto.password())).thenReturn(encodedPassword); // Mock das Passwort-Encoding
+        when(mockUserRepository.save(any(User.class))).thenReturn(expectedUser);
+
+        // WHEN
+        User actual = userService.registerNewUser(new UserDTO(newUserDto.username(), newUserDto.password(), newUserDto.role(), providedFamilyId));
+
+        // THEN
+        assertEquals(expectedUser.username(), actual.username());
+        assertEquals(expectedUser.role(), actual.role());
+        assertEquals(expectedUser.familyId(), actual.familyId());
+
+        verify(mockUtilService).generateId(); // ensure generateId() was not called
+        verify(mockUserRepository).save(any(User.class));
     }
 
 
