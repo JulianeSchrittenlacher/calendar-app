@@ -111,7 +111,7 @@ export default function CalendarTable() {
             getUsers(currentUser.familyId);
             getHolidays(year, currentState);
         }
-    }, [currentUser, getAppointments, year, currentState]);
+    }, [getAppointments, year, currentState]);
 
     return (
         <>
@@ -120,14 +120,15 @@ export default function CalendarTable() {
                     <TableHead className="table-head">
                         <TableRow className="table-row">
                             <TableCell className="first-cell header-cell">
-                                <Select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+                                <Select value={month} onChange={(e) => setMonth(Number(e.target.value))}
+                                        variant={"standard"}>
                                     {months.map((monthName, index) => (
                                         <MenuItem key={index} value={index}>
                                             {monthName}
                                         </MenuItem>
                                     ))}
                                 </Select>
-                                <Select value={year} onChange={(e) => setYear(e.target.value)}>
+                                <Select value={year} onChange={(e) => setYear(e.target.value)} variant={"standard"}>
                                     {generateYearOptions().map((yr) => (
                                         <MenuItem key={yr} value={yr}>
                                             {yr}
@@ -190,13 +191,6 @@ export default function CalendarTable() {
                                                 <div className="collapse-content">
                                                     {currentUser && <AppointmentGallery key={currentUser.id}
                                                                                         day={day}></AppointmentGallery>}
-                                                    {/*
-                                                    <button onClick={() => handleClick(day)}>Termin hinzufügen
-                                                    {getActualAppointments(appointments, day).map(appointment => (
-                                                        <AppointmentCard key={appointment.id}
-                                                                         appointment={appointment}/>
-                                                    ))}*/}
-
                                                 </div>
                                             </Collapse>
                                         </TableCell>

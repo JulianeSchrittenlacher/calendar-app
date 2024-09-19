@@ -15,7 +15,6 @@ export default function FamilyDetailForm(props: Readonly<FamilyAddFromProps>) {
     const [newFamilyName, setNewFamilyName] = useState<string>(currentFamily?.familyName || "");
     const [newState, setNewState] = useState<string>(currentFamily?.state || "");
     const currentUser = useUserStore(state => state.currentUser);
-    const getAndSetCurrentFamily = useFamilyStore(state => state.getAndSetCurrentFamily);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -28,7 +27,6 @@ export default function FamilyDetailForm(props: Readonly<FamilyAddFromProps>) {
             };
 
             updateFamily(currentFamily.familyId, updatedFamily);
-            getAndSetCurrentFamily(currentFamily.familyId);
         }
 
         onClose();

@@ -39,7 +39,9 @@ const useFamilyStore = create<FamilyState>()((set) => ({
         }).catch(error => console.log(error));
     },
     updateFamily: (id: string, updatedFamily: Family) => {
-        axios.put(`/api/family/${id}`, updatedFamily).then(() => {
+        axios.put(`/api/family/${id}`, updatedFamily).then(response => {
+            set({currentFamily: response.data});
+            localStorage.setItem('currentFamily', JSON.stringify(response.data));
             alert("Familieninformationen geändert.")
         }).catch(error => console.log(error))
     },

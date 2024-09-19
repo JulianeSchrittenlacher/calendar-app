@@ -4,7 +4,7 @@ import {Appointment} from "../types/Appointment.ts";
 import useAppointmentStore from "../stores/useAppointmentStore.ts";
 import useUserStore from "../stores/useUserStore.ts";
 import {User} from "../types/User.ts";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
 import Modal from "./Modal.tsx";
 
@@ -15,7 +15,6 @@ type AppointmentGalleryProps = {
 export default function AppointmentGallery(props: Readonly<AppointmentGalleryProps>) {
     const appointments: Appointment[] = useAppointmentStore(state => state.appointments);
     const currentUser: User | null = useUserStore(state => state.currentUser);
-    const getAppointments = useAppointmentStore(state => state.getAppointments);
     const [modalOpen, setModalOpen] = useState(false);
 
     const formatDate = (date: Date) => {
@@ -49,11 +48,6 @@ export default function AppointmentGallery(props: Readonly<AppointmentGalleryPro
     const handleCloseModal = () => {
         setModalOpen(false);
     };
-
-
-    useEffect(() => {
-        currentUser && getAppointments(currentUser.familyId)
-    }, []);
 
     return (
         <>
