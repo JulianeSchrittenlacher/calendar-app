@@ -58,22 +58,63 @@ class UserServiceTest {
     }
 
     @Test
-    void registerNewUser_shouldReturnUser_whenCalledWithUserDTO() {
+    void registerNewUser_shouldGenerateFamilyId_whenFamilyIdIsEmpty() {
         // GIVEN
-        User expectedUser = testUser.getFirst();
+        String generatedId = "generatedId";
+        String encodedPassword = "encodedPassword";
+        UserDTO newUserDto = new UserDTO("username", "password", Role.CHILD, "");
+        User expectedUser = new User(
+                generatedId,
+                newUserDto.username(),
+                encodedPassword,
+                newUserDto.role(),
+                generatedId
+        );
+
+        when(mockUtilService.generateId()).thenReturn(generatedId);
+        when(mockPasswordEncoder.encode(newUserDto.password())).thenReturn(encodedPassword); // Mock das Passwort-Encoding
+        when(mockUserRepository.save(any(User.class))).thenReturn(expectedUser);
 
         // WHEN
-        when(mockUserRepository.save(any(User.class))).thenReturn(expectedUser);
-        when(mockUtilService.generateId()).thenReturn(expectedUser.id());
-        User actual = userService.registerNewUser(new UserDTO(expectedUser.username(), expectedUser.password(), expectedUser.role(), expectedUser.familyId()));
+        User actual = userService.registerNewUser(newUserDto);
 
         // THEN
         assertEquals(expectedUser.username(), actual.username());
         assertEquals(expectedUser.role(), actual.role());
         assertEquals(expectedUser.familyId(), actual.familyId());
 
+        verify(mockUtilService, times((2))).generateId();
         verify(mockUserRepository).save(any(User.class));
-        verify(mockUtilService, times(1)).generateId();
+    }
+
+    @Test
+    void registerNewUser_shouldUseProvidedFamilyId_whenFamilyIdIsNotEmpty() {
+        // GIVEN
+        String providedFamilyId = "existingFamilyId";
+        String encodedPassword = "encodedPassword";
+        UserDTO newUserDto = new UserDTO("username", "password", Role.CHILD, providedFamilyId);
+        User expectedUser = new User(
+                "generatedId",
+                newUserDto.username(),
+                encodedPassword,
+                newUserDto.role(),
+                providedFamilyId
+        );
+
+        // Mock behavior
+        when(mockPasswordEncoder.encode(newUserDto.password())).thenReturn(encodedPassword); // Mock das Passwort-Encoding
+        when(mockUserRepository.save(any(User.class))).thenReturn(expectedUser);
+
+        // WHEN
+        User actual = userService.registerNewUser(new UserDTO(newUserDto.username(), newUserDto.password(), newUserDto.role(), providedFamilyId));
+
+        // THEN
+        assertEquals(expectedUser.username(), actual.username());
+        assertEquals(expectedUser.role(), actual.role());
+        assertEquals(expectedUser.familyId(), actual.familyId());
+
+        verify(mockUtilService).generateId(); // ensure generateId() was not called
+        verify(mockUserRepository).save(any(User.class));
     }
 
 
