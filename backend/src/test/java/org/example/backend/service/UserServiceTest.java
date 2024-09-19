@@ -73,7 +73,7 @@ class UserServiceTest {
         assertEquals(expectedUser.familyId(), actual.familyId());
 
         verify(mockUserRepository).save(any(User.class));
-        verify(mockUtilService, times(2)).generateId();
+        verify(mockUtilService, times(1)).generateId();
     }
 
 
