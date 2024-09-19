@@ -20,16 +20,17 @@ import "../styles/CalendarTable.css"
 import Modal from "./Modal.tsx";
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
 import AppointmentGallery from "./AppointmentGallery.tsx";
+import useFamilyStore from "../stores/useFamilyStore.ts";
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
-    const users = useUserStore(state => state.users); // Holt alle Benutzer
+    const users = useUserStore(state => state.users);
     const currentUser = useUserStore(state => state.currentUser);
     const getAppointments = useAppointmentStore(state => state.getAppointments);
     const getUsers = useUserStore(state => state.getUsers);
     const getHolidays = useApiStore(state => state.getHolidaysOfCurrentYear);
     const holidaysOfCurrentYear = useApiStore(state => state.holidaysOfCurrentYear);
-    const currentState = useApiStore(state => state.currentState);
+    const currentState = useFamilyStore(state => state.currentFamily?.state ?? "hb");
 
 
     const [month, setMonth] = useState<number>(new Date().getMonth());

@@ -1,5 +1,4 @@
 import "../styles/Header.css"
-import {useState} from "react";
 import Modal from "./Modal.tsx";
 import {NavLink, useLocation} from "react-router-dom";
 import useUserStore from "../stores/useUserStore.ts";
@@ -7,6 +6,8 @@ import FamilyDetailForm from "./FamilyDetailForm.tsx";
 import {Drawer, IconButton, List, ListItem, ListItemText, Typography} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import useFamilyStore from "../stores/useFamilyStore.ts";
+import {stateMap} from "../constants/states.ts";
+import {useState} from "react";
 
 export default function Header() {
 
@@ -15,7 +16,6 @@ export default function Header() {
     const currentUser = useUserStore(state => state.currentUser);
     const location = useLocation();
     const currentFamily = useFamilyStore(state => state.currentFamily);
-
 
     const handleClick = () => {
         setModalOpen(true);
@@ -43,7 +43,6 @@ export default function Header() {
         setDrawerOpen(open);
     };
 
-
     return (
         <>
             <div className="header-container">
@@ -62,6 +61,7 @@ export default function Header() {
                 <div className="app-header">
                     <h1>Kalender</h1>
                     <p>{currentUser && "Familie " + currentFamily?.familyName}</p>
+                    <p>{currentUser && currentFamily?.state && "aus " + stateMap[currentFamily.state]}</p>
                 </div>
                 <div className="header-buttons">
                     <p>{currentUser && "Hallo " + currentUser.username + "!"}</p>
