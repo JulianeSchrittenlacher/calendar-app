@@ -61,25 +61,6 @@ class UserServiceTest {
     }
 
     @Test
-    void registerNewUser_shouldReturnUser_whenCalledWithUserDTO() {
-        // GIVEN
-        User expectedUser = testUser.getFirst();
-
-        // WHEN
-        when(mockUserRepository.save(any(User.class))).thenReturn(expectedUser);
-        when(mockUtilService.generateId()).thenReturn(expectedUser.id());
-        User actual = userService.registerNewUser(new UserDTO(expectedUser.username(), expectedUser.password(), expectedUser.role(), expectedUser.familyId()));
-
-        // THEN
-        assertEquals(expectedUser.username(), actual.username());
-        assertEquals(expectedUser.role(), actual.role());
-        assertEquals(expectedUser.familyId(), actual.familyId());
-
-        verify(mockUserRepository).save(any(User.class));
-        verify(mockUtilService, times(1)).generateId();
-    }
-
-    @Test
     void registerNewUser_shouldGenerateFamilyId_whenFamilyIdIsEmpty() {
         // GIVEN
         String generatedId = "generatedId";

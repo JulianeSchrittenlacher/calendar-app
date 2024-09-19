@@ -20,16 +20,17 @@ import "../styles/CalendarTable.css"
 import Modal from "./Modal.tsx";
 import AppointmentAddForm from "./AppointmentAddForm.tsx";
 import AppointmentGallery from "./AppointmentGallery.tsx";
+import useFamilyStore from "../stores/useFamilyStore.ts";
 
 export default function CalendarTable() {
     const appointments = useAppointmentStore(state => state.appointments);
-    const users = useUserStore(state => state.users); // Holt alle Benutzer
+    const users = useUserStore(state => state.users);
     const currentUser = useUserStore(state => state.currentUser);
     const getAppointments = useAppointmentStore(state => state.getAppointments);
     const getUsers = useUserStore(state => state.getUsers);
     const getHolidays = useApiStore(state => state.getHolidaysOfCurrentYear);
     const holidaysOfCurrentYear = useApiStore(state => state.holidaysOfCurrentYear);
-    const currentState = useApiStore(state => state.currentState);
+    const currentState = useFamilyStore(state => state.currentFamily?.state ?? "hb");
 
 
     const [month, setMonth] = useState<number>(new Date().getMonth());
@@ -110,7 +111,7 @@ export default function CalendarTable() {
             getUsers(currentUser.familyId);
             getHolidays(year, currentState);
         }
-    }, [currentUser, getAppointments, year, currentState]);
+    }, [getAppointments, year, currentState]);
 
     return (
         <>
@@ -119,14 +120,15 @@ export default function CalendarTable() {
                     <TableHead className="table-head">
                         <TableRow className="table-row">
                             <TableCell className="first-cell header-cell">
-                                <Select value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+                                <Select value={month} onChange={(e) => setMonth(Number(e.target.value))}
+                                        variant={"standard"}>
                                     {months.map((monthName, index) => (
                                         <MenuItem key={index} value={index}>
                                             {monthName}
                                         </MenuItem>
                                     ))}
                                 </Select>
-                                <Select value={year} onChange={(e) => setYear(e.target.value)}>
+                                <Select value={year} onChange={(e) => setYear(e.target.value)} variant={"standard"}>
                                     {generateYearOptions().map((yr) => (
                                         <MenuItem key={yr} value={yr}>
                                             {yr}
@@ -189,13 +191,6 @@ export default function CalendarTable() {
                                                 <div className="collapse-content">
                                                     {currentUser && <AppointmentGallery key={currentUser.id}
                                                                                         day={day}></AppointmentGallery>}
-                                                    {/*
-                                                    <button onClick={() => handleClick(day)}>Termin hinzufügen
-                                                    {getActualAppointments(appointments, day).map(appointment => (
-                                                        <AppointmentCard key={appointment.id}
-                                                                         appointment={appointment}/>
-                                                    ))}*/}
-
                                                 </div>
                                             </Collapse>
                                         </TableCell>
