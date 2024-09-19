@@ -12,7 +12,9 @@ export default function LoginForm(props: Readonly<LoginFormProps>) {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const loginUser = useUserStore(state => state.loginUser);
+    const getUsers = useUserStore(state => state.getUsers);
     const navigate = useNavigate();
+    const currentUser = useUserStore(state => state.currentUser);
     const getAndSetCurrentFamily = useFamilyStore(state => state.getAndSetCurrentFamily);
     const currentFamily = useFamilyStore(state => state.currentFamily);
 
@@ -34,6 +36,8 @@ export default function LoginForm(props: Readonly<LoginFormProps>) {
         } catch (error) {
             console.error("Login failed:", error);
         }
+        currentUser && getUsers(currentUser.familyId);
+        currentUser && getAndSetCurrentFamily(currentUser.familyId);
     }
 
 

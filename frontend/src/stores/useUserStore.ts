@@ -2,12 +2,11 @@ import {create} from "zustand";
 import axios from "axios";
 import {User} from "../types/User.ts";
 import useAppointmentStore from "./useAppointmentStore.ts";
+import useFamilyStore from "./useFamilyStore.ts";
 
 interface UserState {
     users: User[] | null;
-    setUsers: (users: User[] | null) => void;
     currentUser: User | null;
-    setCurrentUser: (user: User | null) => void;
     getUsers: (familyId: string) => void;
     registerUser: (newUser: User) => Promise<User>;
     loginUser: (username: string, password: string) => void;
@@ -18,14 +17,7 @@ interface UserState {
 
 const useUserStore = create<UserState>()((set) => ({
     users: [],
-    setUsers: (users) => {
-        set({users});
-    },
     currentUser: JSON.parse(localStorage.getItem('currentUser') || 'null') as User | null,
-    setCurrentUser: (user) => {
-        set({currentUser: user});
-        localStorage.setItem('currentUser', JSON.stringify(user));
-    },
     getUsers: (familyId: string) => {
         axios.get(`/api/user/` + familyId)
             .then(response => {
@@ -40,12 +32,17 @@ const useUserStore = create<UserState>()((set) => ({
                 set(state => ({
                     users: state.users ? [...state.users, response.data] : [response.data]
                 }));
-                alert("User erfolgreich erstellt.");
-                return response.data; // Return the registered user data
+                if (newUser.familyId) {
+                    alert(`User erfolgreich erstellt mit der FamilyId: ${newUser.familyId}`);
+                } else {
+                    alert("Neue Familie erstellt.")
+                }
+
+                return response.data;
             })
             .catch(error => {
                 console.error(error);
-                throw error; // Rethrow the error so it can be handled by the caller
+                throw error;
             });
     },
     loginUser: async (username: string, password: string) => {
@@ -79,6 +76,8 @@ const useUserStore = create<UserState>()((set) => ({
                 console.log("User successfully logged out");
                 const clearAppointments = useAppointmentStore.getState().clearAppointments;
                 clearAppointments();
+                const clearCurrentFamily = useFamilyStore.getState().clearCurrentFamily;
+                clearCurrentFamily();
             })
             .catch(error => console.log(error));
     },
@@ -88,9 +87,32 @@ const useUserStore = create<UserState>()((set) => ({
                 set(state => ({
                     users: (state.users || []).filter(user => user.id !== id)
                 }));
-                alert("User gelöscht.");
+                const currentUser = localStorage.getItem('currentUser');
+                if (currentUser) {
+                    const parsedUser = JSON.parse(currentUser);
+                    if (parsedUser.id === id) {
+                        axios.get("/api/user/logout")
+                            .then(() => {
+                                const anonymousUser = null;
+                                set({currentUser: anonymousUser});
+                                localStorage.removeItem('currentUser');
+                                console.log("User successfully logged out");
+
+                                // Clear appointments or any other necessary cleanup
+                                const clearAppointments = useAppointmentStore.getState().clearAppointments;
+                                clearAppointments();
+                                const clearCurrentFamily = useFamilyStore.getState().clearCurrentFamily;
+                                clearCurrentFamily();
+
+                                alert("Du hast deinen Account gelöscht und wurdest ausgeloggt.");
+                            })
+                            .catch(error => console.log("Error logging out: " + error));
+                    } else {
+                        alert("User gelöscht.");
+                    }
+                }
             })
-            .catch(error => console.log(error));
+            .catch(error => console.log("Error deleting user: " + error));
     },
     updateUser: (id, updatedUser) => {
         axios.put(`/api/user/${id}`, updatedUser).then(response => {
@@ -98,6 +120,14 @@ const useUserStore = create<UserState>()((set) => ({
                 const updatedUsers: User[] = (state.users || []).map(user => user.id === id ? response.data : user);
                 return {users: updatedUsers};
             });
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const parsedUser = JSON.parse(currentUser);
+                if (parsedUser.id === id) {
+                    set({currentUser: response.data});
+                    localStorage.setItem('currentUser', JSON.stringify(response.data));
+                }
+            }
             alert("User geändert!");
         })
             .catch(error => console.log("Error updating user " + error))

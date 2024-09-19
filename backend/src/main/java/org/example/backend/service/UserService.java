@@ -42,9 +42,9 @@ public class UserService implements UserDetailsService {
                 newUserDto.username(),
                 encoder.encode(newUserDto.password()),
                 newUserDto.role(),
-                utilService.generateId()
+                newUserDto.familyId().isEmpty() ? utilService.generateId() : newUserDto.familyId()
         );
-        
+
         return userRepository.save(newUser);
     }
 
