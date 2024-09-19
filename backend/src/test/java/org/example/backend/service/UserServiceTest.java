@@ -7,6 +7,7 @@ import org.example.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.*;
@@ -21,12 +22,14 @@ class UserServiceTest {
     private static UserRepository mockUserRepository;
     private static UtilService mockUtilService;
     private static List<User> testUser;
+    private static Argon2PasswordEncoder mockPasswordEncoder;
 
     @BeforeEach
     void setUp() {
         mockUserRepository = mock(UserRepository.class);
         mockUtilService = mock(UtilService.class);
         userService = new UserService(mockUtilService, mockUserRepository);
+        mockPasswordEncoder = mock(Argon2PasswordEncoder.class);
         testUser = new ArrayList<>() {{
             add(new User("1", "John Doe", "123", Role.ADULT, "family123"));
             add(new User("2", "Jane Doe", "456", Role.ADULT, "family123"));
